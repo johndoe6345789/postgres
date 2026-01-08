@@ -5,6 +5,7 @@ import CodeIcon from '@mui/icons-material/Code';
 import DeleteIcon from '@mui/icons-material/Delete';
 import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
+import RuleIcon from '@mui/icons-material/Rule';
 import StorageIcon from '@mui/icons-material/Storage';
 import TableChartIcon from '@mui/icons-material/TableChart';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
@@ -43,6 +44,7 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
+import ConstraintManagerTab from '@/components/admin/ConstraintManagerTab';
 import { theme } from '@/utils/theme';
 
 const DRAWER_WIDTH = 240;
@@ -491,6 +493,71 @@ export default function AdminDashboard() {
     }
   };
 
+  // Constraint Management Handlers
+  const handleAddConstraint = async (tableName: string, data: any) => {
+    setLoading(true);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const response = await fetch('/api/admin/constraints', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tableName,
+          ...data,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to add constraint');
+      }
+
+      setSuccessMessage(result.message || 'Constraint added successfully');
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleDropConstraint = async (tableName: string, constraintName: string) => {
+    setLoading(true);
+    setError('');
+    setSuccessMessage('');
+
+    try {
+      const response = await fetch('/api/admin/constraints', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          tableName,
+          constraintName,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        throw new Error(result.error || 'Failed to drop constraint');
+      }
+
+      setSuccessMessage(result.message || 'Constraint dropped successfully');
+    } catch (err: any) {
+      setError(err.message);
+      throw err;
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box sx={{ display: 'flex' }}>
@@ -553,6 +620,14 @@ export default function AdminDashboard() {
                     <ViewColumnIcon />
                   </ListItemIcon>
                   <ListItemText primary="Column Manager" />
+                </ListItemButton>
+              </ListItem>
+              <ListItem disablePadding>
+                <ListItemButton onClick={() => setTabValue(4)}>
+                  <ListItemIcon>
+                    <RuleIcon />
+                  </ListItemIcon>
+                  <ListItemText primary="Constraints" />
                 </ListItemButton>
               </ListItem>
             </List>
@@ -761,6 +836,14 @@ export default function AdminDashboard() {
                 )}
               </>
             )}
+          </TabPanel>
+
+          <TabPanel value={tabValue} index={4}>
+            <ConstraintManagerTab
+              tables={tables}
+              onAddConstraint={handleAddConstraint}
+              onDropConstraint={handleDropConstraint}
+            />
           </TabPanel>
 
           {successMessage && (
