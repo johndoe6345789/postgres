@@ -236,7 +236,7 @@ function interpolateValue(value: any, data: Record<string, any>): any {
         const [, operation, argsStr] = mathOp;
         const safeOps = ['abs', 'ceil', 'floor', 'round', 'max', 'min'];
         
-        if (safeOps.includes(operation)) {
+        if (operation && argsStr && safeOps.includes(operation)) {
           try {
             // Parse arguments safely
             const args = argsStr.split(',').map(arg => {
@@ -258,11 +258,13 @@ function interpolateValue(value: any, data: Record<string, any>): any {
     const ternaryMatch = expression.match(/^(.+?)\s*\?\s*(.+?)\s*:\s*(.+)$/);
     if (ternaryMatch) {
       const [, condition, trueValue, falseValue] = ternaryMatch;
-      const conditionResult = evaluateCondition(condition.trim(), data);
-      const targetValue = conditionResult ? trueValue.trim() : falseValue.trim();
-      
-      // Recursively interpolate the result
-      return interpolateValue(`{{${targetValue}}}`, data);
+      if (condition && trueValue !== undefined && falseValue !== undefined) {
+        const conditionResult = evaluateCondition(condition.trim(), data);
+        const targetValue = conditionResult ? trueValue.trim() : falseValue.trim();
+        
+        // Recursively interpolate the result
+        return interpolateValue(`{{${targetValue}}}`, data);
+      }
     }
     
     // Simple property access

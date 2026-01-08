@@ -1,13 +1,13 @@
 'use client';
 
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogContentText,
   DialogTitle,
 } from '@mui/material';
+import Button from '../atoms/Button';
 
 type ConfirmDialogProps = {
   open: boolean;
@@ -35,10 +35,8 @@ export default function ConfirmDialog({
         <DialogContentText>{message}</DialogContentText>
       </DialogContent>
       <DialogActions>
-        <Button onClick={onCancel}>{cancelLabel}</Button>
-        <Button onClick={onConfirm} color="error" variant="contained">
-          {confirmLabel}
-        </Button>
+        <Button onClick={onCancel} text={cancelLabel} />
+        <Button onClick={onConfirm} color="error" variant="contained" text={confirmLabel} />
       </DialogActions>
     </Dialog>
   );

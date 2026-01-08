@@ -1,9 +1,6 @@
 'use client';
 
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
 import {
-  IconButton,
   Paper,
   Table,
   TableBody,
@@ -13,6 +10,7 @@ import {
   TableRow,
   Tooltip,
 } from '@mui/material';
+import IconButton from '../atoms/IconButton';
 
 type DataGridProps = {
   columns: Array<{ name: string; label?: string }>;
@@ -54,16 +52,12 @@ export default function DataGrid({ columns, rows, onEdit, onDelete, primaryKey =
                 <TableCell>
                   {onEdit && (
                     <Tooltip title="Edit">
-                      <IconButton size="small" onClick={() => onEdit(row)}>
-                        <EditIcon fontSize="small" />
-                      </IconButton>
+                      <IconButton size="small" onClick={() => onEdit(row)} icon="Edit" />
                     </Tooltip>
                   )}
                   {onDelete && (
                     <Tooltip title="Delete">
-                      <IconButton size="small" color="error" onClick={() => onDelete(row)}>
-                        <DeleteIcon fontSize="small" />
-                      </IconButton>
+                      <IconButton size="small" color="error" onClick={() => onDelete(row)} icon="Delete" />
                     </Tooltip>
                   )}
                 </TableCell>
