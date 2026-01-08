@@ -2864,6 +2864,12 @@
       "featureId": "table-management"
     },
     {
+      "id": "column-manager",
+      "label": "Column Manager",
+      "icon": "ViewColumn",
+      "featureId": "column-management"
+    },
+    {
       "id": "constraints",
       "label": "Constraints",
       "icon": "Rule",
