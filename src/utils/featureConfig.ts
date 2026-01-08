@@ -196,13 +196,7 @@ export type ComponentPropSchema = {
   props: Record<string, PropDefinition>;
 };
 
-export type SqlTemplate = {
-  description: string;
-  query: string;
-  returns: 'rows' | 'command';
-  example?: string;
-  defaultParams?: Record<string, any>;
-};
+
 
 export type PlaywrightStep = {
   action: 'goto' | 'click' | 'fill' | 'select' | 'wait' | 'expect' | 'screenshot';
@@ -248,7 +242,6 @@ type FeaturesConfig = {
   uiViews?: Record<string, Record<string, UiView>>;
   componentTrees?: Record<string, ComponentTree>;
   componentProps?: Record<string, ComponentPropSchema>;
-  sqlTemplates?: Record<string, Record<string, SqlTemplate>>;
   playwrightPlaybooks?: Record<string, PlaywrightPlaybook>;
   storybookStories?: Record<string, Record<string, StorybookStory>>;
   features: Feature[];
@@ -446,34 +439,6 @@ export function getComponentsByCategory(category: string): string[] {
   return Object.entries(schemas)
     .filter(([_, schema]) => schema.category === category)
     .map(([name, _]) => name);
-}
-
-// SQL Templates
-export function getSqlTemplate(category: string, templateName: string): SqlTemplate | undefined {
-  return config.sqlTemplates?.[category]?.[templateName];
-}
-
-export function getAllSqlTemplates(): Record<string, Record<string, SqlTemplate>> {
-  return config.sqlTemplates || {};
-}
-
-export function getSqlTemplatesByCategory(category: string): Record<string, SqlTemplate> {
-  return config.sqlTemplates?.[category] || {};
-}
-
-export function interpolateSqlTemplate(template: SqlTemplate, params: Record<string, any>): string {
-  let query = template.query;
-  
-  // Merge default params with provided params
-  const allParams = { ...template.defaultParams, ...params };
-  
-  // Replace template variables
-  Object.entries(allParams).forEach(([key, value]) => {
-    const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
-    query = query.replace(regex, String(value));
-  });
-  
-  return query;
 }
 
 // Playwright Playbooks

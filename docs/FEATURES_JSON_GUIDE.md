@@ -4,7 +4,6 @@
 
 The `features.json` file is now a comprehensive configuration system that defines:
 - ✅ **UI Component Trees** - Declarative component hierarchies
-- ✅ **SQL Query Templates** - Parameterized database queries
 - ✅ **Playwright Playbooks** - E2E test scenarios
 - ✅ **Storybook Stories** - Component documentation
 - ✅ **Feature Flags** - Enable/disable features
@@ -12,6 +11,8 @@ The `features.json` file is now a comprehensive configuration system that define
 - ✅ **Form Schemas** - Dynamic form generation
 - ✅ **API Endpoints** - REST API definitions
 - ✅ **Permissions** - Role-based access control
+
+**Note:** SQL query templates have been removed for security reasons. Use Drizzle ORM for all database operations (see section 2).
 
 ## 1. Component Trees
 
@@ -104,53 +105,59 @@ function MyComponent() {
 }
 ```
 
-## 2. SQL Templates
+## 2. Database Queries - Use Drizzle ORM
 
-Parameterized SQL queries with template variables.
+**IMPORTANT SECURITY NOTE:** This project previously included SQL template strings in `features.json`, but they have been removed due to SQL injection risks. 
 
-### Example SQL Templates
-```json
-{
-  "sqlTemplates": {
-    "tables": {
-      "createTable": {
-        "description": "Create a new table with columns",
-        "query": "CREATE TABLE \"{{tableName}}\" ({{columnDefinitions}})",
-        "returns": "command"
-      },
-      "listTables": {
-        "description": "Get all tables",
-        "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
-        "returns": "rows"
-      }
-    },
-    "records": {
-      "insert": {
-        "description": "Insert a new record",
-        "query": "INSERT INTO \"{{tableName}}\" ({{columns}}) VALUES ({{values}}) RETURNING *",
-        "returns": "rows"
-      }
-    }
-  }
+### Why SQL Templates Were Removed
+
+SQL templates with string interpolation (e.g., `{{tableName}}`) are inherently unsafe because they:
+1. Allow SQL injection if user input is not properly sanitized
+2. Encourage dangerous string concatenation patterns
+3. Bypass type-safe query builders
+
+### Use Drizzle ORM Instead
+
+All database queries should use Drizzle ORM, which provides:
+- **Type safety** - Compile-time validation of queries
+- **SQL injection prevention** - Automatic parameterization
+- **Better performance** - Query optimization
+- **Cleaner code** - Fluent API
+
+### Example: Correct Way to Query Database
+
+```typescript
+import { db } from '@/utils/db';
+import { sql } from 'drizzle-orm';
+
+// ✅ GOOD: Using Drizzle ORM with parameterized queries
+async function getTableData(tableName: string) {
+  // Use sql.identifier for table/column names
+  const result = await db.execute(sql`
+    SELECT * FROM ${sql.identifier([tableName])} 
+    LIMIT 100
+  `);
+  return result.rows;
+}
+
+// ✅ GOOD: Using Drizzle ORM query builder
+async function insertRecord(table: any, data: Record<string, any>) {
+  const result = await db.insert(table).values(data).returning();
+  return result[0];
+}
+
+// ❌ BAD: String concatenation (DO NOT USE)
+async function unsafeQuery(tableName: string) {
+  // This is vulnerable to SQL injection!
+  const query = `SELECT * FROM "${tableName}"`;
+  return await db.execute(sql.raw(query));
 }
 ```
 
-### Using SQL Templates
-```typescript
-import { getSqlTemplate, interpolateSqlTemplate } from '@/utils/featureConfig';
-
-// Get template
-const template = getSqlTemplate('records', 'insert');
-
-// Interpolate parameters
-const query = interpolateSqlTemplate(template, {
-  tableName: 'users',
-  columns: 'name, email',
-  values: '$1, $2'
-});
-
-// Result: INSERT INTO "users" (name, email) VALUES ($1, $2) RETURNING *
-```
+### See Also
+- [Drizzle ORM Documentation](https://orm.drizzle.team/docs/overview)
+- [SQL Injection Prevention Guide](https://cheatsheetseries.owasp.org/cheatsheets/SQL_Injection_Prevention_Cheat_Sheet.html)
+- API route examples in `src/app/api/admin/` directory
 
 ## 3. Playwright Playbooks
 
@@ -273,21 +280,6 @@ import {
 
 const tree = getComponentTree('TableManagerTab');
 const allTrees = getAllComponentTrees();
-```
-
-### SQL Templates
-```typescript
-import {
-  getSqlTemplate,
-  getAllSqlTemplates,
-  getSqlTemplatesByCategory,
-  interpolateSqlTemplate,
-} from '@/utils/featureConfig';
-
-const template = getSqlTemplate('records', 'insert');
-const allTemplates = getAllSqlTemplates();
-const recordTemplates = getSqlTemplatesByCategory('records');
-const query = interpolateSqlTemplate(template, { tableName: 'users' });
 ```
 
 ### Playwright Playbooks
