@@ -108,7 +108,7 @@
     "postcss-load-config": "^6.0.1",
     "rimraf": "^6.1.2",
     "semantic-release": "^25.0.2",
-    "storybook": "^10.1.4",
+    "storybook": "^10.1.11",
     "tailwindcss": "^4.1.17",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
