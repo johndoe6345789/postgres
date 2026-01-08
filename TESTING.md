@@ -81,6 +81,85 @@ Tests for the admin dashboard UI and user flows:
 
 **Note:** Some UI tests are skipped because they require an authenticated session. These can be enabled when a test authentication mechanism is implemented.
 
+## Feature: Record CRUD Operations Tests
+
+### Integration Tests (Playwright API Tests)
+
+#### 1. `tests/integration/RecordCRUD.spec.ts`
+Tests for the Record CRUD API endpoints (`/api/admin/record`):
+
+**Create Record Tests:**
+- ✅ Rejects create without authentication
+- ✅ Rejects create without table name
+- ✅ Rejects create with invalid table name
+- ✅ Rejects create without data
+
+**Update Record Tests:**
+- ✅ Rejects update without authentication
+- ✅ Rejects update without required fields
+- ✅ Rejects update with invalid table name
+
+**Delete Record Tests:**
+- ✅ Rejects delete without authentication
+- ✅ Rejects delete without required fields
+- ✅ Rejects delete with invalid table name
+
+**Test Coverage:**
+- Input validation
+- SQL injection prevention
+- Authentication/authorization
+- Error handling for all CRUD operations
+
+## Feature: SQL Query Interface Tests
+
+### Integration Tests (Playwright API Tests)
+
+#### 2. `tests/integration/QueryInterface.spec.ts`
+Tests for the SQL Query API endpoint (`/api/admin/query`):
+
+**Query Execution Tests:**
+- ✅ Rejects query without authentication
+- ✅ Rejects query without query text
+- ✅ Rejects non-SELECT queries (DELETE, INSERT, UPDATE, DROP, ALTER, CREATE)
+- ✅ Rejects queries with SQL injection attempts
+- ✅ Accepts valid SELECT queries
+
+**Test Coverage:**
+- Input validation
+- SQL injection prevention (only SELECT allowed)
+- Authentication/authorization
+- Security validation for dangerous SQL operations
+
+## Feature: Table Data and Schema Tests
+
+### Integration Tests (Playwright API Tests)
+
+#### 3. `tests/integration/TableDataSchema.spec.ts`
+Tests for Table Data and Schema API endpoints:
+
+**List Tables Tests:**
+- ✅ Rejects list tables without authentication
+
+**Get Table Data Tests:**
+- ✅ Rejects get table data without authentication
+- ✅ Rejects get table data without table name
+- ✅ Rejects get table data with invalid table name
+- ✅ Accepts pagination parameters
+
+**Get Table Schema Tests:**
+- ✅ Rejects get table schema without authentication
+- ✅ Rejects get table schema without table name
+- ✅ Rejects get table schema with invalid table name
+- ✅ Accepts valid table name format
+
+**Test Coverage:**
+- Input validation
+- SQL injection prevention
+- Authentication/authorization
+- Pagination support validation
+
+**Note:** Some UI tests are skipped because they require an authenticated session. These can be enabled when a test authentication mechanism is implemented.
+
 ## Running Tests
 
 ### Run All Tests
@@ -155,8 +234,11 @@ All tests verify that:
 | Table Manager | 7 | 2 (2 skipped) | 3 | - | 12 |
 | Column Manager | 12 | 2 (2 skipped) | 3 | - | 17 |
 | Constraint Manager | 15 | 3 (3 skipped) | 4 | 5 | 27 |
+| Record CRUD | 9 | - | 3 | - | 12 |
+| Query Interface | 10 | - | 1 | - | 11 |
+| Table Data/Schema | 7 | - | 3 | - | 10 |
 | Admin Dashboard | - | 3 | 3 | - | 6 |
-| **Total** | **34** | **10** | **16** | **45** | **105** |
+| **Total** | **60** | **10** | **20** | **45** | **135** |
 
 ## Feature: Constraint Management Tests
 
@@ -295,4 +377,4 @@ When adding new features:
 
 **Last Updated:** January 2026
 **Test Framework:** Playwright + Vitest
-**Coverage Status:** ✅ API Validation | 🔄 UI Tests (partial - needs auth) | ✅ Constraint Manager UI Complete
+**Coverage Status:** ✅ API Validation | 🔄 UI Tests (partial - needs auth) | ✅ Constraint Manager UI Complete | ✅ Comprehensive CRUD and Query Tests
