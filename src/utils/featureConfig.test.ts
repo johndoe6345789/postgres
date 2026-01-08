@@ -17,6 +17,17 @@ import {
   getTableFeatures,
   getColumnFeatures,
   getComponentLayout,
+  getFormSchema,
+  getValidationRule,
+  getApiEndpoints,
+  getApiEndpoint,
+  getPermissions,
+  hasPermission,
+  getRelationships,
+  getUiViews,
+  getUiView,
+  getComponentTree,
+  getAllComponentTrees,
 } from './featureConfig';
 
 describe('FeatureConfig', () => {
@@ -676,6 +687,359 @@ describe('FeatureConfig', () => {
       const layout = getComponentLayout('NonExistentComponent');
       
       expect(layout).toBeUndefined();
+    });
+  });
+
+  describe('getFormSchema', () => {
+    it('should return form schema for users table', () => {
+      const schema = getFormSchema('users');
+      
+      expect(schema).toBeDefined();
+      expect(schema?.fields).toBeDefined();
+      expect(Array.isArray(schema?.fields)).toBe(true);
+      expect(schema?.submitLabel).toBe('Save User');
+      expect(schema?.cancelLabel).toBe('Cancel');
+    });
+
+    it('should have name field in users schema', () => {
+      const schema = getFormSchema('users');
+      const nameField = schema?.fields.find(f => f.name === 'name');
+      
+      expect(nameField).toBeDefined();
+      expect(nameField?.type).toBe('text');
+      expect(nameField?.required).toBe(true);
+    });
+
+    it('should return form schema for products table', () => {
+      const schema = getFormSchema('products');
+      
+      expect(schema).toBeDefined();
+      expect(schema?.fields).toBeDefined();
+      expect(schema?.submitLabel).toBe('Save Product');
+    });
+
+    it('should have price field with number type in products schema', () => {
+      const schema = getFormSchema('products');
+      const priceField = schema?.fields.find(f => f.name === 'price');
+      
+      expect(priceField).toBeDefined();
+      expect(priceField?.type).toBe('number');
+      expect(priceField?.required).toBe(true);
+      expect(priceField?.prefix).toBe('$');
+    });
+  });
+
+  describe('getValidationRule', () => {
+    it('should return validation rule for email', () => {
+      const rule = getValidationRule('email');
+      
+      expect(rule).toBeDefined();
+      expect(rule?.pattern).toBeDefined();
+      expect(rule?.message).toContain('email');
+    });
+
+    it('should return validation rule for phone', () => {
+      const rule = getValidationRule('phone');
+      
+      expect(rule).toBeDefined();
+      expect(rule?.pattern).toBeDefined();
+      expect(rule?.message).toContain('phone');
+    });
+
+    it('should return validation rule for number', () => {
+      const rule = getValidationRule('number');
+      
+      expect(rule).toBeDefined();
+      expect(rule?.message).toContain('number');
+    });
+  });
+
+  describe('getApiEndpoints', () => {
+    it('should return all endpoints for users resource', () => {
+      const endpoints = getApiEndpoints('users');
+      
+      expect(endpoints).toBeDefined();
+      expect(endpoints?.list).toBeDefined();
+      expect(endpoints?.get).toBeDefined();
+      expect(endpoints?.create).toBeDefined();
+      expect(endpoints?.update).toBeDefined();
+      expect(endpoints?.delete).toBeDefined();
+    });
+
+    it('should return all endpoints for products resource', () => {
+      const endpoints = getApiEndpoints('products');
+      
+      expect(endpoints).toBeDefined();
+      expect(endpoints?.list).toBeDefined();
+    });
+  });
+
+  describe('getApiEndpoint', () => {
+    it('should return list endpoint for users', () => {
+      const endpoint = getApiEndpoint('users', 'list');
+      
+      expect(endpoint).toBeDefined();
+      expect(endpoint?.method).toBe('GET');
+      expect(endpoint?.path).toBe('/api/admin/users');
+    });
+
+    it('should return create endpoint for users', () => {
+      const endpoint = getApiEndpoint('users', 'create');
+      
+      expect(endpoint).toBeDefined();
+      expect(endpoint?.method).toBe('POST');
+      expect(endpoint?.path).toBe('/api/admin/users');
+    });
+
+    it('should return update endpoint for products', () => {
+      const endpoint = getApiEndpoint('products', 'update');
+      
+      expect(endpoint).toBeDefined();
+      expect(endpoint?.method).toBe('PUT');
+      expect(endpoint?.path).toBe('/api/admin/products/:id');
+    });
+  });
+
+  describe('getPermissions', () => {
+    it('should return permissions for users resource', () => {
+      const permissions = getPermissions('users');
+      
+      expect(permissions).toBeDefined();
+      expect(permissions?.create).toContain('admin');
+      expect(permissions?.read).toContain('admin');
+      expect(permissions?.read).toContain('user');
+    });
+
+    it('should return permissions for products resource', () => {
+      const permissions = getPermissions('products');
+      
+      expect(permissions).toBeDefined();
+      expect(permissions?.create).toContain('admin');
+      expect(permissions?.create).toContain('editor');
+    });
+  });
+
+  describe('hasPermission', () => {
+    it('should return true when user has permission', () => {
+      expect(hasPermission('users', 'create', 'admin')).toBe(true);
+      expect(hasPermission('users', 'read', 'user')).toBe(true);
+    });
+
+    it('should return false when user does not have permission', () => {
+      expect(hasPermission('users', 'create', 'user')).toBe(false);
+      expect(hasPermission('users', 'delete', 'guest')).toBe(false);
+    });
+
+    it('should check product permissions correctly', () => {
+      expect(hasPermission('products', 'create', 'editor')).toBe(true);
+      expect(hasPermission('products', 'update', 'editor')).toBe(true);
+      expect(hasPermission('products', 'delete', 'editor')).toBe(false);
+    });
+  });
+
+  describe('getRelationships', () => {
+    it('should return relationships for users table', () => {
+      const relationships = getRelationships('users');
+      
+      expect(relationships).toBeDefined();
+      expect(relationships?.hasMany).toContain('orders');
+      expect(relationships?.hasMany).toContain('reviews');
+    });
+
+    it('should return relationships for products table', () => {
+      const relationships = getRelationships('products');
+      
+      expect(relationships).toBeDefined();
+      expect(relationships?.hasMany).toContain('reviews');
+      expect(relationships?.belongsTo).toContain('category');
+    });
+
+    it('should return relationships for orders table', () => {
+      const relationships = getRelationships('orders');
+      
+      expect(relationships).toBeDefined();
+      expect(relationships?.belongsTo).toContain('users');
+      expect(relationships?.hasMany).toContain('orderItems');
+    });
+  });
+
+  describe('getUiViews', () => {
+    it('should return all views for users resource', () => {
+      const views = getUiViews('users');
+      
+      expect(views).toBeDefined();
+      expect(views?.list).toBeDefined();
+      expect(views?.detail).toBeDefined();
+      expect(views?.create).toBeDefined();
+      expect(views?.edit).toBeDefined();
+    });
+
+    it('should return all views for products resource', () => {
+      const views = getUiViews('products');
+      
+      expect(views).toBeDefined();
+      expect(views?.list).toBeDefined();
+    });
+  });
+
+  describe('getUiView', () => {
+    it('should return list view configuration for users', () => {
+      const view = getUiView('users', 'list');
+      
+      expect(view).toBeDefined();
+      expect(view?.component).toBe('DataGrid');
+      expect(view?.showActions).toBe(true);
+      expect(view?.showSearch).toBe(true);
+      expect(view?.showFilters).toBe(true);
+    });
+
+    it('should return detail view configuration for users', () => {
+      const view = getUiView('users', 'detail');
+      
+      expect(view).toBeDefined();
+      expect(view?.component).toBe('DetailView');
+      expect(view?.showRelated).toBe(true);
+      expect(view?.tabs).toContain('info');
+      expect(view?.tabs).toContain('orders');
+    });
+
+    it('should return create view configuration with redirect', () => {
+      const view = getUiView('users', 'create');
+      
+      expect(view).toBeDefined();
+      expect(view?.component).toBe('FormDialog');
+      expect(view?.redirect).toBe('list');
+    });
+
+    it('should return edit view configuration for products', () => {
+      const view = getUiView('products', 'edit');
+      
+      expect(view).toBeDefined();
+      expect(view?.redirect).toBe('detail');
+    });
+  });
+
+  describe('getComponentTree', () => {
+    it('should return component tree for AdminDashboard', () => {
+      const tree = getComponentTree('AdminDashboard');
+      
+      expect(tree).toBeDefined();
+      expect(tree?.component).toBe('Box');
+      expect(tree?.children).toBeDefined();
+      expect(Array.isArray(tree?.children)).toBe(true);
+    });
+
+    it('should have Sidebar in AdminDashboard tree', () => {
+      const tree = getComponentTree('AdminDashboard');
+      const sidebar = tree?.children?.find(child => child.component === 'Sidebar');
+      
+      expect(sidebar).toBeDefined();
+      expect(sidebar?.props?.width).toBe(240);
+    });
+
+    it('should return component tree for ResourceListPage', () => {
+      const tree = getComponentTree('ResourceListPage');
+      
+      expect(tree).toBeDefined();
+      expect(tree?.component).toBe('Box');
+      expect(tree?.children).toBeDefined();
+    });
+
+    it('should have DataGrid in ResourceListPage tree', () => {
+      const tree = getComponentTree('ResourceListPage');
+      
+      function findComponent(node: any, componentName: string): any {
+        if (node.component === componentName) return node;
+        if (node.children) {
+          for (const child of node.children) {
+            const found = findComponent(child, componentName);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+      
+      const dataGrid = findComponent(tree, 'DataGrid');
+      expect(dataGrid).toBeDefined();
+      expect(dataGrid?.dataSource).toBe('tableData');
+    });
+
+    it('should return component tree for FormDialogTree', () => {
+      const tree = getComponentTree('FormDialogTree');
+      
+      expect(tree).toBeDefined();
+      expect(tree?.component).toBe('Dialog');
+    });
+
+    it('should have conditional rendering in component tree', () => {
+      const tree = getComponentTree('ResourceListPage');
+      
+      function findNodeWithCondition(node: any): any {
+        if (node.condition) return node;
+        if (node.children) {
+          for (const child of node.children) {
+            const found = findNodeWithCondition(child);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+      
+      const conditionalNode = findNodeWithCondition(tree);
+      expect(conditionalNode).toBeDefined();
+      expect(conditionalNode?.condition).toBeDefined();
+    });
+
+    it('should have forEach loops in component tree', () => {
+      const tree = getComponentTree('ResourceDetailPage');
+      
+      function findNodeWithForEach(node: any): any {
+        if (node.forEach) return node;
+        if (node.children) {
+          for (const child of node.children) {
+            const found = findNodeWithForEach(child);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+      
+      const loopNode = findNodeWithForEach(tree);
+      expect(loopNode).toBeDefined();
+      expect(loopNode?.forEach).toBeDefined();
+    });
+  });
+
+  describe('getAllComponentTrees', () => {
+    it('should return all component trees', () => {
+      const trees = getAllComponentTrees();
+      
+      expect(trees).toBeDefined();
+      expect(typeof trees).toBe('object');
+    });
+
+    it('should include AdminDashboard tree', () => {
+      const trees = getAllComponentTrees();
+      
+      expect(trees.AdminDashboard).toBeDefined();
+    });
+
+    it('should include ResourceListPage tree', () => {
+      const trees = getAllComponentTrees();
+      
+      expect(trees.ResourceListPage).toBeDefined();
+    });
+
+    it('should include FormDialogTree tree', () => {
+      const trees = getAllComponentTrees();
+      
+      expect(trees.FormDialogTree).toBeDefined();
+    });
+
+    it('should include DashboardStatsCards tree', () => {
+      const trees = getAllComponentTrees();
+      
+      expect(trees.DashboardStatsCards).toBeDefined();
     });
   });
 });

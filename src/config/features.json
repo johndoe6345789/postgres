@@ -325,6 +325,816 @@
       "elevation": 2
     }
   },
+  "formSchemas": {
+    "users": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Name",
+          "placeholder": "Enter full name",
+          "required": true,
+          "minLength": 2,
+          "maxLength": 100
+        },
+        {
+          "name": "email",
+          "type": "email",
+          "label": "Email",
+          "placeholder": "user@example.com",
+          "required": true,
+          "validation": "email"
+        },
+        {
+          "name": "role",
+          "type": "select",
+          "label": "Role",
+          "required": true,
+          "options": [
+            { "value": "admin", "label": "Administrator" },
+            { "value": "user", "label": "User" },
+            { "value": "guest", "label": "Guest" }
+          ]
+        },
+        {
+          "name": "active",
+          "type": "checkbox",
+          "label": "Active",
+          "defaultValue": true
+        }
+      ],
+      "submitLabel": "Save User",
+      "cancelLabel": "Cancel"
+    },
+    "products": {
+      "fields": [
+        {
+          "name": "name",
+          "type": "text",
+          "label": "Product Name",
+          "placeholder": "Enter product name",
+          "required": true,
+          "minLength": 3,
+          "maxLength": 200
+        },
+        {
+          "name": "description",
+          "type": "textarea",
+          "label": "Description",
+          "placeholder": "Product description",
+          "rows": 4,
+          "maxLength": 1000
+        },
+        {
+          "name": "price",
+          "type": "number",
+          "label": "Price",
+          "placeholder": "0.00",
+          "required": true,
+          "min": 0,
+          "step": 0.01,
+          "prefix": "$"
+        },
+        {
+          "name": "stock",
+          "type": "number",
+          "label": "Stock Quantity",
+          "placeholder": "0",
+          "required": true,
+          "min": 0,
+          "step": 1
+        },
+        {
+          "name": "category",
+          "type": "select",
+          "label": "Category",
+          "required": true,
+          "options": [
+            { "value": "electronics", "label": "Electronics" },
+            { "value": "clothing", "label": "Clothing" },
+            { "value": "food", "label": "Food" },
+            { "value": "books", "label": "Books" }
+          ]
+        },
+        {
+          "name": "available",
+          "type": "checkbox",
+          "label": "Available for Purchase",
+          "defaultValue": true
+        }
+      ],
+      "submitLabel": "Save Product",
+      "cancelLabel": "Cancel"
+    }
+  },
+  "validationRules": {
+    "email": {
+      "pattern": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$",
+      "message": "Please enter a valid email address"
+    },
+    "phone": {
+      "pattern": "^[+]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[(]?[0-9]{1,4}[)]?[-\\s\\.]?[0-9]{1,9}$",
+      "message": "Please enter a valid phone number"
+    },
+    "url": {
+      "pattern": "^(https?:\\/\\/)?(www\\.)?[-a-zA-Z0-9@:%._\\+~#=]{1,256}\\.[a-zA-Z0-9()]{1,6}\\b([-a-zA-Z0-9()@:%_\\+.~#?&//=]*)$",
+      "message": "Please enter a valid URL"
+    },
+    "number": {
+      "pattern": "^-?\\d*\\.?\\d+$",
+      "message": "Please enter a valid number"
+    },
+    "integer": {
+      "pattern": "^-?\\d+$",
+      "message": "Please enter a valid integer"
+    },
+    "alphanumeric": {
+      "pattern": "^[a-zA-Z0-9]+$",
+      "message": "Only letters and numbers are allowed"
+    },
+    "username": {
+      "pattern": "^[a-zA-Z0-9_-]{3,20}$",
+      "message": "Username must be 3-20 characters and contain only letters, numbers, underscores, or hyphens"
+    }
+  },
+  "apiEndpoints": {
+    "users": {
+      "list": {
+        "method": "GET",
+        "path": "/api/admin/users",
+        "description": "List all users with pagination"
+      },
+      "get": {
+        "method": "GET",
+        "path": "/api/admin/users/:id",
+        "description": "Get a single user by ID"
+      },
+      "create": {
+        "method": "POST",
+        "path": "/api/admin/users",
+        "description": "Create a new user"
+      },
+      "update": {
+        "method": "PUT",
+        "path": "/api/admin/users/:id",
+        "description": "Update an existing user"
+      },
+      "delete": {
+        "method": "DELETE",
+        "path": "/api/admin/users/:id",
+        "description": "Delete a user"
+      }
+    },
+    "products": {
+      "list": {
+        "method": "GET",
+        "path": "/api/admin/products",
+        "description": "List all products with pagination"
+      },
+      "get": {
+        "method": "GET",
+        "path": "/api/admin/products/:id",
+        "description": "Get a single product by ID"
+      },
+      "create": {
+        "method": "POST",
+        "path": "/api/admin/products",
+        "description": "Create a new product"
+      },
+      "update": {
+        "method": "PUT",
+        "path": "/api/admin/products/:id",
+        "description": "Update an existing product"
+      },
+      "delete": {
+        "method": "DELETE",
+        "path": "/api/admin/products/:id",
+        "description": "Delete a product"
+      }
+    }
+  },
+  "permissions": {
+    "users": {
+      "create": ["admin"],
+      "read": ["admin", "user"],
+      "update": ["admin"],
+      "delete": ["admin"]
+    },
+    "products": {
+      "create": ["admin", "editor"],
+      "read": ["admin", "editor", "user"],
+      "update": ["admin", "editor"],
+      "delete": ["admin"]
+    }
+  },
+  "relationships": {
+    "users": {
+      "hasMany": ["orders", "reviews"],
+      "belongsTo": []
+    },
+    "products": {
+      "hasMany": ["reviews", "orderItems"],
+      "belongsTo": ["category"]
+    },
+    "orders": {
+      "belongsTo": ["users"],
+      "hasMany": ["orderItems"]
+    }
+  },
+  "uiViews": {
+    "users": {
+      "list": {
+        "component": "DataGrid",
+        "showActions": true,
+        "showSearch": true,
+        "showFilters": true,
+        "showExport": true
+      },
+      "detail": {
+        "component": "DetailView",
+        "showRelated": true,
+        "tabs": ["info", "orders", "activity"]
+      },
+      "create": {
+        "component": "FormDialog",
+        "redirect": "list"
+      },
+      "edit": {
+        "component": "FormDialog",
+        "redirect": "detail"
+      }
+    },
+    "products": {
+      "list": {
+        "component": "DataGrid",
+        "showActions": true,
+        "showSearch": true,
+        "showFilters": true,
+        "showExport": true
+      },
+      "detail": {
+        "component": "DetailView",
+        "showRelated": true,
+        "tabs": ["info", "reviews", "inventory"]
+      },
+      "create": {
+        "component": "FormDialog",
+        "redirect": "list"
+      },
+      "edit": {
+        "component": "FormDialog",
+        "redirect": "detail"
+      }
+    }
+  },
+  "componentTrees": {
+    "AdminDashboard": {
+      "component": "Box",
+      "props": {
+        "sx": { "display": "flex", "minHeight": "100vh" }
+      },
+      "children": [
+        {
+          "component": "Sidebar",
+          "props": {
+            "width": 240,
+            "variant": "permanent"
+          },
+          "children": [
+            {
+              "component": "Box",
+              "props": { "sx": { "p": 2 } },
+              "children": [
+                {
+                  "component": "Typography",
+                  "props": {
+                    "variant": "h6",
+                    "text": "Admin Panel"
+                  }
+                }
+              ]
+            },
+            {
+              "component": "NavList",
+              "dataSource": "navItems",
+              "children": [
+                {
+                  "component": "NavItem",
+                  "props": {
+                    "icon": "{{item.icon}}",
+                    "label": "{{item.label}}",
+                    "href": "/admin/{{item.id}}"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Box",
+          "props": {
+            "sx": { "flexGrow": 1, "display": "flex", "flexDirection": "column" }
+          },
+          "children": [
+            {
+              "component": "AppBar",
+              "props": {
+                "position": "sticky",
+                "elevation": 1
+              },
+              "children": [
+                {
+                  "component": "Toolbar",
+                  "children": [
+                    {
+                      "component": "Typography",
+                      "props": {
+                        "variant": "h6",
+                        "text": "{{pageTitle}}"
+                      }
+                    },
+                    {
+                      "component": "Box",
+                      "props": { "sx": { "flexGrow": 1 } }
+                    },
+                    {
+                      "component": "IconButton",
+                      "props": {
+                        "icon": "AccountCircle",
+                        "onClick": "openUserMenu"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "component": "Box",
+              "props": {
+                "sx": { "p": 3, "flexGrow": 1 }
+              },
+              "children": [
+                {
+                  "component": "Outlet",
+                  "comment": "Child routes render here"
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "ResourceListPage": {
+      "component": "Box",
+      "children": [
+        {
+          "component": "Box",
+          "props": {
+            "sx": { "display": "flex", "justifyContent": "space-between", "mb": 3 }
+          },
+          "children": [
+            {
+              "component": "Typography",
+              "props": {
+                "variant": "h4",
+                "text": "{{resourceName}}"
+              }
+            },
+            {
+              "component": "Box",
+              "props": { "sx": { "display": "flex", "gap": 2 } },
+              "children": [
+                {
+                  "component": "Button",
+                  "condition": "hasPermission('create')",
+                  "props": {
+                    "variant": "contained",
+                    "startIcon": "Add",
+                    "text": "Create New",
+                    "onClick": "openCreateDialog"
+                  }
+                },
+                {
+                  "component": "Button",
+                  "condition": "features.enableExport",
+                  "props": {
+                    "variant": "outlined",
+                    "startIcon": "Download",
+                    "text": "Export",
+                    "onClick": "handleExport"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Paper",
+          "props": { "sx": { "mb": 2 } },
+          "condition": "features.enableSearch || features.enableFilters",
+          "children": [
+            {
+              "component": "Box",
+              "props": { "sx": { "p": 2, "display": "flex", "gap": 2 } },
+              "children": [
+                {
+                  "component": "TextField",
+                  "condition": "features.enableSearch",
+                  "props": {
+                    "placeholder": "Search...",
+                    "variant": "outlined",
+                    "size": "small",
+                    "fullWidth": true,
+                    "onChange": "handleSearch"
+                  }
+                },
+                {
+                  "component": "Button",
+                  "condition": "features.enableFilters",
+                  "props": {
+                    "variant": "outlined",
+                    "startIcon": "FilterList",
+                    "text": "Filters",
+                    "onClick": "toggleFilters"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "DataGrid",
+          "dataSource": "tableData",
+          "props": {
+            "columns": "{{columns}}",
+            "rows": "{{rows}}",
+            "loading": "{{loading}}",
+            "onEdit": "handleEdit",
+            "onDelete": "handleDelete",
+            "primaryKey": "id"
+          }
+        },
+        {
+          "component": "Box",
+          "props": { "sx": { "mt": 2, "display": "flex", "justifyContent": "center" } },
+          "condition": "features.enablePagination",
+          "children": [
+            {
+              "component": "Pagination",
+              "props": {
+                "count": "{{totalPages}}",
+                "page": "{{currentPage}}",
+                "onChange": "handlePageChange"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "ResourceDetailPage": {
+      "component": "Box",
+      "children": [
+        {
+          "component": "Box",
+          "props": { "sx": { "display": "flex", "justifyContent": "space-between", "mb": 3 } },
+          "children": [
+            {
+              "component": "Box",
+              "children": [
+                {
+                  "component": "Button",
+                  "props": {
+                    "startIcon": "ArrowBack",
+                    "text": "Back to List",
+                    "onClick": "goBack"
+                  }
+                },
+                {
+                  "component": "Typography",
+                  "props": {
+                    "variant": "h4",
+                    "text": "{{resourceName}} #{{id}}",
+                    "sx": { "mt": 2 }
+                  }
+                }
+              ]
+            },
+            {
+              "component": "Box",
+              "props": { "sx": { "display": "flex", "gap": 2 } },
+              "children": [
+                {
+                  "component": "Button",
+                  "condition": "hasPermission('update')",
+                  "props": {
+                    "variant": "contained",
+                    "startIcon": "Edit",
+                    "text": "Edit",
+                    "onClick": "openEditDialog"
+                  }
+                },
+                {
+                  "component": "Button",
+                  "condition": "hasPermission('delete')",
+                  "props": {
+                    "variant": "outlined",
+                    "color": "error",
+                    "startIcon": "Delete",
+                    "text": "Delete",
+                    "onClick": "openDeleteDialog"
+                  }
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Tabs",
+          "props": {
+            "value": "{{activeTab}}",
+            "onChange": "handleTabChange"
+          },
+          "children": [
+            {
+              "component": "Tab",
+              "forEach": "tabs",
+              "props": {
+                "label": "{{tab.label}}",
+                "value": "{{tab.value}}"
+              }
+            }
+          ]
+        },
+        {
+          "component": "TabPanel",
+          "forEach": "tabs",
+          "props": {
+            "value": "{{tab.value}}",
+            "activeTab": "{{activeTab}}"
+          },
+          "children": [
+            {
+              "component": "Paper",
+              "props": { "sx": { "p": 3 } },
+              "children": [
+                {
+                  "component": "Grid",
+                  "props": { "container": true, "spacing": 2 },
+                  "children": [
+                    {
+                      "component": "Grid",
+                      "forEach": "columns",
+                      "props": {
+                        "item": true,
+                        "xs": 12,
+                        "sm": 6,
+                        "md": 4
+                      },
+                      "children": [
+                        {
+                          "component": "Typography",
+                          "props": {
+                            "variant": "caption",
+                            "color": "text.secondary",
+                            "text": "{{column.label}}"
+                          }
+                        },
+                        {
+                          "component": "Typography",
+                          "props": {
+                            "variant": "body1",
+                            "text": "{{data[column.name]}}"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Box",
+          "condition": "relationships && relationships.hasMany.length > 0",
+          "props": { "sx": { "mt": 4 } },
+          "children": [
+            {
+              "component": "Typography",
+              "props": {
+                "variant": "h6",
+                "text": "Related Records",
+                "sx": { "mb": 2 }
+              }
+            },
+            {
+              "component": "Accordion",
+              "forEach": "relationships.hasMany",
+              "children": [
+                {
+                  "component": "AccordionSummary",
+                  "props": {
+                    "expandIcon": "ExpandMore"
+                  },
+                  "children": [
+                    {
+                      "component": "Typography",
+                      "props": {
+                        "text": "{{relation.name}} ({{relation.count}})"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "component": "AccordionDetails",
+                  "children": [
+                    {
+                      "component": "DataGrid",
+                      "props": {
+                        "columns": "{{relation.columns}}",
+                        "rows": "{{relation.data}}",
+                        "size": "small"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "FormDialogTree": {
+      "component": "Dialog",
+      "props": {
+        "open": "{{open}}",
+        "onClose": "handleClose",
+        "maxWidth": "md",
+        "fullWidth": true
+      },
+      "children": [
+        {
+          "component": "DialogTitle",
+          "children": [
+            {
+              "component": "Typography",
+              "props": {
+                "variant": "h6",
+                "text": "{{title}}"
+              }
+            }
+          ]
+        },
+        {
+          "component": "DialogContent",
+          "children": [
+            {
+              "component": "Box",
+              "props": { "sx": { "pt": 2 } },
+              "children": [
+                {
+                  "component": "Grid",
+                  "props": { "container": true, "spacing": 2 },
+                  "children": [
+                    {
+                      "component": "Grid",
+                      "forEach": "formFields",
+                      "props": {
+                        "item": true,
+                        "xs": 12,
+                        "sm": "{{field.fullWidth ? 12 : 6}}"
+                      },
+                      "children": [
+                        {
+                          "component": "DynamicField",
+                          "props": {
+                            "field": "{{field}}",
+                            "value": "{{values[field.name]}}",
+                            "error": "{{errors[field.name]}}",
+                            "onChange": "handleFieldChange"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "DialogActions",
+          "children": [
+            {
+              "component": "Button",
+              "props": {
+                "text": "{{cancelLabel}}",
+                "onClick": "handleClose"
+              }
+            },
+            {
+              "component": "Button",
+              "props": {
+                "variant": "contained",
+                "text": "{{submitLabel}}",
+                "onClick": "handleSubmit",
+                "disabled": "{{loading || !isValid}}"
+              }
+            }
+          ]
+        }
+      ]
+    },
+    "DashboardStatsCards": {
+      "component": "Grid",
+      "props": { "container": true, "spacing": 3 },
+      "children": [
+        {
+          "component": "Grid",
+          "forEach": "statsCards",
+          "props": {
+            "item": true,
+            "xs": 12,
+            "sm": 6,
+            "md": 3
+          },
+          "children": [
+            {
+              "component": "Card",
+              "children": [
+                {
+                  "component": "CardContent",
+                  "children": [
+                    {
+                      "component": "Box",
+                      "props": {
+                        "sx": { "display": "flex", "alignItems": "center", "mb": 2 }
+                      },
+                      "children": [
+                        {
+                          "component": "Icon",
+                          "props": {
+                            "name": "{{card.icon}}",
+                            "color": "{{card.color}}",
+                            "sx": { "fontSize": 40, "mr": 2 }
+                          }
+                        },
+                        {
+                          "component": "Box",
+                          "children": [
+                            {
+                              "component": "Typography",
+                              "props": {
+                                "variant": "h4",
+                                "text": "{{card.value}}"
+                              }
+                            },
+                            {
+                              "component": "Typography",
+                              "props": {
+                                "variant": "body2",
+                                "color": "text.secondary",
+                                "text": "{{card.label}}"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "component": "Box",
+                      "condition": "card.change",
+                      "props": {
+                        "sx": { "display": "flex", "alignItems": "center" }
+                      },
+                      "children": [
+                        {
+                          "component": "Icon",
+                          "props": {
+                            "name": "{{card.change > 0 ? 'TrendingUp' : 'TrendingDown'}}",
+                            "color": "{{card.change > 0 ? 'success' : 'error'}}",
+                            "fontSize": "small"
+                          }
+                        },
+                        {
+                          "component": "Typography",
+                          "props": {
+                            "variant": "caption",
+                            "color": "{{card.change > 0 ? 'success.main' : 'error.main'}}",
+                            "text": "{{Math.abs(card.change)}}%"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    }
+  },
   "features": [
     {
       "id": "database-crud",

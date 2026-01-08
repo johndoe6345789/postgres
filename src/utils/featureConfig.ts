@@ -109,6 +109,79 @@ export type ComponentLayout = {
   [key: string]: any;
 };
 
+export type FormField = {
+  name: string;
+  type: 'text' | 'email' | 'number' | 'textarea' | 'select' | 'checkbox' | 'date' | 'datetime';
+  label: string;
+  placeholder?: string;
+  required?: boolean;
+  minLength?: number;
+  maxLength?: number;
+  min?: number;
+  max?: number;
+  step?: number;
+  rows?: number;
+  defaultValue?: any;
+  options?: Array<{ value: string; label: string }>;
+  validation?: string;
+  prefix?: string;
+  suffix?: string;
+};
+
+export type FormSchema = {
+  fields: FormField[];
+  submitLabel: string;
+  cancelLabel: string;
+};
+
+export type ValidationRule = {
+  pattern: string;
+  message: string;
+};
+
+export type ApiEndpoint = {
+  method: 'GET' | 'POST' | 'PUT' | 'DELETE' | 'PATCH';
+  path: string;
+  description: string;
+};
+
+export type Permissions = {
+  create?: string[];
+  read?: string[];
+  update?: string[];
+  delete?: string[];
+};
+
+export type Relationships = {
+  hasMany?: string[];
+  belongsTo?: string[];
+  hasOne?: string[];
+  belongsToMany?: string[];
+};
+
+export type UiView = {
+  component: string;
+  showActions?: boolean;
+  showSearch?: boolean;
+  showFilters?: boolean;
+  showExport?: boolean;
+  showRelated?: boolean;
+  tabs?: string[];
+  redirect?: string;
+};
+
+export type ComponentNode = {
+  component: string;
+  props?: Record<string, any>;
+  children?: ComponentNode[];
+  condition?: string;
+  forEach?: string;
+  dataSource?: string;
+  comment?: string;
+};
+
+export type ComponentTree = ComponentNode;
+
 // Type definition for the features config structure
 type FeaturesConfig = {
   translations?: Translations;
@@ -118,6 +191,13 @@ type FeaturesConfig = {
   tableFeatures?: Record<string, TableFeatures>;
   columnFeatures?: Record<string, ColumnFeatures>;
   componentLayouts?: Record<string, ComponentLayout>;
+  formSchemas?: Record<string, FormSchema>;
+  validationRules?: Record<string, ValidationRule>;
+  apiEndpoints?: Record<string, Record<string, ApiEndpoint>>;
+  permissions?: Record<string, Permissions>;
+  relationships?: Record<string, Relationships>;
+  uiViews?: Record<string, Record<string, UiView>>;
+  componentTrees?: Record<string, ComponentTree>;
   features: Feature[];
   dataTypes: DataType[];
   constraintTypes?: ConstraintType[];
@@ -207,4 +287,50 @@ export function getColumnFeatures(columnName: string): ColumnFeatures | undefine
 
 export function getComponentLayout(componentName: string): ComponentLayout | undefined {
   return config.componentLayouts?.[componentName];
+}
+
+export function getFormSchema(tableName: string): FormSchema | undefined {
+  return config.formSchemas?.[tableName];
+}
+
+export function getValidationRule(ruleName: string): ValidationRule | undefined {
+  return config.validationRules?.[ruleName];
+}
+
+export function getApiEndpoints(resourceName: string): Record<string, ApiEndpoint> | undefined {
+  return config.apiEndpoints?.[resourceName];
+}
+
+export function getApiEndpoint(resourceName: string, action: string): ApiEndpoint | undefined {
+  return config.apiEndpoints?.[resourceName]?.[action];
+}
+
+export function getPermissions(resourceName: string): Permissions | undefined {
+  return config.permissions?.[resourceName];
+}
+
+export function hasPermission(resourceName: string, action: string, userRole: string): boolean {
+  const permissions = config.permissions?.[resourceName];
+  const allowedRoles = permissions?.[action as keyof Permissions];
+  return allowedRoles?.includes(userRole) ?? false;
+}
+
+export function getRelationships(tableName: string): Relationships | undefined {
+  return config.relationships?.[tableName];
+}
+
+export function getUiViews(resourceName: string): Record<string, UiView> | undefined {
+  return config.uiViews?.[resourceName];
+}
+
+export function getUiView(resourceName: string, viewName: string): UiView | undefined {
+  return config.uiViews?.[resourceName]?.[viewName];
+}
+
+export function getComponentTree(treeName: string): ComponentTree | undefined {
+  return config.componentTrees?.[treeName];
+}
+
+export function getAllComponentTrees(): Record<string, ComponentTree> {
+  return config.componentTrees || {};
 }
