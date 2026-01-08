@@ -109,7 +109,7 @@ function interpolateValue(value: any, data: Record<string, any>): any {
 
   // Check if it's a template string
   const templateMatch = value.match(/^\{\{(.+)\}\}$/);
-  if (templateMatch) {
+  if (templateMatch && templateMatch[1]) {
     const expression = templateMatch[1].trim();
     try {
       const func = new Function(...Object.keys(data), `return ${expression}`);
