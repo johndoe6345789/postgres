@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import Image from 'next/image';
+import { SponsorSection } from '@/components/SponsorSection';
+import { sponsors } from '@/config/sponsors';
 
 type IAboutProps = {
   params: Promise<{ locale: string }>;
@@ -31,25 +32,7 @@ export default async function About(props: IAboutProps) {
     <>
       <p>{t('about_paragraph')}</p>
 
-      <div className="mt-2 text-center text-sm">
-        {`${t('translation_powered_by')} `}
-        <a
-          className="text-blue-700 hover:border-b-2 hover:border-blue-700"
-          href="https://l.crowdin.com/next-js"
-        >
-          Crowdin
-        </a>
-      </div>
-
-      <a href="https://l.crowdin.com/next-js">
-        <Image
-          className="mx-auto mt-2"
-          src="/assets/images/crowdin-dark.png"
-          alt="Crowdin Translation Management System"
-          width={128}
-          height={26}
-        />
-      </a>
+      <SponsorSection sponsors={sponsors.about} namespace="About" />
     </>
   );
 };
