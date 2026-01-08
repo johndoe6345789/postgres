@@ -38,6 +38,11 @@ export default async function proxy(
   request: NextRequest,
   event: NextFetchEvent,
 ) {
+  // Skip i18n routing for admin and API routes
+  if (request.nextUrl.pathname.startsWith('/admin') || request.nextUrl.pathname.startsWith('/api/admin')) {
+    return NextResponse.next();
+  }
+
   // Verify the request with Arcjet
   // Use `process.env` instead of Env to reduce bundle size in middleware
   if (process.env.ARCJET_KEY) {
