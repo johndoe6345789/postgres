@@ -69,7 +69,7 @@ export async function GET(request: Request) {
         ON tc.constraint_name = cc.constraint_name
       WHERE tc.table_schema = 'public'
         AND tc.table_name = ${tableName}
-        AND tc.constraint_type IN ('UNIQUE', 'CHECK')
+        AND tc.constraint_type IN ('PRIMARY KEY', 'UNIQUE', 'CHECK')
       ORDER BY tc.constraint_name
     `);
 
@@ -133,7 +133,15 @@ export async function POST(request: Request) {
 
     let alterQuery = '';
 
-    if (constraintType === 'UNIQUE') {
+    if (constraintType === 'PRIMARY KEY') {
+      if (!columnName) {
+        return NextResponse.json(
+          { error: 'Column name is required for PRIMARY KEY constraint' },
+          { status: 400 },
+        );
+      }
+      alterQuery = `ALTER TABLE "${tableName}" ADD CONSTRAINT "${constraintName}" PRIMARY KEY ("${columnName}")`;
+    } else if (constraintType === 'UNIQUE') {
       if (!columnName) {
         return NextResponse.json(
           { error: 'Column name is required for UNIQUE constraint' },
@@ -170,7 +178,7 @@ export async function POST(request: Request) {
       alterQuery = `ALTER TABLE "${tableName}" ADD CONSTRAINT "${constraintName}" CHECK (${checkExpression})`;
     } else {
       return NextResponse.json(
-        { error: 'Unsupported constraint type. Supported types: UNIQUE, CHECK' },
+        { error: 'Unsupported constraint type. Supported types: PRIMARY KEY, UNIQUE, CHECK' },
         { status: 400 },
       );
     }

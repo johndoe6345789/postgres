@@ -35,11 +35,16 @@ Tests for the Column Management API endpoints (`/api/admin/column-manage`):
 - ✅ Validates all required fields (tableName, columnName, dataType)
 - ✅ Rejects invalid table names
 - ✅ Rejects invalid column names
+- ✅ Accepts columns with NOT NULL constraint
+- ✅ Accepts columns with DEFAULT values
+- ✅ Accepts columns with both DEFAULT and NOT NULL
 
 **Modify Column Tests:**
 - ✅ Requires authentication
 - ✅ Validates required fields
 - ✅ Rejects invalid identifiers
+- ✅ Accepts setting NOT NULL constraint
+- ✅ Accepts dropping NOT NULL constraint
 
 **Drop Column Tests:**
 - ✅ Requires authentication
@@ -148,10 +153,10 @@ All tests verify that:
 |---------|-----------|----------|----------------|------------|-------------|
 | Feature Config | - | - | - | 40 | 40 |
 | Table Manager | 7 | 2 (2 skipped) | 3 | - | 12 |
-| Column Manager | 9 | 2 (2 skipped) | 3 | - | 14 |
-| Constraint Manager | 14 | 3 (3 skipped) | 4 | 4 | 25 |
+| Column Manager | 12 | 2 (2 skipped) | 3 | - | 17 |
+| Constraint Manager | 15 | 3 (3 skipped) | 4 | 5 | 27 |
 | Admin Dashboard | - | 3 | 3 | - | 6 |
-| **Total** | **30** | **10** | **16** | **44** | **100** |
+| **Total** | **34** | **10** | **16** | **45** | **105** |
 
 ## Feature: Constraint Management Tests
 
@@ -169,6 +174,7 @@ Tests for the Constraint Management API endpoints (`/api/admin/constraints`):
 - ✅ Rejects add without authentication
 - ✅ Rejects add without required fields
 - ✅ Rejects add with invalid table name
+- ✅ Rejects PRIMARY KEY constraint without column name
 - ✅ Rejects UNIQUE constraint without column name
 - ✅ Rejects CHECK constraint without expression
 - ✅ Rejects CHECK constraint with dangerous expression (SQL injection prevention)
@@ -184,7 +190,7 @@ Tests for the Constraint Management API endpoints (`/api/admin/constraints`):
 - SQL injection prevention
 - Authentication/authorization
 - Error handling for all CRUD operations
-- Support for UNIQUE and CHECK constraints
+- Support for PRIMARY KEY, UNIQUE and CHECK constraints
 
 ### End-to-End Tests (Playwright UI Tests)
 
@@ -213,6 +219,7 @@ Tests for the constraint types configuration:
 **Constraint Types Tests:**
 - ✅ Returns array of constraint types
 - ✅ Validates constraint type properties
+- ✅ Includes PRIMARY KEY constraint type with correct flags
 - ✅ Includes UNIQUE constraint type with correct flags
 - ✅ Includes CHECK constraint type with correct flags
 

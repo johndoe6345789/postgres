@@ -280,6 +280,15 @@ describe('FeatureConfig', () => {
       });
     });
 
+    it('should include PRIMARY KEY constraint type', () => {
+      const constraintTypes = getConstraintTypes();
+      const primaryKeyConstraint = constraintTypes.find(ct => ct.name === 'PRIMARY KEY');
+      
+      expect(primaryKeyConstraint).toBeDefined();
+      expect(primaryKeyConstraint?.requiresColumn).toBe(true);
+      expect(primaryKeyConstraint?.requiresExpression).toBe(false);
+    });
+
     it('should include UNIQUE constraint type', () => {
       const constraintTypes = getConstraintTypes();
       const uniqueConstraint = constraintTypes.find(ct => ct.name === 'UNIQUE');

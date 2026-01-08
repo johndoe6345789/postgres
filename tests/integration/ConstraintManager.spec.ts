@@ -58,6 +58,18 @@ test.describe('Constraint Manager', () => {
       expect([400, 401]).toContain(response.status());
     });
 
+    test('should reject PRIMARY KEY constraint without column name', async ({ page }) => {
+      const response = await page.request.post('/api/admin/constraints', {
+        data: {
+          tableName: 'test_table',
+          constraintName: 'test_pk',
+          constraintType: 'PRIMARY KEY',
+        },
+      });
+      
+      expect([400, 401]).toContain(response.status());
+    });
+
     test('should reject UNIQUE constraint without column name', async ({ page }) => {
       const response = await page.request.post('/api/admin/constraints', {
         data: {

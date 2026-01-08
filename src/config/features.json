@@ -108,6 +108,12 @@
   ],
   "constraintTypes": [
     {
+      "name": "PRIMARY KEY",
+      "description": "Unique identifier for table rows",
+      "requiresColumn": true,
+      "requiresExpression": false
+    },
+    {
       "name": "UNIQUE",
       "description": "Ensure column values are unique",
       "requiresColumn": true,
