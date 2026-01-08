@@ -1,12 +1,14 @@
-# Next.js Application with PostgreSQL
+# Next.js Application with Multi-Database Support
 
-A production-ready Next.js 16 application with integrated PostgreSQL database, built with TypeScript, Tailwind CSS, and modern development tools.
+A production-ready Next.js 16 application with database management capabilities, built with TypeScript, Tailwind CSS, and DrizzleORM for connecting to multiple database backends.
 
 ## Overview
 
 This project is a full-stack web application featuring:
 - **Next.js 16** with App Router for server-side rendering and static site generation
-- **PostgreSQL 15** database with DrizzleORM for type-safe database operations
+- **DrizzleORM** for type-safe database operations with support for PostgreSQL, MySQL, and SQLite
+- **PostgreSQL 15** included as default database in Docker container
+- **Multi-database support** - Connect to external PostgreSQL, MySQL, or SQLite servers
 - **Authentication** using Clerk with support for multiple auth providers
 - **TypeScript** for type safety across the entire stack
 - **Tailwind CSS 4** for modern, responsive styling
@@ -19,8 +21,9 @@ This project is a full-stack web application featuring:
 - 🔥 **TypeScript** for type safety
 - 💎 **Tailwind CSS 4** for styling
 - 🔒 **Clerk Authentication** with social login support
-- 📦 **DrizzleORM** with PostgreSQL database
-- 🐳 **Docker** support with all-in-one container
+- 📦 **DrizzleORM** - Support for PostgreSQL, MySQL, and SQLite
+- 🔌 **Multi-Database Support** - Connect to custom database servers
+- 🐳 **Docker** with included PostgreSQL 15 (default option)
 - 🧪 **Testing Suite** - Vitest for unit tests, Playwright for E2E
 - 🎨 **Storybook** for UI component development
 - 📏 **ESLint & Prettier** for code quality
@@ -73,7 +76,9 @@ npm run dev
 
 ### Docker Deployment
 
-Build and run the application with Docker:
+The Docker container includes PostgreSQL 15 as the default database option. You can also connect to external database servers.
+
+Build and run with included PostgreSQL:
 
 ```bash
 docker build -t postgres-app .
@@ -82,7 +87,16 @@ docker run -p 3000:3000 -p 5432:5432 \
   postgres-app
 ```
 
-The Docker container includes both PostgreSQL and the Next.js application in a single image.
+Or connect to an external database:
+
+```bash
+docker run -p 3000:3000 \
+  -e DATABASE_URL="******your-external-db:5432/mydb" \
+  -e JWT_SECRET=your_secret_here \
+  postgres-app
+```
+
+The Docker container includes both PostgreSQL and the Next.js application, but PostgreSQL is optional - you can connect to any external PostgreSQL, MySQL, or SQLite database.
 
 ## Project Structure
 
@@ -135,11 +149,35 @@ The Docker container includes both PostgreSQL and the Next.js application in a s
 
 ## Database Schema
 
+This application uses [DrizzleORM](https://orm.drizzle.team/) which supports multiple database backends:
+- **PostgreSQL** (default, included in Docker container)
+- **MySQL/MariaDB** (connect to external server)
+- **SQLite** (for local development)
+
 Database schemas are defined in `src/models/Schema.ts` using DrizzleORM. To modify the schema:
 
 1. Edit `src/models/Schema.ts`
 2. Generate migration: `npm run db:generate`
 3. Apply migration: `npm run db:migrate`
+
+### Connecting to Different Databases
+
+The included PostgreSQL in Docker is just the default option. You can connect to any database by setting the `DATABASE_URL` environment variable:
+
+**PostgreSQL:**
+```env
+DATABASE_URL=******localhost:5432/mydb
+```
+
+**MySQL:**
+```env
+DATABASE_URL=mysql://user:password@localhost:3306/mydb
+```
+
+**SQLite:**
+```env
+DATABASE_URL=file:./local.db
+```
 
 ## Authentication
 

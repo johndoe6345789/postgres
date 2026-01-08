@@ -6,10 +6,10 @@ This document outlines the planned features, improvements, and technical debt it
 
 ✅ **Completed**
 - Next.js 16 with App Router
-- PostgreSQL 15 integration
-- DrizzleORM for database operations
+- PostgreSQL 15 integration (included as default in Docker)
+- DrizzleORM for database operations (supports PostgreSQL, MySQL, SQLite)
 - Basic authentication system (Clerk integration available)
-- Docker containerization
+- Docker containerization with optional embedded PostgreSQL
 - Unit testing with Vitest
 - E2E testing with Playwright
 - Storybook for component development
@@ -34,6 +34,28 @@ This document outlines the planned features, improvements, and technical debt it
   - Implement index management UI
   - Add table migration history viewer
   - Create database backup/restore UI
+
+- [ ] **Multi-Database Server Support** 🔌
+  - **Connection Management**
+    - Add custom database servers to connection list
+    - Server dropdown selector in UI
+    - Save connection configurations securely
+    - Quick switch between database servers
+    - Connection status indicators (connected/disconnected)
+    - Test connection before saving
+  - **Multi-Database Backend Support**
+    - PostgreSQL support (current)
+    - MySQL/MariaDB support via Drizzle ORM
+    - SQLite support via Drizzle ORM
+    - Database type auto-detection
+    - Driver-specific features and optimizations
+  - **Connection Details**
+    - Host, port, database name configuration
+    - Username/password authentication
+    - SSL/TLS connection options
+    - Connection pooling settings
+    - Custom connection string support
+    - Import/export connection profiles
 
 - [ ] **Simple Authentication UI**
   - Build clean login screen with username/password
@@ -89,6 +111,8 @@ This document outlines the planned features, improvements, and technical debt it
   - Implement security headers
   - Add dependency vulnerability scanning in CI
   - Regular security audits
+  - Encrypt stored database credentials
+  - Secure connection string storage with environment variables
 
 - [ ] **CI/CD Pipeline**
   - Add automated deployment workflows
