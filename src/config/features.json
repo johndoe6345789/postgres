@@ -1,4 +1,330 @@
 {
+  "translations": {
+    "en": {
+      "features": {
+        "database-crud": {
+          "name": "Database CRUD Operations",
+          "description": "Create, read, update, and delete database records"
+        },
+        "table-management": {
+          "name": "Table Management",
+          "description": "Create and manage database tables"
+        },
+        "column-management": {
+          "name": "Column Management",
+          "description": "Add, modify, and delete table columns"
+        },
+        "sql-query": {
+          "name": "SQL Query Interface",
+          "description": "Execute custom SQL queries"
+        },
+        "constraint-management": {
+          "name": "Constraint Management",
+          "description": "Add and manage table constraints (PRIMARY KEY, UNIQUE, CHECK)"
+        },
+        "query-builder": {
+          "name": "Query Builder",
+          "description": "Visual query builder for creating SELECT queries"
+        },
+        "index-management": {
+          "name": "Index Management",
+          "description": "Create and manage database indexes for performance optimization"
+        }
+      },
+      "actions": {
+        "create": "Create",
+        "read": "Read",
+        "update": "Update",
+        "delete": "Delete",
+        "add": "Add",
+        "modify": "Modify",
+        "execute": "Execute",
+        "list": "List",
+        "build": "Build"
+      },
+      "tables": {
+        "users": {
+          "name": "Users",
+          "description": "User accounts and profiles"
+        },
+        "products": {
+          "name": "Products",
+          "description": "Product catalog"
+        }
+      },
+      "columns": {
+        "id": "ID",
+        "name": "Name",
+        "email": "Email",
+        "created_at": "Created At",
+        "updated_at": "Updated At"
+      }
+    },
+    "fr": {
+      "features": {
+        "database-crud": {
+          "name": "Opérations CRUD de base de données",
+          "description": "Créer, lire, mettre à jour et supprimer des enregistrements de base de données"
+        },
+        "table-management": {
+          "name": "Gestion des tables",
+          "description": "Créer et gérer des tables de base de données"
+        },
+        "column-management": {
+          "name": "Gestion des colonnes",
+          "description": "Ajouter, modifier et supprimer des colonnes de table"
+        },
+        "sql-query": {
+          "name": "Interface de requête SQL",
+          "description": "Exécuter des requêtes SQL personnalisées"
+        },
+        "constraint-management": {
+          "name": "Gestion des contraintes",
+          "description": "Ajouter et gérer les contraintes de table (PRIMARY KEY, UNIQUE, CHECK)"
+        },
+        "query-builder": {
+          "name": "Constructeur de requêtes",
+          "description": "Constructeur de requêtes visuel pour créer des requêtes SELECT"
+        },
+        "index-management": {
+          "name": "Gestion des index",
+          "description": "Créer et gérer des index de base de données pour l'optimisation des performances"
+        }
+      },
+      "actions": {
+        "create": "Créer",
+        "read": "Lire",
+        "update": "Mettre à jour",
+        "delete": "Supprimer",
+        "add": "Ajouter",
+        "modify": "Modifier",
+        "execute": "Exécuter",
+        "list": "Lister",
+        "build": "Construire"
+      },
+      "tables": {
+        "users": {
+          "name": "Utilisateurs",
+          "description": "Comptes et profils utilisateur"
+        },
+        "products": {
+          "name": "Produits",
+          "description": "Catalogue de produits"
+        }
+      },
+      "columns": {
+        "id": "ID",
+        "name": "Nom",
+        "email": "E-mail",
+        "created_at": "Créé le",
+        "updated_at": "Mis à jour le"
+      }
+    }
+  },
+  "actions": {
+    "database-crud": {
+      "create": "createRecord",
+      "read": "readRecords",
+      "update": "updateRecord",
+      "delete": "deleteRecord"
+    },
+    "table-management": {
+      "create": "createTable",
+      "delete": "dropTable"
+    },
+    "column-management": {
+      "add": "addColumn",
+      "modify": "modifyColumn",
+      "delete": "dropColumn"
+    },
+    "sql-query": {
+      "execute": "executeQuery"
+    },
+    "constraint-management": {
+      "list": "listConstraints",
+      "add": "addConstraint",
+      "delete": "deleteConstraint"
+    },
+    "query-builder": {
+      "build": "buildQuery",
+      "execute": "executeBuiltQuery"
+    },
+    "index-management": {
+      "list": "listIndexes",
+      "create": "createIndex",
+      "delete": "deleteIndex"
+    }
+  },
+  "tableLayouts": {
+    "users": {
+      "columns": ["id", "name", "email", "created_at", "updated_at"],
+      "columnWidths": {
+        "id": 80,
+        "name": 200,
+        "email": 250,
+        "created_at": 180,
+        "updated_at": 180
+      },
+      "defaultSort": {
+        "column": "created_at",
+        "direction": "desc"
+      },
+      "hiddenColumns": [],
+      "frozenColumns": ["id"]
+    },
+    "products": {
+      "columns": ["id", "name", "price", "stock", "created_at"],
+      "columnWidths": {
+        "id": 80,
+        "name": 250,
+        "price": 120,
+        "stock": 100,
+        "created_at": 180
+      },
+      "defaultSort": {
+        "column": "name",
+        "direction": "asc"
+      },
+      "hiddenColumns": [],
+      "frozenColumns": ["id"]
+    }
+  },
+  "columnLayouts": {
+    "id": {
+      "align": "left",
+      "format": "number",
+      "editable": false
+    },
+    "name": {
+      "align": "left",
+      "format": "text",
+      "editable": true
+    },
+    "email": {
+      "align": "left",
+      "format": "email",
+      "editable": true
+    },
+    "created_at": {
+      "align": "left",
+      "format": "datetime",
+      "editable": false
+    },
+    "updated_at": {
+      "align": "left",
+      "format": "datetime",
+      "editable": false
+    },
+    "price": {
+      "align": "right",
+      "format": "currency",
+      "editable": true
+    },
+    "stock": {
+      "align": "right",
+      "format": "number",
+      "editable": true
+    }
+  },
+  "tableFeatures": {
+    "users": {
+      "enablePagination": true,
+      "enableSearch": true,
+      "enableExport": true,
+      "enableFilters": true,
+      "rowsPerPage": 25,
+      "allowedActions": ["create", "read", "update", "delete"]
+    },
+    "products": {
+      "enablePagination": true,
+      "enableSearch": true,
+      "enableExport": true,
+      "enableFilters": true,
+      "rowsPerPage": 50,
+      "allowedActions": ["create", "read", "update", "delete"]
+    }
+  },
+  "columnFeatures": {
+    "id": {
+      "searchable": true,
+      "sortable": true,
+      "filterable": true,
+      "required": true
+    },
+    "name": {
+      "searchable": true,
+      "sortable": true,
+      "filterable": true,
+      "required": true
+    },
+    "email": {
+      "searchable": true,
+      "sortable": true,
+      "filterable": true,
+      "required": true,
+      "validation": "email"
+    },
+    "created_at": {
+      "searchable": false,
+      "sortable": true,
+      "filterable": true,
+      "required": false
+    },
+    "updated_at": {
+      "searchable": false,
+      "sortable": true,
+      "filterable": true,
+      "required": false
+    },
+    "price": {
+      "searchable": true,
+      "sortable": true,
+      "filterable": true,
+      "required": true,
+      "validation": "number"
+    },
+    "stock": {
+      "searchable": true,
+      "sortable": true,
+      "filterable": true,
+      "required": true,
+      "validation": "number"
+    }
+  },
+  "componentLayouts": {
+    "DataGrid": {
+      "headerHeight": 56,
+      "rowHeight": 48,
+      "density": "standard",
+      "showBorders": true,
+      "alternateRowColors": false,
+      "hoverHighlight": true
+    },
+    "FormDialog": {
+      "width": "md",
+      "fullScreen": false,
+      "showCloseButton": true,
+      "disableBackdropClick": false
+    },
+    "ConfirmDialog": {
+      "width": "sm",
+      "showCloseButton": true,
+      "confirmButtonColor": "primary",
+      "cancelButtonColor": "default"
+    },
+    "Sidebar": {
+      "width": 240,
+      "collapsible": true,
+      "defaultOpen": true,
+      "variant": "permanent"
+    },
+    "Toolbar": {
+      "height": 64,
+      "showSearch": true,
+      "showUserMenu": true,
+      "elevation": 2
+    }
+  },
   "features": [
     {
       "id": "database-crud",

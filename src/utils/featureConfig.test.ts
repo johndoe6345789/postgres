@@ -6,6 +6,17 @@ import {
   getFeatureById,
   getFeatures,
   getNavItems,
+  getTranslations,
+  getFeatureTranslation,
+  getActionTranslation,
+  getTableTranslation,
+  getColumnTranslation,
+  getActionFunctionName,
+  getTableLayout,
+  getColumnLayout,
+  getTableFeatures,
+  getColumnFeatures,
+  getComponentLayout,
 } from './featureConfig';
 
 describe('FeatureConfig', () => {
@@ -383,6 +394,288 @@ describe('FeatureConfig', () => {
       features.forEach(feature => {
         expect(typeof feature.ui.showInNav).toBe('boolean');
       });
+    });
+  });
+
+  describe('getTranslations', () => {
+    it('should return English translations by default', () => {
+      const translations = getTranslations();
+      
+      expect(translations).toBeDefined();
+      expect(translations).toHaveProperty('features');
+      expect(translations).toHaveProperty('actions');
+      expect(translations).toHaveProperty('tables');
+      expect(translations).toHaveProperty('columns');
+    });
+
+    it('should return French translations when locale is fr', () => {
+      const translations = getTranslations('fr');
+      
+      expect(translations).toBeDefined();
+      expect(translations).toHaveProperty('features');
+      expect(translations).toHaveProperty('actions');
+    });
+  });
+
+  describe('getFeatureTranslation', () => {
+    it('should return English translation for database-crud', () => {
+      const translation = getFeatureTranslation('database-crud', 'en');
+      
+      expect(translation).toBeDefined();
+      expect(translation?.name).toBe('Database CRUD Operations');
+      expect(translation?.description).toContain('Create, read, update, and delete');
+    });
+
+    it('should return French translation for database-crud', () => {
+      const translation = getFeatureTranslation('database-crud', 'fr');
+      
+      expect(translation).toBeDefined();
+      expect(translation?.name).toBe('Opérations CRUD de base de données');
+    });
+
+    it('should return undefined for non-existent feature', () => {
+      const translation = getFeatureTranslation('non-existent', 'en');
+      
+      expect(translation).toBeUndefined();
+    });
+  });
+
+  describe('getActionTranslation', () => {
+    it('should return English translation for create action', () => {
+      const translation = getActionTranslation('create', 'en');
+      
+      expect(translation).toBe('Create');
+    });
+
+    it('should return French translation for create action', () => {
+      const translation = getActionTranslation('create', 'fr');
+      
+      expect(translation).toBe('Créer');
+    });
+
+    it('should return English translation for delete action', () => {
+      const translation = getActionTranslation('delete', 'en');
+      
+      expect(translation).toBe('Delete');
+    });
+
+    it('should return French translation for delete action', () => {
+      const translation = getActionTranslation('delete', 'fr');
+      
+      expect(translation).toBe('Supprimer');
+    });
+  });
+
+  describe('getTableTranslation', () => {
+    it('should return English translation for users table', () => {
+      const translation = getTableTranslation('users', 'en');
+      
+      expect(translation).toBeDefined();
+      expect(translation?.name).toBe('Users');
+      expect(translation?.description).toBe('User accounts and profiles');
+    });
+
+    it('should return French translation for users table', () => {
+      const translation = getTableTranslation('users', 'fr');
+      
+      expect(translation).toBeDefined();
+      expect(translation?.name).toBe('Utilisateurs');
+    });
+  });
+
+  describe('getColumnTranslation', () => {
+    it('should return English translation for name column', () => {
+      const translation = getColumnTranslation('name', 'en');
+      
+      expect(translation).toBe('Name');
+    });
+
+    it('should return French translation for name column', () => {
+      const translation = getColumnTranslation('name', 'fr');
+      
+      expect(translation).toBe('Nom');
+    });
+
+    it('should return English translation for email column', () => {
+      const translation = getColumnTranslation('email', 'en');
+      
+      expect(translation).toBe('Email');
+    });
+  });
+
+  describe('getActionFunctionName', () => {
+    it('should return function name for database-crud create action', () => {
+      const functionName = getActionFunctionName('database-crud', 'create');
+      
+      expect(functionName).toBe('createRecord');
+    });
+
+    it('should return function name for table-management create action', () => {
+      const functionName = getActionFunctionName('table-management', 'create');
+      
+      expect(functionName).toBe('createTable');
+    });
+
+    it('should return function name for column-management add action', () => {
+      const functionName = getActionFunctionName('column-management', 'add');
+      
+      expect(functionName).toBe('addColumn');
+    });
+
+    it('should return undefined for non-existent feature', () => {
+      const functionName = getActionFunctionName('non-existent', 'create');
+      
+      expect(functionName).toBeUndefined();
+    });
+  });
+
+  describe('getTableLayout', () => {
+    it('should return layout configuration for users table', () => {
+      const layout = getTableLayout('users');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.columns).toContain('id');
+      expect(layout?.columns).toContain('name');
+      expect(layout?.columns).toContain('email');
+      expect(layout?.columnWidths).toHaveProperty('id');
+      expect(layout?.defaultSort).toHaveProperty('column');
+      expect(layout?.defaultSort).toHaveProperty('direction');
+    });
+
+    it('should return layout configuration for products table', () => {
+      const layout = getTableLayout('products');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.columns).toContain('id');
+      expect(layout?.columns).toContain('name');
+      expect(layout?.defaultSort.column).toBe('name');
+      expect(layout?.defaultSort.direction).toBe('asc');
+    });
+
+    it('should return undefined for non-existent table', () => {
+      const layout = getTableLayout('non-existent');
+      
+      expect(layout).toBeUndefined();
+    });
+  });
+
+  describe('getColumnLayout', () => {
+    it('should return layout configuration for id column', () => {
+      const layout = getColumnLayout('id');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.align).toBe('left');
+      expect(layout?.format).toBe('number');
+      expect(layout?.editable).toBe(false);
+    });
+
+    it('should return layout configuration for email column', () => {
+      const layout = getColumnLayout('email');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.align).toBe('left');
+      expect(layout?.format).toBe('email');
+      expect(layout?.editable).toBe(true);
+    });
+
+    it('should return layout configuration for price column', () => {
+      const layout = getColumnLayout('price');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.align).toBe('right');
+      expect(layout?.format).toBe('currency');
+    });
+  });
+
+  describe('getTableFeatures', () => {
+    it('should return features configuration for users table', () => {
+      const features = getTableFeatures('users');
+      
+      expect(features).toBeDefined();
+      expect(features?.enablePagination).toBe(true);
+      expect(features?.enableSearch).toBe(true);
+      expect(features?.enableExport).toBe(true);
+      expect(features?.enableFilters).toBe(true);
+      expect(features?.rowsPerPage).toBe(25);
+      expect(features?.allowedActions).toContain('create');
+      expect(features?.allowedActions).toContain('read');
+    });
+
+    it('should return features configuration for products table', () => {
+      const features = getTableFeatures('products');
+      
+      expect(features).toBeDefined();
+      expect(features?.rowsPerPage).toBe(50);
+    });
+
+    it('should return undefined for non-existent table', () => {
+      const features = getTableFeatures('non-existent');
+      
+      expect(features).toBeUndefined();
+    });
+  });
+
+  describe('getColumnFeatures', () => {
+    it('should return features configuration for id column', () => {
+      const features = getColumnFeatures('id');
+      
+      expect(features).toBeDefined();
+      expect(features?.searchable).toBe(true);
+      expect(features?.sortable).toBe(true);
+      expect(features?.filterable).toBe(true);
+      expect(features?.required).toBe(true);
+    });
+
+    it('should return features configuration for email column with validation', () => {
+      const features = getColumnFeatures('email');
+      
+      expect(features).toBeDefined();
+      expect(features?.validation).toBe('email');
+      expect(features?.required).toBe(true);
+    });
+
+    it('should return features configuration for created_at column', () => {
+      const features = getColumnFeatures('created_at');
+      
+      expect(features).toBeDefined();
+      expect(features?.searchable).toBe(false);
+      expect(features?.sortable).toBe(true);
+    });
+  });
+
+  describe('getComponentLayout', () => {
+    it('should return layout configuration for DataGrid component', () => {
+      const layout = getComponentLayout('DataGrid');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.headerHeight).toBe(56);
+      expect(layout?.rowHeight).toBe(48);
+      expect(layout?.density).toBe('standard');
+      expect(layout?.showBorders).toBe(true);
+    });
+
+    it('should return layout configuration for FormDialog component', () => {
+      const layout = getComponentLayout('FormDialog');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.width).toBe('md');
+      expect(layout?.fullScreen).toBe(false);
+      expect(layout?.showCloseButton).toBe(true);
+    });
+
+    it('should return layout configuration for Sidebar component', () => {
+      const layout = getComponentLayout('Sidebar');
+      
+      expect(layout).toBeDefined();
+      expect(layout?.width).toBe(240);
+      expect(layout?.collapsible).toBe(true);
+      expect(layout?.defaultOpen).toBe(true);
+    });
+
+    it('should return undefined for non-existent component', () => {
+      const layout = getComponentLayout('NonExistentComponent');
+      
+      expect(layout).toBeUndefined();
     });
   });
 });
