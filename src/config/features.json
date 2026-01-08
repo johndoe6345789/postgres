@@ -1,0 +1,164 @@
+{
+  "features": [
+    {
+      "id": "database-crud",
+      "name": "Database CRUD Operations",
+      "description": "Create, read, update, and delete database records",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/record",
+          "methods": ["POST", "PUT", "DELETE"],
+          "description": "Manage database records"
+        },
+        {
+          "path": "/api/admin/table-data",
+          "methods": ["POST"],
+          "description": "Fetch table data"
+        },
+        {
+          "path": "/api/admin/table-schema",
+          "methods": ["POST"],
+          "description": "Fetch table schema information"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "Storage",
+        "actions": ["create", "read", "update", "delete"]
+      }
+    },
+    {
+      "id": "table-management",
+      "name": "Table Management",
+      "description": "Create and manage database tables",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/table-manage",
+          "methods": ["POST", "DELETE"],
+          "description": "Create and drop tables"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "TableChart",
+        "actions": ["create", "delete"]
+      }
+    },
+    {
+      "id": "column-management",
+      "name": "Column Management",
+      "description": "Add, modify, and delete table columns",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/column-manage",
+          "methods": ["POST", "PUT", "DELETE"],
+          "description": "Manage table columns"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "ViewColumn",
+        "actions": ["add", "modify", "delete"]
+      }
+    },
+    {
+      "id": "sql-query",
+      "name": "SQL Query Interface",
+      "description": "Execute custom SQL queries",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/query",
+          "methods": ["POST"],
+          "description": "Execute SQL queries"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "Code",
+        "actions": ["execute"]
+      }
+    }
+  ],
+  "dataTypes": [
+    {
+      "name": "INTEGER",
+      "category": "numeric",
+      "requiresLength": false
+    },
+    {
+      "name": "BIGINT",
+      "category": "numeric",
+      "requiresLength": false
+    },
+    {
+      "name": "SERIAL",
+      "category": "numeric",
+      "requiresLength": false,
+      "autoIncrement": true
+    },
+    {
+      "name": "VARCHAR",
+      "category": "text",
+      "requiresLength": true,
+      "defaultLength": 255
+    },
+    {
+      "name": "TEXT",
+      "category": "text",
+      "requiresLength": false
+    },
+    {
+      "name": "BOOLEAN",
+      "category": "boolean",
+      "requiresLength": false
+    },
+    {
+      "name": "TIMESTAMP",
+      "category": "datetime",
+      "requiresLength": false
+    },
+    {
+      "name": "DATE",
+      "category": "datetime",
+      "requiresLength": false
+    },
+    {
+      "name": "JSON",
+      "category": "json",
+      "requiresLength": false
+    },
+    {
+      "name": "JSONB",
+      "category": "json",
+      "requiresLength": false
+    }
+  ],
+  "navItems": [
+    {
+      "id": "tables",
+      "label": "Tables",
+      "icon": "Storage",
+      "featureId": "database-crud"
+    },
+    {
+      "id": "query",
+      "label": "SQL Query",
+      "icon": "Code",
+      "featureId": "sql-query"
+    },
+    {
+      "id": "table-manager",
+      "label": "Table Manager",
+      "icon": "TableChart",
+      "featureId": "table-management"
+    }
+  ]
+}
