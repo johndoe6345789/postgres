@@ -54,6 +54,7 @@ This project is a full-stack web application featuring:
 - 🛠️ **Admin Panel** - Manage tables, columns, and data through a beautiful UI
 - 📊 **Table Manager** - Create and drop tables with visual column definition
 - 🔧 **Column Manager** - Add, modify, and drop columns from existing tables
+- 🔒 **Constraint Manager** - Add and manage UNIQUE and CHECK constraints (API ready, UI in progress)
 - 📊 **SQL Query Interface** - Execute custom queries with safety validation
 - 🔒 **JWT Authentication** with secure session management
 - 📦 **DrizzleORM** - Support for PostgreSQL, MySQL, and SQLite
@@ -73,6 +74,7 @@ This is a **PostgreSQL database administration panel** that provides:
 - 📊 **Database viewing** - Browse tables, view data, and explore schema
 - 🛠️ **Table management** - Create and drop tables through intuitive UI
 - 🔧 **Column management** - Add, modify, and drop columns with type selection
+- 🔐 **Constraint management** - Add UNIQUE and CHECK constraints for data validation
 - 🔍 **SQL query interface** - Execute SELECT queries safely with result display
 - 🐳 **All-in-one Docker image** - PostgreSQL 15 and admin UI in one container
 - ⚡ **Production-ready** - Deploy to Caprover, Docker, or any cloud platform
@@ -765,13 +767,16 @@ See [ROADMAP.md](ROADMAP.md) for planned features and improvements.
 - ✅ Table Manager - Create and drop tables with visual column builder
 - ✅ Column Manager - Add, modify, and drop columns from existing tables
 - ✅ Schema management interface for table and column operations
+- 🔄 Constraint Manager - Add and manage UNIQUE and CHECK constraints (API complete, UI in progress)
 
 **Upcoming features:**
+- Complete constraint management UI
 - Visual database designer
 - Multi-database server connections
 - Advanced query builder
 - Export data (CSV, JSON, SQL)
 - Foreign key relationship management
+- Index management
 - User management with roles
 
 ## Contributing

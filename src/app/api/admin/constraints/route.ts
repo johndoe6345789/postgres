@@ -5,7 +5,7 @@ import { getSession } from '@/utils/session';
 
 // Validate identifier format (prevent SQL injection)
 function isValidIdentifier(name: string): boolean {
-  return /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(name);
+  return /^[a-z_]\w*$/i.test(name);
 }
 
 // Validate table exists

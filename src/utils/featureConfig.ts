@@ -57,7 +57,7 @@ export function getConstraintTypes(): ConstraintType[] {
 }
 
 export function getNavItems(): NavItem[] {
-  return featuresConfig.navItems.filter(item => {
+  return featuresConfig.navItems.filter((item) => {
     const feature = getFeatureById(item.featureId);
     return feature && feature.enabled;
   });
