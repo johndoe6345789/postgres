@@ -3,16 +3,12 @@ import { cookies } from 'next/headers';
 
 const SESSION_COOKIE_NAME = 'admin-session';
 
-// Get JWT secret and throw error if not provided in production
+// Get JWT secret and throw error if not provided
 function getJwtSecret(): Uint8Array {
   const secret = process.env.JWT_SECRET;
 
   if (!secret) {
-    if (process.env.NODE_ENV === 'production') {
-      throw new Error('JWT_SECRET environment variable is required in production');
-    }
-    console.warn('JWT_SECRET not set, using development default');
-    return new TextEncoder().encode('development-secret-change-in-production');
+    throw new Error('JWT_SECRET environment variable is required');
   }
 
   return new TextEncoder().encode(secret);

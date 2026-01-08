@@ -93,19 +93,18 @@ export default function AdminDashboard() {
     setQueryResult(null);
 
     try {
-      // Use parameterized query through the query API to prevent SQL injection
-      const response = await fetch('/api/admin/query', {
+      // Use dedicated API with table name validation
+      const response = await fetch('/api/admin/table-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({
-          query: `SELECT * FROM "${tableName}" LIMIT 100`,
-        }),
+        body: JSON.stringify({ tableName }),
       });
 
       if (!response.ok) {
-        throw new Error('Query failed');
+        const data = await response.json();
+        throw new Error(data.error || 'Query failed');
       }
 
       const data = await response.json();
