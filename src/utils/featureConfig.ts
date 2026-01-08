@@ -33,27 +33,48 @@ export type NavItem = {
   featureId: string;
 };
 
+export type ConstraintType = {
+  name: string;
+  description: string;
+  requiresColumn: boolean;
+  requiresExpression: boolean;
+};
+
+// Type definition for the features config structure
+type FeaturesConfig = {
+  features: Feature[];
+  dataTypes: DataType[];
+  constraintTypes?: ConstraintType[];
+  navItems: NavItem[];
+};
+
+const config = featuresConfig as FeaturesConfig;
+
 export function getFeatures(): Feature[] {
-  return featuresConfig.features.filter(f => f.enabled);
+  return config.features.filter(f => f.enabled);
 }
 
 export function getFeatureById(id: string): Feature | undefined {
-  return featuresConfig.features.find(f => f.id === id && f.enabled);
+  return config.features.find(f => f.id === id && f.enabled);
 }
 
 export function getDataTypes(): DataType[] {
-  return featuresConfig.dataTypes;
+  return config.dataTypes;
+}
+
+export function getConstraintTypes(): ConstraintType[] {
+  return config.constraintTypes || [];
 }
 
 export function getNavItems(): NavItem[] {
-  return featuresConfig.navItems.filter(item => {
+  return config.navItems.filter((item) => {
     const feature = getFeatureById(item.featureId);
     return feature && feature.enabled;
   });
 }
 
 export function getEnabledFeaturesByPriority(priority: string): Feature[] {
-  return featuresConfig.features.filter(
+  return config.features.filter(
     f => f.enabled && f.priority === priority,
   );
 }

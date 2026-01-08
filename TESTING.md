@@ -144,12 +144,58 @@ All tests verify that:
 
 ## Test Coverage Summary
 
-| Feature | API Tests | UI Tests | Security Tests | Total Tests |
-|---------|-----------|----------|----------------|-------------|
-| Table Manager | 7 | 2 (2 skipped) | 3 | 12 |
-| Column Manager | 9 | 2 (2 skipped) | 3 | 14 |
-| Admin Dashboard | - | 3 | 3 | 6 |
-| **Total** | **16** | **7** | **9** | **32** |
+| Feature | API Tests | UI Tests | Security Tests | Unit Tests | Total Tests |
+|---------|-----------|----------|----------------|------------|-------------|
+| Feature Config | - | - | - | 40 | 40 |
+| Table Manager | 7 | 2 (2 skipped) | 3 | - | 12 |
+| Column Manager | 9 | 2 (2 skipped) | 3 | - | 14 |
+| Constraint Manager | 14 | 0 (UI pending) | 3 | 4 | 21 |
+| Admin Dashboard | - | 3 | 3 | - | 6 |
+| **Total** | **30** | **7** | **12** | **44** | **93** |
+
+## Feature: Constraint Management Tests
+
+### Integration Tests (Playwright API Tests)
+
+#### 1. `tests/integration/ConstraintManager.spec.ts`
+Tests for the Constraint Management API endpoints (`/api/admin/constraints`):
+
+**List Constraints Tests:**
+- ✅ Rejects list without authentication
+- ✅ Rejects list without table name
+- ✅ Rejects list with invalid table name
+
+**Add Constraint Tests:**
+- ✅ Rejects add without authentication
+- ✅ Rejects add without required fields
+- ✅ Rejects add with invalid table name
+- ✅ Rejects UNIQUE constraint without column name
+- ✅ Rejects CHECK constraint without expression
+- ✅ Rejects CHECK constraint with dangerous expression (SQL injection prevention)
+- ✅ Rejects unsupported constraint types
+
+**Drop Constraint Tests:**
+- ✅ Rejects drop without authentication
+- ✅ Rejects drop without required fields
+- ✅ Rejects drop with invalid identifiers
+
+**Test Coverage:**
+- Input validation
+- SQL injection prevention
+- Authentication/authorization
+- Error handling for all CRUD operations
+- Support for UNIQUE and CHECK constraints
+
+### Unit Tests
+
+#### 2. `src/utils/featureConfig.test.ts`
+Tests for the constraint types configuration:
+
+**Constraint Types Tests:**
+- ✅ Returns array of constraint types
+- ✅ Validates constraint type properties
+- ✅ Includes UNIQUE constraint type with correct flags
+- ✅ Includes CHECK constraint type with correct flags
 
 ## Future Test Improvements
 

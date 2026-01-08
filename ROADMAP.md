@@ -60,7 +60,14 @@ See `src/config/features.json` for the complete feature configuration.
   - [x] ✅ Create schema management interface
   - [x] ✅ Implement table creation/editing UI (API ready, UI implemented)
   - [x] ✅ Add column type management UI (API ready, UI implemented)
-  - [ ] Add data validation and constraints management
+  - [ ] Add data validation and constraints management 🏗️ **IN PROGRESS**
+    - [x] ✅ Implement constraints API (UNIQUE, CHECK constraints)
+    - [x] ✅ Add constraint listing endpoint
+    - [x] ✅ Add constraint creation/deletion endpoints
+    - [ ] Build constraints management UI
+    - [ ] Add PRIMARY KEY constraint support
+    - [ ] Add DEFAULT value management
+    - [ ] Add NOT NULL constraint management
   - [ ] Build query builder interface
   - [ ] Add foreign key relationship management
   - [ ] Implement index management UI

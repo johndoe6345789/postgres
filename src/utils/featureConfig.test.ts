@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest';
 import {
+  getConstraintTypes,
   getDataTypes,
   getEnabledFeaturesByPriority,
   getFeatureById,
@@ -254,6 +255,47 @@ describe('FeatureConfig', () => {
       expect(Array.isArray(lowPriorityFeatures)).toBe(true);
       // Expecting 0 since current config has all high priority
       expect(lowPriorityFeatures.length).toBe(0);
+    });
+  });
+
+  describe('getConstraintTypes', () => {
+    it('should return array of constraint types', () => {
+      const constraintTypes = getConstraintTypes();
+      
+      expect(Array.isArray(constraintTypes)).toBe(true);
+    });
+
+    it('should return constraint types with required properties', () => {
+      const constraintTypes = getConstraintTypes();
+      
+      constraintTypes.forEach(constraintType => {
+        expect(constraintType).toHaveProperty('name');
+        expect(constraintType).toHaveProperty('description');
+        expect(constraintType).toHaveProperty('requiresColumn');
+        expect(constraintType).toHaveProperty('requiresExpression');
+        expect(typeof constraintType.name).toBe('string');
+        expect(typeof constraintType.description).toBe('string');
+        expect(typeof constraintType.requiresColumn).toBe('boolean');
+        expect(typeof constraintType.requiresExpression).toBe('boolean');
+      });
+    });
+
+    it('should include UNIQUE constraint type', () => {
+      const constraintTypes = getConstraintTypes();
+      const uniqueConstraint = constraintTypes.find(ct => ct.name === 'UNIQUE');
+      
+      expect(uniqueConstraint).toBeDefined();
+      expect(uniqueConstraint?.requiresColumn).toBe(true);
+      expect(uniqueConstraint?.requiresExpression).toBe(false);
+    });
+
+    it('should include CHECK constraint type', () => {
+      const constraintTypes = getConstraintTypes();
+      const checkConstraint = constraintTypes.find(ct => ct.name === 'CHECK');
+      
+      expect(checkConstraint).toBeDefined();
+      expect(checkConstraint?.requiresColumn).toBe(false);
+      expect(checkConstraint?.requiresExpression).toBe(true);
     });
   });
 
