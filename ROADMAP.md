@@ -23,16 +23,30 @@ This document outlines the planned features, improvements, and technical debt it
 
 ### High Priority
 
+- [ ] **Database CRUD Operations**
+  - Create schema management interface
+  - Implement table creation/editing UI
+  - Add column type management (add, modify, delete columns)
+  - Implement record CRUD operations (Create, Read, Update, Delete)
+  - Add data validation and constraints management
+  - Build query builder interface
+  - Add foreign key relationship management
+  - Implement index management UI
+  - Add table migration history viewer
+  - Create database backup/restore UI
+
 - [ ] **Improve Docker Build**
-  - Fix PostgreSQL database initialization errors
+  - ✅ Fixed PostgreSQL database initialization errors
   - Optimize container image size
   - Add health checks for PostgreSQL and Next.js
   - Document Docker environment variables
+  - Add multi-stage builds for smaller images
 
 - [ ] **Expand Test Coverage**
   - Add integration tests for database operations
   - Add E2E tests for authentication flows
   - Add API route tests
+  - Add CRUD operation tests
   - Increase unit test coverage to 80%+
   - Add visual regression tests
 
@@ -99,11 +113,45 @@ This document outlines the planned features, improvements, and technical debt it
   - API key management
 
 - [ ] **Data Management**
-  - Data import/export functionality
-  - Backup and restore tools
-  - Data validation improvements
-  - Soft delete functionality
-  - Data archiving
+  - **Schema Management**
+    - Create/rename/delete database schemas
+    - Schema permissions management
+    - Schema cloning functionality
+  - **Table Operations**
+    - Visual table designer
+    - Bulk table operations
+    - Table cloning/duplication
+    - Table truncate with safety checks
+    - Table statistics and metadata viewer
+  - **Column Management**
+    - Add/modify/delete columns with validation
+    - Change column types with data migration
+    - Set default values and constraints
+    - Nullable/Not Nullable toggles
+    - Auto-increment/sequence management
+  - **Relationships & Constraints**
+    - Primary key management
+    - Foreign key creation and visualization
+    - Unique constraints
+    - Check constraints
+    - Cascade delete/update options
+  - **Data Operations**
+    - Bulk insert functionality
+    - CSV/JSON import
+    - Data export (CSV, JSON, SQL)
+    - Bulk update operations
+    - Bulk delete with filters
+    - Data validation improvements
+    - Soft delete functionality
+    - Data archiving
+  - **Advanced Features**
+    - SQL query editor with syntax highlighting
+    - Saved queries library
+    - Query execution history
+    - Query performance analysis
+    - Database triggers management
+    - Stored procedures interface
+    - Views creation and management
 
 ### Infrastructure
 
@@ -120,23 +168,60 @@ This document outlines the planned features, improvements, and technical debt it
   - Database performance monitoring
   - Automated backup strategy
   - Migration rollback procedures
+  - **Schema Version Control**
+    - Track schema changes over time
+    - Schema diff tool
+    - Rollback capabilities for migrations
+    - Branching for schema development
+  - **Database Documentation**
+    - Auto-generate schema documentation
+    - ERD (Entity Relationship Diagram) generator
+    - Table relationships visualization
+    - Column descriptions and metadata
 
 ## Long Term (6-12 Months)
 
 ### Advanced Features
+
+- [ ] **Database Administration Tools**
+  - **Visual Database Builder**
+    - Drag-and-drop table designer
+    - Visual foreign key relationship editor
+    - Interactive ERD with zoom and pan
+    - Schema templates library
+  - **Advanced CRUD Features**
+    - Inline editing for table data
+    - Spreadsheet-like data grid
+    - Advanced filtering and sorting
+    - Full-text search across tables
+    - Pagination for large datasets
+    - Batch operations with progress tracking
+  - **Database Inspector**
+    - Table size and row count analytics
+    - Index usage statistics
+    - Slow query analyzer
+    - Dead rows and bloat detection
+    - Dependency tree viewer
+  - **Migration Tools**
+    - Visual migration builder
+    - Migration testing environment
+    - Automated migration generation from schema changes
+    - Migration conflict resolution
+    - Parallel migration execution
 
 - [ ] **Multi-Tenancy**
   - Organization/team support
   - Multi-tenant data isolation
   - Tenant-specific customization
   - Billing and subscription management
+  - Per-tenant database schemas
 
 - [ ] **Advanced Authentication**
-  - SSO (Single Sign-On) integration
-  - OAuth provider support
-  - SAML authentication
-  - Passwordless authentication
-  - Biometric authentication
+  - OAuth provider support (Google, GitHub, etc.)
+  - Passwordless authentication (Magic Links)
+  - Biometric authentication (WebAuthn)
+  - Two-factor authentication (2FA) enhancements
+  - Session management improvements
 
 - [ ] **Real-Time Features**
   - WebSocket support
