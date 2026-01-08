@@ -123,6 +123,25 @@
         "icon": "AccountTree",
         "actions": ["build", "execute"]
       }
+    },
+    {
+      "id": "index-management",
+      "name": "Index Management",
+      "description": "Create and manage database indexes for performance optimization",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/indexes",
+          "methods": ["GET", "POST", "DELETE"],
+          "description": "Manage table indexes"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "Speed",
+        "actions": ["list", "create", "delete"]
+      }
     }
   ],
   "constraintTypes": [
@@ -229,7 +248,20 @@
       "label": "Constraints",
       "icon": "Rule",
       "featureId": "constraint-management"
+    },
+    {
+      "id": "indexes",
+      "label": "Indexes",
+      "icon": "Speed",
+      "featureId": "index-management"
     }
+  ],
+  "indexTypes": [
+    { "value": "BTREE", "label": "B-Tree (Default)", "description": "General purpose, balanced tree index" },
+    { "value": "HASH", "label": "Hash", "description": "Fast equality searches" },
+    { "value": "GIN", "label": "GIN", "description": "Generalized Inverted Index for full-text search" },
+    { "value": "GIST", "label": "GiST", "description": "Generalized Search Tree for geometric data" },
+    { "value": "BRIN", "label": "BRIN", "description": "Block Range Index for very large tables" }
   ],
   "queryOperators": [
     { "value": "=", "label": "Equals" },

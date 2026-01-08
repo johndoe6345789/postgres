@@ -45,6 +45,12 @@ export type QueryOperator = {
   label: string;
 };
 
+export type IndexType = {
+  value: string;
+  label: string;
+  description: string;
+};
+
 // Type definition for the features config structure
 type FeaturesConfig = {
   features: Feature[];
@@ -52,6 +58,7 @@ type FeaturesConfig = {
   constraintTypes?: ConstraintType[];
   navItems: NavItem[];
   queryOperators?: QueryOperator[];
+  indexTypes?: IndexType[];
 };
 
 const config = featuresConfig as FeaturesConfig;
@@ -74,6 +81,10 @@ export function getConstraintTypes(): ConstraintType[] {
 
 export function getQueryOperators(): QueryOperator[] {
   return config.queryOperators || [];
+}
+
+export function getIndexTypes(): IndexType[] {
+  return config.indexTypes || [];
 }
 
 export function getNavItems(): NavItem[] {
