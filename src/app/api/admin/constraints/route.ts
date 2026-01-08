@@ -175,6 +175,11 @@ export async function POST(request: Request) {
       );
     }
 
+    // NOTE: We must use sql.raw() for DDL statements (ALTER TABLE) because PostgreSQL
+    // does not support binding identifiers (table names, column names, constraint names)
+    // as parameters. The identifiers are validated with isValidIdentifier() which ensures
+    // they only contain safe characters (letters, numbers, underscores) and match
+    // PostgreSQL naming conventions, preventing SQL injection.
     await db.execute(sql.raw(alterQuery));
 
     return NextResponse.json({
@@ -227,6 +232,9 @@ export async function DELETE(request: Request) {
       );
     }
 
+    // NOTE: We must use sql.raw() for DDL statements (ALTER TABLE) because PostgreSQL
+    // does not support binding identifiers (table names, constraint names) as parameters.
+    // All identifiers are validated with isValidIdentifier() to prevent SQL injection.
     const alterQuery = `ALTER TABLE "${tableName}" DROP CONSTRAINT "${constraintName}"`;
     await db.execute(sql.raw(alterQuery));
 
