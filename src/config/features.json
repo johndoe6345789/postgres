@@ -1133,6 +1133,347 @@
           ]
         }
       ]
+    },
+    "TableManagerTab": {
+      "component": "Box",
+      "children": [
+        {
+          "component": "Typography",
+          "props": {
+            "variant": "h5",
+            "gutterBottom": true,
+            "text": "{{feature.name}}"
+          }
+        },
+        {
+          "component": "Typography",
+          "condition": "feature.description",
+          "props": {
+            "variant": "body2",
+            "color": "text.secondary",
+            "gutterBottom": true,
+            "text": "{{feature.description}}"
+          }
+        },
+        {
+          "component": "Box",
+          "props": {
+            "sx": { "mt": 2, "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "Button",
+              "condition": "canCreate",
+              "props": {
+                "variant": "contained",
+                "startIcon": "Add",
+                "onClick": "openCreateDialog",
+                "sx": { "mr": 2 },
+                "text": "Create Table"
+              }
+            },
+            {
+              "component": "Button",
+              "condition": "canDelete",
+              "props": {
+                "variant": "outlined",
+                "color": "error",
+                "startIcon": "Delete",
+                "onClick": "openDropDialog",
+                "text": "Drop Table"
+              }
+            }
+          ]
+        },
+        {
+          "component": "Paper",
+          "props": {
+            "sx": { "mt": 2 }
+          },
+          "children": [
+            {
+              "component": "Box",
+              "props": {
+                "sx": { "p": 2 }
+              },
+              "children": [
+                {
+                  "component": "Typography",
+                  "props": {
+                    "variant": "h6",
+                    "gutterBottom": true,
+                    "text": "Existing Tables"
+                  }
+                },
+                {
+                  "component": "List",
+                  "children": [
+                    {
+                      "component": "ListItem",
+                      "forEach": "tables",
+                      "children": [
+                        {
+                          "component": "ListItemIcon",
+                          "children": [
+                            {
+                              "component": "IconButton",
+                              "props": {
+                                "size": "small"
+                              },
+                              "children": [
+                                {
+                                  "component": "Typography",
+                                  "props": {
+                                    "text": "📊"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        },
+                        {
+                          "component": "ListItemText",
+                          "props": {
+                            "primary": "{{table.table_name}}"
+                          }
+                        }
+                      ]
+                    },
+                    {
+                      "component": "ListItem",
+                      "condition": "tables.length === 0",
+                      "children": [
+                        {
+                          "component": "ListItemText",
+                          "props": {
+                            "primary": "No tables found"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "ColumnManagerTab": {
+      "component": "Box",
+      "children": [
+        {
+          "component": "Typography",
+          "props": {
+            "variant": "h5",
+            "gutterBottom": true,
+            "text": "{{feature.name}}"
+          }
+        },
+        {
+          "component": "Typography",
+          "condition": "feature.description",
+          "props": {
+            "variant": "body2",
+            "color": "text.secondary",
+            "gutterBottom": true,
+            "text": "{{feature.description}}"
+          }
+        },
+        {
+          "component": "Paper",
+          "props": {
+            "sx": { "p": 2, "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "FormControl",
+              "props": {
+                "fullWidth": true
+              },
+              "children": [
+                {
+                  "component": "InputLabel",
+                  "props": {
+                    "text": "Select Table"
+                  }
+                },
+                {
+                  "component": "Select",
+                  "props": {
+                    "value": "{{selectedTable}}",
+                    "label": "Select Table",
+                    "onChange": "handleTableChange"
+                  },
+                  "children": [
+                    {
+                      "component": "MenuItem",
+                      "forEach": "tables",
+                      "props": {
+                        "value": "{{table.table_name}}",
+                        "text": "{{table.table_name}}"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Box",
+          "condition": "selectedTable && canAdd",
+          "props": {
+            "sx": { "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "Button",
+              "condition": "canAdd",
+              "props": {
+                "variant": "contained",
+                "startIcon": "Add",
+                "onClick": "openAddDialog",
+                "sx": { "mr": 1 },
+                "text": "Add Column"
+              }
+            },
+            {
+              "component": "Button",
+              "condition": "canModify",
+              "props": {
+                "variant": "outlined",
+                "startIcon": "Edit",
+                "onClick": "openModifyDialog",
+                "sx": { "mr": 1 },
+                "text": "Modify Column"
+              }
+            },
+            {
+              "component": "Button",
+              "condition": "canDelete",
+              "props": {
+                "variant": "outlined",
+                "color": "error",
+                "startIcon": "Delete",
+                "onClick": "openDropDialog",
+                "text": "Drop Column"
+              }
+            }
+          ]
+        },
+        {
+          "component": "Paper",
+          "condition": "tableSchema && tableSchema.columns",
+          "props": {
+            "sx": { "mt": 2 }
+          },
+          "children": [
+            {
+              "component": "TableContainer",
+              "children": [
+                {
+                  "component": "Table",
+                  "props": {
+                    "size": "small"
+                  },
+                  "children": [
+                    {
+                      "component": "TableHead",
+                      "children": [
+                        {
+                          "component": "TableRow",
+                          "children": [
+                            {
+                              "component": "TableCell",
+                              "children": [
+                                {
+                                  "component": "Typography",
+                                  "props": {
+                                    "text": "Column Name"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "component": "TableCell",
+                              "children": [
+                                {
+                                  "component": "Typography",
+                                  "props": {
+                                    "text": "Data Type"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "component": "TableCell",
+                              "children": [
+                                {
+                                  "component": "Typography",
+                                  "props": {
+                                    "text": "Nullable"
+                                  }
+                                }
+                              ]
+                            },
+                            {
+                              "component": "TableCell",
+                              "children": [
+                                {
+                                  "component": "Typography",
+                                  "props": {
+                                    "text": "Default"
+                                  }
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "component": "TableBody",
+                      "children": [
+                        {
+                          "component": "TableRow",
+                          "forEach": "tableSchema.columns",
+                          "children": [
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "{{column.column_name}}"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "{{column.data_type}}"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "{{column.is_nullable}}"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "{{column.column_default || '-'}}"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
     }
   },
   "componentProps": {
