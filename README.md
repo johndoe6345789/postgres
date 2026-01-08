@@ -91,7 +91,7 @@ Or connect to an external database:
 
 ```bash
 docker run -p 3000:3000 \
-  -e DATABASE_URL="******your-external-db:5432/mydb" \
+  -e DATABASE_URL="postgresql://username:password@your-external-db:5432/mydb" \
   -e JWT_SECRET=your_secret_here \
   postgres-app
 ```
@@ -166,12 +166,12 @@ The included PostgreSQL in Docker is just the default option. You can connect to
 
 **PostgreSQL:**
 ```env
-DATABASE_URL=******localhost:5432/mydb
+DATABASE_URL=postgresql://username:password@localhost:5432/mydb
 ```
 
 **MySQL:**
 ```env
-DATABASE_URL=mysql://user:password@localhost:3306/mydb
+DATABASE_URL=mysql://username:password@localhost:3306/mydb
 ```
 
 **SQLite:**
