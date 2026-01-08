@@ -12,7 +12,7 @@ RUN apt-get update && apt-get install -y \
 USER postgres
 RUN /etc/init.d/postgresql start && \
     psql --command "CREATE USER docker WITH SUPERUSER PASSWORD 'docker';" && \
-    createdb -O docker postgres
+    psql --command "ALTER DATABASE postgres OWNER TO docker;"
 
 # Switch back to root
 USER root

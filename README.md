@@ -1,686 +1,800 @@
-# Boilerplate and Starter for Next.js 16+, Tailwind CSS 4, and TypeScript.
+# PostgreSQL Admin Panel
 
-<p align="center">
-  <a href="https://demo.nextjs-boilerplate.com">
-    <img
-      src="public/assets/images/nextjs-starter-banner.png?raw=true"
-      alt="Next js starter banner"
-      style="max-width: 100%; height: auto;"
-    />
-  </a>
-</p>
+A **modern, beautiful web-based database administration tool** - a superior alternative to legacy tools like phpMyAdmin, Adminer, and pgAdmin.
 
-🚀 Boilerplate and Starter for Next.js with App Router, Tailwind CSS, and TypeScript ⚡️ Prioritizing developer experience first: Next.js, TypeScript, ESLint, Prettier, Lefthook (replacing Husky), Lint-Staged, Vitest (replacing Jest), Testing Library, Playwright, Commitlint, VSCode, Tailwind CSS, Authentication with [Clerk](https://clerk.com?utm_source=github&utm_medium=sponsorship&utm_campaign=nextjs-boilerplate), Database with DrizzleORM (PostgreSQL, SQLite, and MySQL), Local database with PGlite and production with Neon (PostgreSQL), Error Monitoring with [Sentry](https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo), Logging with LogTape (replacing Pino.js) and Log Management, Monitoring as Code, Storybook, Multi-language (i18n), AI-powered code reviews with CodeRabbit, Secure with [Arcjet](https://launch.arcjet.com/Q6eLbRE) (Bot detection, Rate limiting, Attack protection, etc.), and more.
+Built with Next.js 16, Material UI, and TypeScript for a fast, intuitive, and secure database management experience.
 
-Clone this project and use it to create your own Next.js project. You can check out the live demo at [Next.js Boilerplate](https://demo.nextjs-boilerplate.com), which includes a working authentication system.
+## 🏗️ Configuration-Driven Architecture
 
-## Sponsors
+This project features a **unique JSON-driven architecture** that makes adding features incredibly simple:
 
-<table width="100%">
-  <tr height="187px">
-    <td align="center" width="33%">
-      <a href="https://clerk.com?utm_source=github&utm_medium=sponsorship&utm_campaign=nextjs-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/ixartz/SaaS-Boilerplate/assets/1328388/6fb61971-3bf1-4580-98a0-10bd3f1040a2">
-          <source media="(prefers-color-scheme: light)" srcset="https://github.com/ixartz/SaaS-Boilerplate/assets/1328388/f80a8bb5-66da-4772-ad36-5fabc5b02c60">
-          <img alt="Clerk – Authentication & User Management for Next.js" src="https://github.com/ixartz/SaaS-Boilerplate/assets/1328388/f80a8bb5-66da-4772-ad36-5fabc5b02c60">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://www.coderabbit.ai?utm_source=next_js_starter&utm_medium=github&utm_campaign=next_js_starter_oss_2025">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/coderabbit-logo-dark.svg?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/coderabbit-logo-light.svg?raw=true">
-          <img alt="CodeRabbit" src="public/assets/images/coderabbit-logo-light.svg?raw=true">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/sentry-white.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/sentry-dark.png?raw=true">
-          <img alt="Sentry" src="public/assets/images/sentry-dark.png?raw=true">
-        </picture>
-      </a>
-      <a href="https://about.codecov.io/codecov-free-trial/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/codecov-white.svg?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/codecov-dark.svg?raw=true">
-          <img alt="Codecov" src="public/assets/images/codecov-dark.svg?raw=true">
-        </picture>
-      </a>
-    </td>
-  </tr>
-  <tr height="187px">
-    <td align="center" width="33%">
-      <a href="https://launch.arcjet.com/Q6eLbRE">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/arcjet-dark.svg?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/arcjet-light.svg?raw=true">
-          <img alt="Arcjet" src="public/assets/images/arcjet-light.svg?raw=true">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://sevalla.com/">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/sevalla-dark.png">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/sevalla-light.png">
-          <img alt="Sevalla" src="public/assets/images/sevalla-light.png">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://l.crowdin.com/next-js">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/crowdin-white.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/crowdin-dark.png?raw=true">
-          <img alt="Crowdin" src="public/assets/images/crowdin-dark.png?raw=true">
-        </picture>
-      </a>
-    </td>
-  </tr>
-  <tr height="187px">
-    <td align="center" width="33%">
-      <a href="https://betterstack.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/better-stack-white.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/better-stack-dark.png?raw=true">
-          <img alt="Better Stack" src="public/assets/images/better-stack-dark.png?raw=true">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://posthog.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://posthog.com/brand/posthog-logo-white.svg">
-          <source media="(prefers-color-scheme: light)" srcset="https://posthog.com/brand/posthog-logo.svg">
-          <img alt="PostHog" src="https://posthog.com/brand/posthog-logo.svg">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://www.checklyhq.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/checkly-logo-dark.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/checkly-logo-light.png?raw=true">
-          <img alt="Checkly" src="public/assets/images/checkly-logo-light.png?raw=true">
-        </picture>
-      </a>
-    </td>
-  </tr>
-  <tr height="187px">
-    <td align="center" style=width="33%">
-      <a href="https://nextjs-boilerplate.com/pro-saas-starter-kit">
-        <img src="public/assets/images/nextjs-boilerplate-saas.png?raw=true" alt="Next.js SaaS Boilerplate with React" />
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="mailto:contact@creativedesignsguru.com">
-        Add your logo here
-      </a>
-    </td>
-  </tr>
-</table>
+- **Define features in JSON** (`src/config/features.json`) - no need to write boilerplate code
+- **Automatic UI generation** - navigation and forms are generated by looping over configuration
+- **Reusable components** - shared `DataGrid`, `FormDialog`, and `ConfirmDialog` components
+- **Feature flags** - enable/disable features with a single boolean in the config
+- **Type-safe** - TypeScript ensures configuration integrity
 
-### Demo
+**Example**: To add a new feature, simply add an entry to `features.json`:
 
-**Live demo: [Next.js Boilerplate](https://demo.nextjs-boilerplate.com)**
+```json
+{
+  "id": "my-feature",
+  "name": "My Feature",
+  "enabled": true,
+  "endpoints": [...],
+  "ui": { "showInNav": true, "icon": "Star", "actions": ["create", "read"] }
+}
+```
 
-| Sign Up | Sign In |
-| --- | --- |
-| [![Next.js Boilerplate SaaS Sign Up](public/assets/images/nextjs-boilerplate-sign-in.png)](https://demo.nextjs-boilerplate.com/sign-up) | [![Next.js Boilerplate SaaS Sign In](public/assets/images/nextjs-boilerplate-sign-in.png)](https://demo.nextjs-boilerplate.com/sign-in) |
+The system automatically generates the navigation item, API routes, and UI components!
 
-### Features
+## Overview
 
-Developer experience first, extremely flexible code structure and only keep what you need:
+This project is a full-stack web application featuring:
+- **Next.js 16** with App Router for server-side rendering and static site generation
+- **Configuration-driven architecture** - Features defined in JSON, UI generated automatically
+- **Database CRUD operations** - Create, read, update, and delete records through a clean UI
+- **DrizzleORM** for type-safe database operations with support for PostgreSQL, MySQL, and SQLite
+- **PostgreSQL 15** included as default database in Docker container
+- **Multi-database support** - Connect to external PostgreSQL, MySQL, or SQLite servers
+- **Admin panel** with authentication, table management, and SQL query interface
+- **Authentication** using JWT with secure session management
+- **TypeScript** for type safety across the entire stack
+- **Tailwind CSS 4** for modern, responsive styling
+- **Docker** support for easy deployment
+- **Comprehensive testing** with Vitest, Playwright, and Storybook
 
-- ⚡ [Next.js](https://nextjs.org) with App Router support
-- 🔥 Type checking [TypeScript](https://www.typescriptlang.org)
-- 💎 Integrate with [Tailwind CSS](https://tailwindcss.com)
-- ✅ Strict Mode for TypeScript and React 19
-- 🔒 Authentication with [Clerk](https://clerk.com?utm_source=github&utm_medium=sponsorship&utm_campaign=nextjs-boilerplate): Sign up, Sign in, Sign out, Forgot password, Reset password, and more.
-- 👤 Passwordless Authentication with Magic Links, Multi-Factor Auth (MFA), Social Auth (Google, Facebook, Twitter, GitHub, Apple, and more), Passwordless login with Passkeys, User Impersonation
-- 📦 Type-safe ORM with DrizzleORM, compatible with PostgreSQL, SQLite, and MySQL
-- 💽 Offline and local development database with PGlite
-- ☁️ Remote and production database with Neon (PostgreSQL)
-- 🌐 Multi-language (i18n) with next-intl and [Crowdin](https://l.crowdin.com/next-js)
-- ♻️ Type-safe environment variables with T3 Env
-- ⌨️ Form handling with React Hook Form
-- 🔴 Validation library with Zod
-- 📏 Linter with [ESLint](https://eslint.org) (default Next.js, Next.js Core Web Vitals, Tailwind CSS and Antfu configuration)
-- 💖 Code Formatter with Prettier
-- 🦊 Husky for Git Hooks (replaced by Lefthook)
-- 🚫 Lint-staged for running linters on Git staged files
-- 🚓 Lint git commit with Commitlint
-- 📓 Write standard compliant commit messages with Commitizen
-- 🔍 Unused files and dependencies detection with Knip
-- 🌍 I18n validation and missing translation detection with i18n-check
-- 🦺 Unit Testing with Vitest and Browser mode (replacing React Testing Library)
-- 🧪 Integration and E2E Testing with Playwright
-- 👷 Run tests on pull request with GitHub Actions
-- 🎉 Storybook for UI development
-- 🐰 AI-powered code reviews with [CodeRabbit](https://www.coderabbit.ai?utm_source=next_js_starter&utm_medium=github&utm_campaign=next_js_starter_oss_2025)
-- 🚨 Error Monitoring with [Sentry](https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo)
-- 🔍 Local development error monitoring with Sentry Spotlight
-- ☂️ Code coverage with [Codecov](https://about.codecov.io/codecov-free-trial/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo)
-- 📝 Logging with LogTape and Log Management with [Better Stack](https://betterstack.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate)
-- 🖥️ Monitoring as Code with [Checkly](https://www.checklyhq.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate)
-- 🔐 Security and bot protection ([Arcjet](https://launch.arcjet.com/Q6eLbRE))
-- 📊 Analytics with PostHog
-- 🎁 Automatic changelog generation with Semantic Release
-- 🔍 Visual regression testing
-- 💡 Absolute Imports using `@` prefix
-- 🗂 VSCode configuration: Debug, Settings, Tasks and Extensions
-- 🤖 SEO metadata, JSON-LD and Open Graph tags
-- 🗺️ Sitemap.xml and robots.txt
-- 👷 Automatic dependency updates with Dependabot
-- ⌘ Database exploration with Drizzle Studio and CLI migration tool with Drizzle Kit
-- ⚙️ Bundler Analyzer
-- 🌈 Include a FREE minimalist theme
-- 💯 Maximize lighthouse score
+## Features
 
-Built-in features from Next.js:
+- ⚡ **Next.js 16** with App Router support
+- 🏗️ **Configuration-Driven Architecture** - Define features in JSON, auto-generate UI
+- 🔥 **TypeScript** for type safety
+- 💎 **Tailwind CSS 4** for styling
+- 🗄️ **Database CRUD Operations** - Full Create, Read, Update, Delete functionality
+- 🛠️ **Admin Panel** - Manage tables, columns, and data through a beautiful UI
+- 📊 **Table Manager** - Create and drop tables with visual column definition
+- 🔧 **Column Manager** - Add, modify, and drop columns from existing tables
+- 📊 **SQL Query Interface** - Execute custom queries with safety validation
+- 🔒 **JWT Authentication** with secure session management
+- 📦 **DrizzleORM** - Support for PostgreSQL, MySQL, and SQLite
+- 🔌 **Multi-Database Support** - Connect to custom database servers
+- 🐳 **Docker** with included PostgreSQL 15 (default option)
+- ♻️ **Reusable Components** - DataGrid, FormDialog, ConfirmDialog for consistent UX
+- 🧪 **Testing Suite** - Vitest for unit tests, Playwright for E2E
+- 🎨 **Storybook** for UI component development
+- 📏 **ESLint & Prettier** for code quality
+- 🔍 **TypeScript strict mode**
+- 🌐 **Multi-language (i18n)** support with next-intl
+- 🚨 **Error Monitoring** with Sentry
+- 🔐 **Security** with Arcjet (bot detection, rate limiting)
+This is a **PostgreSQL database administration panel** that provides:
+- 🎨 **Modern, beautiful UI** with Material UI components and dark mode support
+- 🔒 **Secure authentication** with bcrypt password hashing and JWT sessions
+- 📊 **Database viewing** - Browse tables, view data, and explore schema
+- 🛠️ **Table management** - Create and drop tables through intuitive UI
+- 🔧 **Column management** - Add, modify, and drop columns with type selection
+- 🔍 **SQL query interface** - Execute SELECT queries safely with result display
+- 🐳 **All-in-one Docker image** - PostgreSQL 15 and admin UI in one container
+- ⚡ **Production-ready** - Deploy to Caprover, Docker, or any cloud platform
+- 🚀 **Zero configuration** - Works out of the box with included PostgreSQL
+- 🔐 **Security-first design** - SQL injection protection, session management, auto-generated passwords
 
-- ☕ Minify HTML & CSS
-- 💨 Live reload
-- ✅ Cache busting
+## Why Choose This Over Legacy Tools?
 
-Optional features (easy to add):
+| Old Tool | Issues | This Solution |
+|----------|--------|---------------|
+| **phpMyAdmin** | PHP-based, outdated UI, MySQL-only | Modern Next.js, beautiful UI, PostgreSQL |
+| **Adminer** | Single PHP file, basic features | Full-featured app with secure authentication |
+| **pgAdmin** | Heavy desktop app, complex setup | Lightweight web app, simple deployment |
+| **SQL Workbench** | Desktop only, OS-specific | Web-based, works everywhere |
 
-- 🔑 Multi-tenancy, Role-based access control (RBAC)
-- 🔐 OAuth for Single Sign-On (SSO), Enterprise SSO, SAML, OpenID Connect (OIDC), EASIE
-- 🔗 Web 3 (Base, MetaMask, Coinbase Wallet, OKX Wallet)
+## Key Features
 
-### Philosophy
+### Database Management
+- 📊 **View database tables** - Browse all tables with metadata
+- 📋 **Table data viewer** - View table contents with pagination
+- 🛠️ **Table Manager** - Create new tables with custom columns and constraints
+- 🗑️ **Drop tables** - Delete tables with confirmation dialogs
+- 🔧 **Column Manager** - Add, modify, and drop columns from existing tables
+- 🎨 **Visual column builder** - Define column types, constraints, and defaults through UI
+- 🔍 **SQL query interface** - Execute SELECT queries safely
+- 🔒 **Query validation** - Only SELECT queries allowed for security
+- 📈 **Row count display** - See result counts instantly
+- 📐 **Schema inspector** - View table structures and column details
 
-- Nothing is hidden from you, allowing you to make any necessary adjustments to suit your requirements and preferences.
-- Dependencies are regularly updated on a monthly basis
-- Start for free without upfront costs
-- Easy to customize
-- Minimal code
-- Unstyled template
-- SEO-friendly
-- 🚀 Production-ready
+### Security & Authentication
+- 🔐 **User/password authentication** - Secure bcrypt password hashing
+- 🎫 **JWT session management** - HTTP-only cookies for sessions
+- 🔑 **Auto-generated passwords** - Secure 32-character passwords
+- 🛡️ **SQL injection protection** - Multiple layers of validation
+- 🚫 **Query restrictions** - Only read-only SELECT queries allowed
 
-### Requirements
+### Deployment & Infrastructure
+- 🐳 **All-in-one Docker image** - PostgreSQL + admin UI in one container
+- 📦 **GitHub Container Registry** - Automated CI/CD builds
+- ☁️ **Caprover compatible** - Deploy with one click
+- 🌐 **Cloudflare Tunnel support** - Easy HTTPS without port exposure
+- 💾 **Persistent storage** - Data survives container restarts
+- 🔄 **Auto-migrations** - Database schema applied on startup
 
-- Node.js 22+ and npm
+### User Experience
+- 💎 **Material UI design** - Clean, modern interface
+- 🌙 **Dark mode friendly** - Easy on the eyes
+- ⚡ **Fast & responsive** - Built with React and Next.js
+- 📱 **Mobile-friendly** - Responsive design for all devices
 
-### Getting started
+## Quick Start
 
-Run the following command on your local environment:
+### Option 1: Docker (Recommended)
 
-```shell
-git clone --depth=1 https://github.com/ixartz/Next-js-Boilerplate.git my-project-name
-cd my-project-name
+The simplest way to get started. The Docker image includes PostgreSQL 15 and the admin UI.
+
+```bash
+# Pull and run from GitHub Container Registry
+docker run -d \
+  -p 3000:3000 \
+  -p 5432:5432 \
+  -e JWT_SECRET="your-secret-key-change-in-production" \
+  -e CREATE_ADMIN_USER=true \
+  -e ADMIN_USERNAME=admin \
+  -e ADMIN_PASSWORD=your-secure-password \
+  --name postgres-admin \
+  ghcr.io/johndoe6345789/postgres:latest
+```
+
+Or build locally:
+
+```bash
+git clone https://github.com/johndoe6345789/postgres.git
+cd postgres
+docker build -t postgres-admin .
+docker run -d -p 3000:3000 -p 5432:5432 \
+  -e JWT_SECRET="your-secret-key" \
+  -e CREATE_ADMIN_USER=true \
+  postgres-admin
+```
+
+**Access the admin panel**: http://localhost:3000/admin/login
+
+Default credentials (if not specified):
+- **Username**: `admin`
+- **Password**: `admin123` (or auto-generated if not provided)
+
+### Option 2: Docker Compose
+
+Create a `docker-compose.yml`:
+
+```yaml
+version: '3.8'
+
+services:
+  postgres-admin:
+    image: ghcr.io/johndoe6345789/postgres:latest
+    ports:
+      - '3000:3000'
+      - '5432:5432'
+    environment:
+      - JWT_SECRET=your-secret-key-change-in-production
+      - CREATE_ADMIN_USER=true
+      - ADMIN_USERNAME=admin
+      - ADMIN_PASSWORD=your-secure-password
+    volumes:
+      - postgres_data:/var/lib/postgresql/15/main
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+```
+
+Run:
+```bash
+docker-compose up -d
+```
+
+### Option 3: Local Development
+
+Prerequisites:
+- Node.js 20+
+- PostgreSQL 15+ (or use included Docker setup)
+
+```bash
+# Clone repository
+git clone https://github.com/johndoe6345789/postgres.git
+cd postgres
+
+# Install dependencies
 npm install
-```
 
-For your information, all dependencies are updated every month.
+# Set up environment
+cp .env .env.local
+# Edit .env.local with your database connection
 
-Then, you can run the project locally in development mode with live reload by executing:
-
-```shell
-npm run dev
-```
-
-Open http://localhost:3000 with your favorite browser to see your project. For your information, the project is already pre-configured with a database.
-
-> [!WARNING]
-> Next.js Boilerplate ships with a fully working Postgres database for your local environment. This database is **temporary** and will expire after **72 hours** if you don't claim it.
->
-> Once expired, the project won't be able to connect to the database, and it'll throw connection errors.
->
-> To avoid the connection errors and make the database **persistent**, run `npm run neon:claim`. After claiming it, the database becomes persistent and suitable for production use as well.
-
-> [!CAUTION]
-> The authentication system requires environment variables to be set up. Please refer to the [Set up authentication](#set-up-authentication) section.
-
-Need advanced features? Multi-tenancy & Teams, Roles & Permissions, Shadcn UI, End-to-End Typesafety with oRPC, Stripe Payment, Light / Dark mode. Try [Next.js Boilerplate Pro](https://nextjs-boilerplate.com/pro-saas-starter-kit).
-
-### Set up authentication
-
-To get started, you will need to create a Clerk account at [Clerk.com](https://clerk.com?utm_source=github&utm_medium=sponsorship&utm_campaign=nextjs-boilerplate) and create a new application in the Clerk Dashboard. Once you have done that, copy the `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` values and add them to the `.env.local` file (not tracked by Git):
-
-```shell
-NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_clerk_pub_key
-CLERK_SECRET_KEY=your_clerk_secret_key
-```
-
-Now you have a fully functional authentication system with Next.js, including features such as sign up, sign in, sign out, forgot password, reset password, update profile, update password, update email, delete account, and more.
-
-### Set up remote database
-
-The project uses DrizzleORM, a type-safe ORM that is compatible with PostgreSQL, SQLite, and MySQL databases. By default, the project is configured to seamlessly work with PostgreSQL, and you have the flexibility to choose any PostgreSQL database provider of your choice.
-
-When you launch the project locally for the first time, it automatically creates a temporary PostgreSQL database. This allows you to work with a PostgreSQL database without Docker or any additional setup.
-
-This temporary database will **expire after 72 hours** if you don't claim it. To avoid connection errors and **make the database persistent**, simply run the following command:
-
-```shell
-npm run neon:claim
-```
-
-Then, follow the instructions provided in the terminal to complete the claiming process.
-
-Once claimed, the database is suitable for production use. You can create separate database branches for development, staging, and production environments to keep data isolated.
-
-#### Create a fresh and empty database
-
-If you want to create a fresh and empty database, you just need to remove the following environment variables: `DATABASE_URL`, `DATABASE_URL_DIRECT` and `PUBLIC_INSTAGRES_CLAIM_URL` from the `.env.local` file.
-
-Then, run the following command to create a new temporary database:
-
-```shell
-npm run dev
-```
-
-After the database is created, the connection strings will be automatically added to your `.env.local` file. And, don't forget to claim the database with `npm run neon:claim`.
-
-### Translation (i18n) setup
-
-For translation, the project uses `next-intl` combined with [Crowdin](https://l.crowdin.com/next-js). As a developer, you only need to take care of the English (or another default language) version. Translations for other languages are automatically generated and handled by Crowdin. You can use Crowdin to collaborate with your translation team or translate the messages yourself with the help of machine translation.
-
-To set up translation (i18n), create an account at [Crowdin.com](https://l.crowdin.com/next-js) and create a new project. In the newly created project, you will be able to find the project ID. You will also need to create a new Personal Access Token by going to Account Settings > API. Then, in your GitHub Actions, you need to define the following environment variables: `CROWDIN_PROJECT_ID` and `CROWDIN_PERSONAL_TOKEN`.
-
-After defining the environment variables in your GitHub Actions, your localization files will be synchronized with Crowdin every time you push a new commit to the `main` branch.
-
-### Project structure
-
-```shell
-.
-├── README.md                       # README file
-├── .github                         # GitHub folder
-│   ├── actions                     # Reusable actions
-│   └── workflows                   # GitHub Actions workflows
-├── .storybook                      # Storybook folder
-├── .vscode                         # VSCode configuration
-├── migrations                      # Database migrations
-├── public                          # Public assets folder
-├── src
-│   ├── app                         # Next JS App (App Router)
-│   ├── components                  # React components
-│   ├── libs                        # 3rd party libraries configuration
-│   ├── locales                     # Locales folder (i18n messages)
-│   ├── models                      # Database models
-│   ├── styles                      # Styles folder
-│   ├── templates                   # Templates folder
-│   ├── types                       # Type definitions
-│   ├── utils                       # Utilities folder
-│   └── validations                 # Validation schemas
-├── tests
-│   ├── e2e                         # E2E tests, also includes Monitoring as Code
-│   └── integration                 # Integration tests
-├── next.config.ts                  # Next JS configuration
-└── tsconfig.json                   # TypeScript configuration
-```
-
-### Customization
-
-You can easily configure Next js Boilerplate by searching the entire project for `FIXME:` to make quick customizations. Here are some of the most important files to customize:
-
-- `public/apple-touch-icon.png`, `public/favicon.ico`, `public/favicon-16x16.png` and `public/favicon-32x32.png`: your website favicon
-- `src/utils/AppConfig.ts`: configuration file
-- `src/templates/BaseTemplate.tsx`: default theme
-- `next.config.ts`: Next.js configuration
-- `.env`: default environment variables
-
-You have full access to the source code for further customization. The provided code is just an example to help you start your project. The sky's the limit 🚀.
-
-### Change database schema
-
-To modify the database schema in the project, you can update the schema file located at `./src/models/Schema.ts`. This file defines the structure of your database tables using the Drizzle ORM library.
-
-After making changes to the schema, generate a migration by running the following command:
-
-```shell
-npm run db:generate
-```
-
-This will create a migration file that reflects your schema changes.
-
-After making sure your database is running, you can apply the generated migration using:
-
-```shell
+# Run migrations
 npm run db:migrate
+
+# Create admin user
+npm run db:seed-admin
+
+# Start development server
+npm run dev
 ```
 
-There is no need to restart the Next.js server for the changes to take effect.
+**Access the admin panel**: http://localhost:3000/admin/login
 
-### Commit Message Format
+# JWT Secret (required for admin authentication)
+JWT_SECRET=your_secure_random_secret_here
 
-The project follows the [Conventional Commits](https://www.conventionalcommits.org/) specification, meaning all commit messages must be formatted accordingly. To help you write commit messages, the project provides an interactive CLI that guides you through the commit process. To use it, run the following command:
+# Optional: Admin user creation
+CREATE_ADMIN_USER=true
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=admin123
 
-```shell
+# Optional: Clerk Authentication
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=your_key
+CLERK_SECRET_KEY=your_secret
+## Configuration
+
+### Environment Variables
+
+| Variable | Description | Default | Required |
+|----------|-------------|---------|----------|
+| `DATABASE_URL` | PostgreSQL connection string | `postgresql://docker:docker@localhost:5432/postgres` | Yes |
+| `JWT_SECRET` | Secret for JWT token signing | Auto-generated | Yes* |
+| `CREATE_ADMIN_USER` | Create admin user on startup | `true` | No |
+| `ADMIN_USERNAME` | Initial admin username | `admin` | No |
+| `ADMIN_PASSWORD` | Initial admin password | `admin123` or auto-generated | No |
+| `NODE_ENV` | Environment mode | `production` | No |
+
+*JWT_SECRET is auto-generated if not provided, but must remain consistent across restarts.
+
+### Security Best Practices
+
+**For Production Deployments:**
+
+1. **Set a strong JWT_SECRET**:
+```bash
+# Generate a secure secret
+openssl rand -base64 32
+```
+
+2. **Use strong admin passwords**:
+```bash
+# Use the built-in password generator
+npm run generate:password
+
+# Output example:
+# Password: xK9@mP2&vL8#qR5!wN7^zT4%yU6*aB3$
+```
+
+3. **Enable HTTPS** (via reverse proxy, Cloudflare, or Caprover)
+
+4. **Change default credentials immediately** after first login
+
+### Admin Panel
+
+Access the admin panel at http://localhost:3000/admin/login
+
+**Default credentials** (if using db:seed-admin):
+- Username: `admin`
+- Password: `admin123` (change this in production!)
+
+**Features available in the admin panel**:
+- 📊 **Table Browser**: View all database tables and their data
+- ✏️ **CRUD Operations**: Create, edit, and delete records
+- 🛠️ **Table Manager**: Create new tables with columns, drop existing tables
+- 🔧 **Column Manager**: Add, modify, and delete columns from tables
+- 🔍 **SQL Query Interface**: Execute custom SELECT queries
+- 🛠️ **Schema Inspector**: View table structures, columns, and relationships
+- 🔐 **Secure Access**: JWT-based authentication with session management
+
+### Docker Deployment
+5. **Restrict network access** to trusted IPs if possible
+
+### Admin User Management
+
+#### Auto-generated Passwords
+
+When creating an admin user without specifying a password, a secure 32-character password is automatically generated:
+
+```bash
+npm run db:seed-admin
+
+# Output:
+# ✅ Admin user created successfully!
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 📧 Username: admin
+# 🔑 Password: aB3$xK9@mP2&vL8#qR5!wN7^zT4%yU6*
+# ⚠️  This password was auto-generated. Save it securely!
+# ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# 🌐 Login at: http://localhost:3000/admin/login
+```
+
+#### Custom Credentials
+
+Provide custom credentials via environment variables:
+
+```bash
+ADMIN_USERNAME=myuser ADMIN_PASSWORD=mypassword npm run db:seed-admin
+```
+
+Or using Docker:
+```bash
+docker run -p 3000:3000 \
+  -e ADMIN_USERNAME=myuser \
+  -e ADMIN_PASSWORD=mypassword \
+  -e CREATE_ADMIN_USER=true \
+  postgres-admin
+```
+
+#### Password Generator
+
+Generate secure passwords for any use:
+
+```
+├── src/
+│   ├── app/              # Next.js App Router pages
+│   │   ├── admin/        # Admin panel pages (dashboard, login)
+│   │   └── api/admin/    # Admin API routes (CRUD, tables, queries)
+│   ├── components/       # React components
+│   │   └── admin/        # Reusable admin components (DataGrid, FormDialog, etc.)
+│   ├── config/           # Configuration files
+│   │   └── features.json # Feature definitions (JSON-driven architecture)
+│   ├── models/           # Database models (DrizzleORM schemas)
+│   ├── utils/            # Utility functions
+│   │   ├── featureConfig.ts  # Feature configuration loader
+│   │   ├── db.ts         # Database connection
+│   │   └── session.ts    # JWT session management
+│   ├── libs/             # Third-party library configurations
+│   └── locales/          # i18n translations
+├── tests/
+│   ├── integration/      # Integration tests
+│   └── e2e/              # End-to-end tests
+├── migrations/           # Database migrations
+├── public/               # Static assets
+├── Dockerfile            # Docker configuration
+└── docker-compose.yml    # Docker Compose setup
+```
+
+## Configuration-Driven Features
+
+### Adding a New Feature
+
+To add a new feature to the admin panel:
+
+1. **Define the feature in `src/config/features.json`**:
+```json
+{
+  "id": "my-new-feature",
+  "name": "My New Feature",
+  "description": "Description of what it does",
+  "enabled": true,
+  "priority": "high",
+  "endpoints": [
+    {
+      "path": "/api/admin/my-feature",
+      "methods": ["GET", "POST"],
+      "description": "API endpoint description"
+    }
+  ],
+  "ui": {
+    "showInNav": true,
+    "icon": "Settings",
+    "actions": ["create", "read", "update", "delete"]
+  }
+}
+```
+
+2. **Add navigation item to `navItems` array** (if needed):
+```json
+{
+  "id": "my-feature",
+  "label": "My Feature",
+  "icon": "Settings",
+  "featureId": "my-new-feature"
+}
+```
+
+3. **Create API route** at `src/app/api/admin/my-feature/route.ts`
+
+4. **The UI is automatically generated** from your configuration!
+
+### Reusable Components
+
+Use these components for consistent UX:
+
+- **`<DataGrid>`** - Display table data with edit/delete actions
+- **`<FormDialog>`** - Create/edit forms with automatic field generation
+- **`<ConfirmDialog>`** - Confirmation dialogs for destructive actions
+
+Example:
+```tsx
+import DataGrid from '@/components/admin/DataGrid';
+
+<DataGrid
+  columns={[{ name: 'id' }, { name: 'name' }]}
+  rows={data}
+  onEdit={(row) => handleEdit(row)}
+  onDelete={(row) => handleDelete(row)}
+/>
+```
+
+## Available Scripts
+```bash
+# Generate 32-character password (default)
+npm run generate:password
+
+# Generate 64-character password
+npm run generate:password 64
+
+# Generate without special characters
+npm run generate:password 32 false
+```
+
+## Deployment Options
+
+### Docker
+
+The all-in-one Docker image is the easiest deployment option:
+
+```bash
+docker pull ghcr.io/johndoe6345789/postgres:latest
+
+docker run -d \
+  -p 3000:3000 \
+  -p 5432:5432 \
+  -v postgres_data:/var/lib/postgresql/15/main \
+  -e JWT_SECRET="$(openssl rand -base64 32)" \
+  -e ADMIN_USERNAME=admin \
+  -e ADMIN_PASSWORD=your-secure-password \
+  --name postgres-admin \
+  --restart unless-stopped \
+  ghcr.io/johndoe6345789/postgres:latest
+```
+
+### Caprover
+
+Deploy to Caprover with minimal configuration:
+
+1. **Create a new app** in Caprover dashboard
+   - App Name: `postgres-admin`
+   - Enable HTTPS (automatic via Let's Encrypt)
+
+2. **Deploy via Dockerfile**
+   - Caprover automatically uses the Dockerfile from the repository
+   - No additional configuration needed
+
+3. **Set Environment Variables**:
+```
+JWT_SECRET=<generate-with-openssl-rand-base64-32>
+CREATE_ADMIN_USER=true
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your-secure-password
+```
+
+4. **Access**: https://postgres-admin.your-caprover-domain.com/admin/login
+
+**Benefits:**
+- ✅ Automatic HTTPS via Let's Encrypt
+- ✅ Built-in PostgreSQL in the container
+- ✅ Persistent storage handled by Caprover
+- ✅ Auto-restart on failure
+- ✅ Zero-downtime deployments
+
+### Cloudflare Tunnel
+
+Secure HTTPS access without exposing ports publicly:
+
+1. **Install cloudflared**:
+```bash
+# Follow: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/
+```
+
+2. **Start the application**:
+```bash
+docker-compose up -d
+```
+
+3. **Create and configure tunnel**:
+```bash
+cloudflared tunnel login
+cloudflared tunnel create postgres-admin
+```
+
+This project includes a **JWT-based admin authentication system** with secure session management:
+
+- **Admin Login**: Username/password authentication at `/admin/login`
+- **Session Management**: JWT tokens stored in HTTP-only cookies
+- **Protected Routes**: Admin API endpoints require valid session
+- **Secure**: bcrypt password hashing, 24-hour session expiration
+
+### Admin User Setup
+
+Create an admin user by running:
+
+```bash
+npm run db:seed-admin
+```
+
+Or set environment variables for automatic creation on startup:
+
+```env
+CREATE_ADMIN_USER=true
+ADMIN_USERNAME=admin
+ADMIN_PASSWORD=your_secure_password
+JWT_SECRET=your_jwt_secret_here
+```
+
+### Clerk Integration (Optional)
+
+The project also supports [Clerk](https://clerk.com) for additional authentication options:
+4. **Configure tunnel** (`~/.cloudflared/config.yml`):
+```yaml
+tunnel: <your-tunnel-id>
+credentials-file: /path/to/<tunnel-id>.json
+
+ingress:
+  - hostname: postgres-admin.yourdomain.com
+    service: http://localhost:3000
+  - service: http_status:404
+```
+
+5. **Route DNS**:
+```bash
+cloudflared tunnel route dns postgres-admin postgres-admin.yourdomain.com
+```
+
+6. **Run tunnel**:
+```bash
+cloudflared tunnel run postgres-admin
+```
+
+**Access**: https://postgres-admin.yourdomain.com/admin/login
+
+**Security Benefits:**
+- ✅ Automatic HTTPS via Cloudflare
+- ✅ DDoS protection
+- ✅ WAF (Web Application Firewall)
+- ✅ Rate limiting
+- ✅ Optional Cloudflare Access for extra authentication
+
+### External PostgreSQL Connection
+
+Connect to an existing PostgreSQL database instead of using the built-in one:
+
+```bash
+docker run -d \
+  -p 3000:3000 \
+  -e DATABASE_URL="postgresql://user:password@external-host:5432/dbname" \
+  -e JWT_SECRET="your-secret" \
+  -e CREATE_ADMIN_USER=true \
+  postgres-admin
+```
+
+**Note:** Port 5432 is only exposed when using the built-in PostgreSQL database.
+
+## Development
+
+### Prerequisites
+- Node.js 20+
+- npm
+- PostgreSQL 15+ (or use Docker)
+
+### Setup
+
+```bash
+# Clone repository
+git clone https://github.com/johndoe6345789/postgres.git
+cd postgres
+
+# Install dependencies
+npm install
+
+# Set up environment variables
+cp .env .env.local
+# Edit .env.local with your configuration
+
+# Run database migrations
+npm run db:migrate
+
+# Create admin user
+npm run db:seed-admin
+
+# Start development server
+npm run dev
+```
+
+### Available Scripts
+
+#### Development
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+
+#### Database
+- `npm run db:generate` - Generate database migrations
+- `npm run db:migrate` - Apply database migrations
+- `npm run db:studio` - Open Drizzle Studio (database GUI)
+- `npm run db:seed-admin` - Create/reset admin user
+
+#### Testing
+- `npm run test` - Run unit tests with Vitest
+- `npm run test:e2e` - Run E2E tests with Playwright
+- `npm run storybook` - Start Storybook for component development
+
+#### Code Quality
+- `npm run lint` - Run ESLint
+- `npm run lint:fix` - Fix linting issues
+- `npm run check:types` - TypeScript type checking
+
+#### Utilities
+- `npm run generate:password [length] [useSpecial]` - Generate secure passwords
+- `npm run commit` - Interactive commit message generator
+
+### Project Structure
+
+```
+├── src/
+│   ├── app/
+│   │   ├── admin/           # Admin panel pages
+│   │   │   ├── login/       # Login page
+│   │   │   └── dashboard/   # Admin dashboard
+│   │   └── api/admin/       # Admin API routes
+│   ├── components/          # React components
+│   ├── models/              # Database models (DrizzleORM)
+│   ├── utils/               # Utility functions
+│   └── libs/                # Library configurations
+├── migrations/              # Database migrations
+├── scripts/                 # Utility scripts
+│   ├── seed-admin.ts        # Admin user creation
+│   └── generate-password.ts # Password generator
+├── tests/                   # Test files
+├── Dockerfile               # All-in-one Docker image
+└── docker-compose.yml       # Docker Compose configuration
+```
+
+### Database Schema
+
+The application uses DrizzleORM for database operations. Schemas are defined in `src/models/Schema.ts`.
+
+**To modify the schema:**
+
+1. Edit `src/models/Schema.ts`
+2. Generate migration: `npm run db:generate`
+3. Apply migration: `npm run db:migrate`
+
+**Current schema includes:**
+- `admin_users` - Admin panel user accounts
+- Additional application tables as needed
+
+### API Routes
+
+Admin panel API endpoints:
+
+- `POST /api/admin/login` - User authentication
+- `POST /api/admin/logout` - User logout
+- `GET /api/admin/tables` - List all database tables
+- `POST /api/admin/table-data` - Get data from specific table
+- `POST /api/admin/query` - Execute SQL query (SELECT only)
+
+**Security Features:**
+- JWT authentication required for all admin routes
+- SQL injection protection with parameterized queries
+- Only SELECT queries allowed in query interface
+- HTTP-only cookies for session management
+
+## Security
+
+### Authentication & Authorization
+- ✅ **Bcrypt password hashing** - Industry-standard password security
+- ✅ **JWT session tokens** - Secure, stateless authentication
+- ✅ **HTTP-only cookies** - Prevents XSS token theft
+- ✅ **Auto-generated passwords** - Strong default credentials
+- ✅ **Secure session management** - Automatic session expiration
+
+### SQL Injection Protection
+- ✅ **Query validation** - Only SELECT queries allowed
+- ✅ **Parameterized queries** - All user input is properly escaped
+- ✅ **Table name validation** - Whitelist-based table access
+- ✅ **Multiple validation layers** - Defense in depth approach
+
+### Production Security Checklist
+
+Before deploying to production:
+
+- [ ] Change default admin credentials
+- [ ] Set a strong, unique JWT_SECRET
+- [ ] Enable HTTPS (via reverse proxy or Cloudflare)
+- [ ] Restrict database access to trusted IPs
+- [ ] Configure firewall rules
+- [ ] Regular security updates
+- [ ] Monitor logs for suspicious activity
+- [ ] Set up database backups
+- [ ] Use strong PostgreSQL passwords
+
+### Security Recommendations
+
+1. **Use environment variables** for all secrets
+2. **Enable HTTPS** for all production deployments
+3. **Restrict network access** with firewall rules
+4. **Regular backups** of PostgreSQL data
+5. **Monitor logs** for unauthorized access attempts
+6. **Update regularly** to get security patches
+
+## Troubleshooting
+
+### Common Issues
+
+**Issue: Cannot connect to database**
+- Ensure PostgreSQL is running
+- Check DATABASE_URL is correct
+- Verify network connectivity
+- Check PostgreSQL logs: `docker logs <container-id>`
+
+**Issue: Admin login fails**
+- Verify admin user exists: Run `npm run db:seed-admin`
+- Check JWT_SECRET is set correctly
+- Clear browser cookies and try again
+- Check logs for authentication errors
+
+**Issue: Port already in use**
+- Stop existing services on ports 3000 or 5432
+- Or map to different ports: `-p 3001:3000 -p 5433:5432`
+
+**Issue: Docker container exits immediately**
+- Check logs: `docker logs postgres-admin`
+- Verify environment variables are set
+- Ensure JWT_SECRET is provided or auto-generated
+- Check PostgreSQL initialization logs
+
+**Issue: "Only SELECT queries allowed" error**
+- SQL interface only allows read-only queries for security
+- Use database tools for modifications
+- Or access PostgreSQL directly on port 5432
+
+### Getting Help
+
+- **Issues**: https://github.com/johndoe6345789/postgres/issues
+- **Discussions**: https://github.com/johndoe6345789/postgres/discussions
+- **Documentation**: See [ADMIN_README.md](ADMIN_README.md) for additional details
+
+## Roadmap
+
+See [ROADMAP.md](ROADMAP.md) for planned features and improvements.
+
+**Recently implemented:**
+- ✅ Table Manager - Create and drop tables with visual column builder
+- ✅ Column Manager - Add, modify, and drop columns from existing tables
+- ✅ Schema management interface for table and column operations
+
+**Upcoming features:**
+- Visual database designer
+- Multi-database server connections
+- Advanced query builder
+- Export data (CSV, JSON, SQL)
+- Foreign key relationship management
+- User management with roles
+
+## Contributing
+
+Contributions are welcome! Here's how to contribute:
+
+1. Fork the repository
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes using conventional commits (`npm run commit`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
+5. Open a Pull Request
+
+### Commit Convention
+
+This project follows [Conventional Commits](https://www.conventionalcommits.org/):
+
+```bash
+# Use the interactive commit tool
 npm run commit
 ```
 
-One of the benefits of using Conventional Commits is the ability to automatically generate GitHub releases. It also allows us to automatically determine the next version number based on the types of commits that are included in a release.
+## License
 
-### CodeRabbit AI Code Reviews
+MIT License - see [LICENSE](LICENSE) file for details.
 
-The project uses [CodeRabbit](https://www.coderabbit.ai?utm_source=next_js_starter&utm_medium=github&utm_campaign=next_js_starter_oss_2025), an AI-powered code reviewer. CodeRabbit monitors your repository and automatically provides intelligent code reviews on all new pull requests using its powerful AI engine.
-
-Setting up CodeRabbit is simple, visit [coderabbit.ai](https://www.coderabbit.ai?utm_source=next_js_starter&utm_medium=github&utm_campaign=next_js_starter_oss_2025), sign in with your GitHub account, and add your repository from the dashboard. That's it!
-
-### Testing
-
-All unit tests are located alongside the source code in the same directory, making them easier to find. The unit test files follow this format: `*.test.ts` or `*.test.tsx`. The project uses Vitest and React Testing Library for unit testing. You can run the tests with the following command:
-
-```shell
-npm run test
-```
-
-### Integration & E2E Testing
-
-The project uses Playwright for integration and end-to-end (E2E) testing. Integration test files use the `*.spec.ts` extension, while E2E test files use the `*.e2e.ts` extension. You can run the tests with the following commands:
-
-```shell
-npx playwright install # Only for the first time in a new environment
-npm run test:e2e
-```
-
-### Storybook
-
-Storybook is configured for UI component development and testing. The project uses Storybook with Next.js and Vite integration, including accessibility testing and documentation features.
-
-Stories are located alongside your components in the `src` directory and follow the pattern `*.stories.ts` or `*.stories.tsx`.
-
-You can run Storybook in development mode with:
-
-```shell
-npm run storybook
-```
-
-This will start Storybook on http://localhost:6006 where you can view and interact with your UI components in isolation.
-
-To run Storybook tests in headless mode, you can use the following command:
-
-```shell
-npm run storybook:test
-```
-
-### Local Production Build
-
-Generate an optimized production build locally using a temporary in-memory Postgres database:
-
-```shell
-npm run build-local
-```
-
-This command:
-
-- Starts a temporary in-memory Database server
-- Runs database migrations with Drizzle Kit
-- Builds the Next.js app for production
-- Shuts down the temporary DB when the build finishes
-
-Notes:
-
-- By default, it uses a local database, but you can also use `npm run build` with a remote database.
-- This only creates the build, it doesn't start the server. To run the build locally, use `npm run start`.
-
-### Deploy to production
-
-During the build process, database migrations are automatically executed, so there's no need to run them manually. However, you must define `DATABASE_URL` in your environment variables.
-
-Then, you can generate a production build with:
-
-```shell
-$ npm run build
-```
-
-It generates an optimized production build of the boilerplate. To test the generated build, run:
-
-```shell
-$ npm run start
-```
-
-You also need to defined the environment variables `CLERK_SECRET_KEY` using your own key.
-
-This command starts a local server using the production build. You can now open http://localhost:3000 in your preferred browser to see the result.
-
-### Deploy to Sevalla
-
-You can deploy a Next.js application along with its database on a single platform. First, create an account on [Sevalla](https://sevalla.com).
-
-After registration, you will be redirected to the dashboard. From there, navigate to `Database > Create a database`. Select PostgreSQL and and use the default settings for a quick setup. For advanced users, you can customize the database location and resource size. Finally, click on `Create` to complete the process.
-
-Once the database is created and ready, return to the dashboard and click `Application > Create an App`. After connecting your GitHub account, select the repository you want to deploy. Keep the default settings for the remaining options, then click `Create`.
-
-Next, connect your database to your application by going to `Networking > Connected services > Add connection` and select the database you just created. You also need to enable the `Add environment variables to the application` option, and rename `DB_URL` to `DATABASE_URL`. Then, click `Add connection`.
-
-Go to `Environment variables > Add environment variable`, and define the environment variables `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` and `CLERK_SECRET_KEY` from your Clerk account. Click `Save`.
-
-Finally, initiate a new deployment by clicking `Overview > Latest deployments > Deploy now`. If everything is set up correctly, your application will be deployed successfully with a working database.
-
-### Error Monitoring
-
-The project uses [Sentry](https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo) to monitor errors.
-
-#### Local development with Sentry and Spotlight
-
-In the development environment, no additional setup is required: Next.js Boilerplate comes pre-configured with Sentry and Spotlight (Sentry for Development). All errors are automatically captured by your local Spotlight instance, enabling testing without sending data to Sentry Cloud.
-
-You can inspect captured events, view stack traces, and analyze errors in the Spotlight UI at `http://localhost:8969`.
-
-#### Production setup with Sentry
-
-For production environment, you'll need to create a Sentry account and a new project. Then, in `.env.production`, you need to update the following environment variables:
-
-```shell
-NEXT_PUBLIC_SENTRY_DSN=
-SENTRY_ORGANIZATION=
-SENTRY_PROJECT=
-```
-
-You also need to create a environment variable `SENTRY_AUTH_TOKEN` in your hosting provider's dashboard.
-
-### Code coverage
-
-Next.js Boilerplate relies on [Codecov](https://about.codecov.io/codecov-free-trial/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo) for code coverage reporting solution. To enable Codecov, create a Codecov account and connect it to your GitHub account. Your repositories should appear on your Codecov dashboard. Select the desired repository and copy the token. In GitHub Actions, define the `CODECOV_TOKEN` environment variable and paste the token.
-
-Make sure to create `CODECOV_TOKEN` as a GitHub Actions secret, do not paste it directly into your source code.
-
-### Logging
-
-The project uses LogTape for logging. In the development environment, logs are displayed in the console by default.
-
-For production, the project is already integrated with [Better Stack](https://betterstack.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate) to manage and query your logs using SQL. To use Better Stack, you need to create a [Better Stack](https://betterstack.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate) account and create a new source: go to your Better Stack Logs Dashboard > Sources > Connect source. Then, you need to give a name to your source and select Node.js as the platform.
-
-After creating the source, you will be able to view and copy your source token. In your environment variables, paste the token into the `NEXT_PUBLIC_BETTER_STACK_SOURCE_TOKEN` variable. You'll also need to define the `NEXT_PUBLIC_BETTER_STACK_INGESTING_HOST` variable, which can be found in the same place as the source token.
-
-Now, all logs will automatically be sent to and ingested by Better Stack.
-
-### Checkly monitoring
-
-The project uses [Checkly](https://www.checklyhq.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate) to ensure that your production environment is always up and running. At regular intervals, Checkly runs the tests ending with `*.check.e2e.ts` extension and notifies you if any of the tests fail. Additionally, you have the flexibility to execute tests from multiple locations to ensure that your application is available worldwide.
-
-To use Checkly, you must first create an account on [their website](https://www.checklyhq.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate). After creating an account, generate a new API key in the Checkly Dashboard and set the `CHECKLY_API_KEY` environment variable in GitHub Actions. Additionally, you will need to define the `CHECKLY_ACCOUNT_ID`, which can also be found in your Checkly Dashboard under User Settings > General.
-
-To complete the setup, update the `checkly.config.ts` file with your own email address and production URL.
-
-### Arcjet security and bot protection
-
-The project uses [Arcjet](https://launch.arcjet.com/Q6eLbRE), a security as code product that includes several features that can be used individually or combined to provide defense in depth for your site.
-
-To set up Arcjet, [create a free account](https://launch.arcjet.com/Q6eLbRE) and get your API key. Then add it to the `ARCJET_KEY` environment variable.
-
-Arcjet is configured with two main features: bot detection and the Arcjet Shield WAF:
-
-- [Bot detection](https://docs.arcjet.com/bot-protection/concepts) is configured to allow search engines, preview link generators e.g. Slack and Twitter previews, and to allow common uptime monitoring services. All other bots, such as scrapers and AI crawlers, will be blocked. You can [configure additional bot types](https://docs.arcjet.com/bot-protection/identifying-bots) to allow or block.
-- [Arcjet Shield WAF](https://docs.arcjet.com/shield/concepts) will detect and block common attacks such as SQL injection, cross-site scripting, and other OWASP Top 10 vulnerabilities.
-
-Arcjet is configured with a central client at `src/libs/Arcjet.ts` that includes the Shield WAF rules. Additional rules are applied when Arcjet is called in `proxy.ts`.
-
-### Useful commands
-
-### Code Quality and Validation
-
-The project includes several commands to ensure code quality and consistency. You can run:
-
-- `npm run lint` to check for linting errors
-- `npm run lint:fix` to automatically fix fixable issues from the linter
-- `npm run check:types` to verify type safety across the entire project
-- `npm run check:deps` help identify unused dependencies and files
-- `npm run check:i18n` ensures all translations are complete and properly formatted
-
-#### Bundle Analyzer
-
-Next.js Boilerplate includes a built-in bundle analyzer. It can be used to analyze the size of your JavaScript bundles. To begin, run the following command:
-
-```shell
-npm run build-stats
-```
-
-By running the command, it'll automatically open a new browser window with the results.
-
-#### Database Studio
-
-The project is already configured with Drizzle Studio to explore the database. You can run the following command to open the database studio:
-
-```shell
-npm run db:studio
-```
-
-Then, you can open https://local.drizzle.studio with your favorite browser to explore your database.
-
-### VSCode information (optional)
-
-If you are VSCode user, you can have a better integration with VSCode by installing the suggested extension in `.vscode/extension.json`. The starter code comes up with Settings for a seamless integration with VSCode. The Debug configuration is also provided for frontend and backend debugging experience.
-
-With the plugins installed in your VSCode, ESLint and Prettier can automatically fix the code and display errors. The same applies to testing: you can install the VSCode Vitest extension to automatically run your tests, and it also shows the code coverage in context.
-
-Pro tips: if you need a project wide-type checking with TypeScript, you can run a build with <kbd>Cmd</kbd> + <kbd>Shift</kbd> + <kbd>B</kbd> on Mac.
-
-### Contributions
-
-Everyone is welcome to contribute to this project. Feel free to open an issue if you have any questions or find a bug. Totally open to suggestions and improvements.
-
-### License
-
-Licensed under the MIT License, Copyright © 2025
-
-See [LICENSE](LICENSE) for more information.
-
-## Sponsors
-
-<table width="100%">
-  <tr height="187px">
-    <td align="center" width="33%">
-      <a href="https://clerk.com?utm_source=github&utm_medium=sponsorship&utm_campaign=nextjs-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://github.com/ixartz/SaaS-Boilerplate/assets/1328388/6fb61971-3bf1-4580-98a0-10bd3f1040a2">
-          <source media="(prefers-color-scheme: light)" srcset="https://github.com/ixartz/SaaS-Boilerplate/assets/1328388/f80a8bb5-66da-4772-ad36-5fabc5b02c60">
-          <img alt="Clerk – Authentication & User Management for Next.js" src="https://github.com/ixartz/SaaS-Boilerplate/assets/1328388/f80a8bb5-66da-4772-ad36-5fabc5b02c60">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://www.coderabbit.ai?utm_source=next_js_starter&utm_medium=github&utm_campaign=next_js_starter_oss_2025">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/coderabbit-logo-dark.svg?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/coderabbit-logo-light.svg?raw=true">
-          <img alt="CodeRabbit" src="public/assets/images/coderabbit-logo-light.svg?raw=true">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://sentry.io/for/nextjs/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/sentry-white.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/sentry-dark.png?raw=true">
-          <img alt="Sentry" src="public/assets/images/sentry-dark.png?raw=true">
-        </picture>
-      </a>
-      <a href="https://about.codecov.io/codecov-free-trial/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/codecov-white.svg?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/codecov-dark.svg?raw=true">
-          <img alt="Codecov" src="public/assets/images/codecov-dark.svg?raw=true">
-        </picture>
-      </a>
-    </td>
-  </tr>
-  <tr height="187px">
-    <td align="center" width="33%">
-      <a href="https://launch.arcjet.com/Q6eLbRE">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/arcjet-dark.svg?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/arcjet-light.svg?raw=true">
-          <img alt="Arcjet" src="public/assets/images/arcjet-light.svg?raw=true">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://sevalla.com/">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/sevalla-dark.png">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/sevalla-light.png">
-          <img alt="Sevalla" src="public/assets/images/sevalla-light.png">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://l.crowdin.com/next-js">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/crowdin-white.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/crowdin-dark.png?raw=true">
-          <img alt="Crowdin" src="public/assets/images/crowdin-dark.png?raw=true">
-        </picture>
-      </a>
-    </td>
-  </tr>
-  <tr height="187px">
-    <td align="center" width="33%">
-      <a href="https://betterstack.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/better-stack-white.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/better-stack-dark.png?raw=true">
-          <img alt="Better Stack" src="public/assets/images/better-stack-dark.png?raw=true">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://posthog.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="https://posthog.com/brand/posthog-logo-white.svg">
-          <source media="(prefers-color-scheme: light)" srcset="https://posthog.com/brand/posthog-logo.svg">
-          <img alt="PostHog" src="https://posthog.com/brand/posthog-logo.svg">
-        </picture>
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="https://www.checklyhq.com/?utm_source=github&utm_medium=sponsorship&utm_campaign=next-js-boilerplate">
-        <picture>
-          <source media="(prefers-color-scheme: dark)" srcset="public/assets/images/checkly-logo-dark.png?raw=true">
-          <source media="(prefers-color-scheme: light)" srcset="public/assets/images/checkly-logo-light.png?raw=true">
-          <img alt="Checkly" src="public/assets/images/checkly-logo-light.png?raw=true">
-        </picture>
-      </a>
-    </td>
-  </tr>
-  <tr height="187px">
-    <td align="center" style=width="33%">
-      <a href="https://nextjs-boilerplate.com/pro-saas-starter-kit">
-        <img src="public/assets/images/nextjs-boilerplate-saas.png?raw=true" alt="Next.js SaaS Boilerplate with React" />
-      </a>
-    </td>
-    <td align="center" width="33%">
-      <a href="mailto:contact@creativedesignsguru.com">
-        Add your logo here
-      </a>
-    </td>
-  </tr>
-</table>
-
----
-
-Made with ♥ by [CreativeDesignsGuru](https://creativedesignsguru.com) [![Twitter](https://img.shields.io/twitter/url/https/twitter.com/cloudposse.svg?style=social&label=Follow%20%40Ixartz)](https://twitter.com/ixartz)
-
-Looking for a custom boilerplate to kick off your project? I'd be glad to discuss how I can help you build one. Feel free to reach out anytime at contact@creativedesignsguru.com!
-
-[![Sponsor Next JS Boilerplate](https://cdn.buymeacoffee.com/buttons/default-red.png)](https://github.com/sponsors/ixartz)
+Copyright (c) 2025 Remi W.
