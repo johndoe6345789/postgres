@@ -1,24 +1,8 @@
 'use client';
 
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import EditIcon from '@mui/icons-material/Edit';
-import {
-  Box,
-  Button,
-  MenuItem,
-  Paper,
-  Select,
-  Table,
-  TableBody,
-  TableCell,
-  TableContainer,
-  TableHead,
-  TableRow,
-  Typography,
-} from '@mui/material';
 import { useEffect, useState } from 'react';
-import { getDataTypes, getFeatureById } from '@/utils/featureConfig';
+import { getComponentTree, getDataTypes, getFeatureById } from '@/utils/featureConfig';
+import ComponentTreeRenderer from '@/utils/ComponentTreeRenderer';
 import ColumnDialog from './ColumnDialog';
 
 type ColumnManagerTabProps = {
@@ -99,106 +83,38 @@ export default function ColumnManagerTab({
     setDialogState({ ...dialogState, open: false });
   };
 
+  const handleTableChange = (event: any) => {
+    setSelectedTable(event.target.value);
+  };
+
+  // Get component tree from features.json
+  const tree = getComponentTree('ColumnManagerTab');
+
+  // Prepare data for the component tree
+  const data = {
+    feature,
+    tables,
+    selectedTable,
+    tableSchema,
+    canAdd,
+    canModify,
+    canDelete,
+  };
+
+  // Define handlers for the component tree
+  const handlers = {
+    handleTableChange,
+    openAddDialog: () => openDialog('add'),
+    openModifyDialog: () => openDialog('modify'),
+    openDropDialog: () => openDialog('drop'),
+  };
+
   return (
     <>
-      <Typography variant="h5" gutterBottom>
-        {feature?.name || 'Column Manager'}
-      </Typography>
-
-      {feature?.description && (
-        <Typography variant="body2" color="text.secondary" gutterBottom>
-          {feature.description}
-        </Typography>
-      )}
-
-      <Paper sx={{ p: 2, mt: 2, mb: 2 }}>
-        <Typography variant="subtitle1" gutterBottom>
-          Select a table to manage its columns:
-        </Typography>
-        <Select
-          fullWidth
-          value={selectedTable}
-          onChange={e => setSelectedTable(e.target.value)}
-          displayEmpty
-        >
-          <MenuItem value="">
-            <em>Select a table</em>
-          </MenuItem>
-          {tables.map(table => (
-            <MenuItem key={table.table_name} value={table.table_name}>
-              {table.table_name}
-            </MenuItem>
-          ))}
-        </Select>
-      </Paper>
-
-      {selectedTable && (
-        <>
-          <Box sx={{ mb: 2 }}>
-            {canAdd && (
-              <Button
-                variant="contained"
-                startIcon={<AddIcon />}
-                onClick={() => openDialog('add')}
-                sx={{ mr: 2 }}
-              >
-                Add Column
-              </Button>
-            )}
-            {canModify && (
-              <Button
-                variant="outlined"
-                startIcon={<EditIcon />}
-                onClick={() => openDialog('modify')}
-                sx={{ mr: 2 }}
-              >
-                Modify Column
-              </Button>
-            )}
-            {canDelete && (
-              <Button
-                variant="outlined"
-                color="error"
-                startIcon={<DeleteIcon />}
-                onClick={() => openDialog('drop')}
-              >
-                Drop Column
-              </Button>
-            )}
-          </Box>
-
-          {tableSchema && (
-            <Paper sx={{ mt: 2 }}>
-              <Box sx={{ p: 2 }}>
-                <Typography variant="h6" gutterBottom>
-                  Current Columns for {selectedTable}
-                </Typography>
-                <TableContainer>
-                  <Table size="small">
-                    <TableHead>
-                      <TableRow>
-                        <TableCell><strong>Column Name</strong></TableCell>
-                        <TableCell><strong>Data Type</strong></TableCell>
-                        <TableCell><strong>Nullable</strong></TableCell>
-                        <TableCell><strong>Default</strong></TableCell>
-                      </TableRow>
-                    </TableHead>
-                    <TableBody>
-                      {tableSchema.columns?.map((col: any) => (
-                        <TableRow key={col.column_name}>
-                          <TableCell>{col.column_name}</TableCell>
-                          <TableCell>{col.data_type}</TableCell>
-                          <TableCell>{col.is_nullable}</TableCell>
-                          <TableCell>{col.column_default || 'NULL'}</TableCell>
-                        </TableRow>
-                      ))}
-                    </TableBody>
-                  </Table>
-                </TableContainer>
-              </Box>
-            </Paper>
-          )}
-        </>
+      {tree ? (
+        <ComponentTreeRenderer tree={tree} data={data} handlers={handlers} />
+      ) : (
+        <div>Error: Component tree not found</div>
       )}
 
       <ColumnDialog

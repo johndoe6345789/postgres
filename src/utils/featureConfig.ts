@@ -196,6 +196,41 @@ export type ComponentPropSchema = {
   props: Record<string, PropDefinition>;
 };
 
+export type SqlTemplate = {
+  description: string;
+  query: string;
+  returns: 'rows' | 'command';
+  example?: string;
+  defaultParams?: Record<string, any>;
+};
+
+export type PlaywrightStep = {
+  action: 'goto' | 'click' | 'fill' | 'select' | 'wait' | 'expect' | 'screenshot';
+  selector?: string;
+  value?: string;
+  text?: string;
+  url?: string;
+  timeout?: number;
+  condition?: string;
+};
+
+export type PlaywrightPlaybook = {
+  name: string;
+  description: string;
+  tags?: string[];
+  steps: PlaywrightStep[];
+  cleanup?: PlaywrightStep[];
+};
+
+export type StorybookStory = {
+  name: string;
+  description?: string;
+  args?: Record<string, any>;
+  argTypes?: Record<string, any>;
+  parameters?: Record<string, any>;
+  play?: string[];
+};
+
 // Type definition for the features config structure
 type FeaturesConfig = {
   translations?: Translations;
@@ -213,6 +248,9 @@ type FeaturesConfig = {
   uiViews?: Record<string, Record<string, UiView>>;
   componentTrees?: Record<string, ComponentTree>;
   componentProps?: Record<string, ComponentPropSchema>;
+  sqlTemplates?: Record<string, Record<string, SqlTemplate>>;
+  playwrightPlaybooks?: Record<string, PlaywrightPlaybook>;
+  storybookStories?: Record<string, Record<string, StorybookStory>>;
   features: Feature[];
   dataTypes: DataType[];
   constraintTypes?: ConstraintType[];
@@ -408,4 +446,61 @@ export function getComponentsByCategory(category: string): string[] {
   return Object.entries(schemas)
     .filter(([_, schema]) => schema.category === category)
     .map(([name, _]) => name);
+}
+
+// SQL Templates
+export function getSqlTemplate(category: string, templateName: string): SqlTemplate | undefined {
+  return config.sqlTemplates?.[category]?.[templateName];
+}
+
+export function getAllSqlTemplates(): Record<string, Record<string, SqlTemplate>> {
+  return config.sqlTemplates || {};
+}
+
+export function getSqlTemplatesByCategory(category: string): Record<string, SqlTemplate> {
+  return config.sqlTemplates?.[category] || {};
+}
+
+export function interpolateSqlTemplate(template: SqlTemplate, params: Record<string, any>): string {
+  let query = template.query;
+  
+  // Merge default params with provided params
+  const allParams = { ...template.defaultParams, ...params };
+  
+  // Replace template variables
+  Object.entries(allParams).forEach(([key, value]) => {
+    const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
+    query = query.replace(regex, String(value));
+  });
+  
+  return query;
+}
+
+// Playwright Playbooks
+export function getPlaywrightPlaybook(playbookName: string): PlaywrightPlaybook | undefined {
+  return config.playwrightPlaybooks?.[playbookName];
+}
+
+export function getAllPlaywrightPlaybooks(): Record<string, PlaywrightPlaybook> {
+  return config.playwrightPlaybooks || {};
+}
+
+export function getPlaywrightPlaybooksByTag(tag: string): PlaywrightPlaybook[] {
+  const playbooks = getAllPlaywrightPlaybooks();
+  return Object.values(playbooks).filter(playbook => 
+    playbook.tags?.includes(tag)
+  );
+}
+
+// Storybook Stories
+export function getStorybookStory(componentName: string, storyName: string): any {
+  return config.storybookStories?.[componentName]?.[storyName];
+}
+
+export function getAllStorybookStories(): Record<string, any> {
+  return config.storybookStories || {};
+}
+
+export function getStorybookStoriesForComponent(componentName: string): Record<string, any> {
+  return config.storybookStories?.[componentName] || {};
 }
