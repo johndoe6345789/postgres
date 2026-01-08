@@ -86,13 +86,128 @@ type ComponentTreeRendererProps = {
 };
 
 /**
+ * Safe operator functions for condition evaluation
+ */
+const SAFE_OPERATORS: Record<string, (a: any, b: any) => boolean> = {
+  '===': (a, b) => a === b,
+  '!==': (a, b) => a !== b,
+  '==': (a, b) => a == b,
+  '!=': (a, b) => a != b,
+  '>': (a, b) => a > b,
+  '<': (a, b) => a < b,
+  '>=': (a, b) => a >= b,
+  '<=': (a, b) => a <= b,
+  '&&': (a, b) => a && b,
+  '||': (a, b) => a || b,
+};
+
+/**
+ * Safely get nested property value from object using dot notation
+ * Only allows alphanumeric and dots - no function calls or arbitrary code
+ */
+function safeGetProperty(obj: Record<string, any>, path: string): any {
+  // Validate path contains only safe characters
+  if (!/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/.test(path)) {
+    console.warn('Invalid property path:', path);
+    return undefined;
+  }
+  
+  const parts = path.split('.');
+  let current = obj;
+  
+  for (const part of parts) {
+    if (current == null || typeof current !== 'object') {
+      return undefined;
+    }
+    current = current[part];
+  }
+  
+  return current;
+}
+
+/**
  * Evaluate a condition string with the provided data context
+ * Uses safe property access and whitelisted operators - NO new Function()
  */
 function evaluateCondition(condition: string, data: Record<string, any>): boolean {
   try {
-    // Create a function that evaluates the condition in the data context
-    const func = new Function(...Object.keys(data), `return ${condition}`);
-    return func(...Object.values(data));
+    // Simple boolean property check: "isAdmin"
+    if (/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/.test(condition.trim())) {
+      const value = safeGetProperty(data, condition.trim());
+      return Boolean(value);
+    }
+    
+    // Find operator in condition
+    let operator: string | null = null;
+    let operatorIndex = -1;
+    
+    // Check for operators in order of precedence
+    for (const op of ['===', '!==', '==', '!=', '>=', '<=', '>', '<', '&&', '||']) {
+      const idx = condition.indexOf(op);
+      if (idx !== -1) {
+        operator = op;
+        operatorIndex = idx;
+        break;
+      }
+    }
+    
+    if (!operator || operatorIndex === -1) {
+      console.warn('No valid operator found in condition:', condition);
+      return false;
+    }
+    
+    // Extract left and right operands
+    const left = condition.slice(0, operatorIndex).trim();
+    const right = condition.slice(operatorIndex + operator.length).trim();
+    
+    // Evaluate operands
+    let leftValue: any;
+    let rightValue: any;
+    
+    // Left operand - check if it's a property or literal
+    if (/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/.test(left)) {
+      leftValue = safeGetProperty(data, left);
+    } else if (left === 'true') {
+      leftValue = true;
+    } else if (left === 'false') {
+      leftValue = false;
+    } else if (left === 'null') {
+      leftValue = null;
+    } else if (!isNaN(Number(left))) {
+      leftValue = Number(left);
+    } else if ((left.startsWith('"') && left.endsWith('"')) || (left.startsWith("'") && left.endsWith("'"))) {
+      leftValue = left.slice(1, -1);
+    } else {
+      console.warn('Invalid left operand:', left);
+      return false;
+    }
+    
+    // Right operand - same logic
+    if (/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/.test(right)) {
+      rightValue = safeGetProperty(data, right);
+    } else if (right === 'true') {
+      rightValue = true;
+    } else if (right === 'false') {
+      rightValue = false;
+    } else if (right === 'null') {
+      rightValue = null;
+    } else if (!isNaN(Number(right))) {
+      rightValue = Number(right);
+    } else if ((right.startsWith('"') && right.endsWith('"')) || (right.startsWith("'") && right.endsWith("'"))) {
+      rightValue = right.slice(1, -1);
+    } else {
+      console.warn('Invalid right operand:', right);
+      return false;
+    }
+    
+    // Apply operator
+    const operatorFunc = SAFE_OPERATORS[operator];
+    if (!operatorFunc) {
+      console.warn('Unknown operator:', operator);
+      return false;
+    }
+    
+    return operatorFunc(leftValue, rightValue);
   } catch (error) {
     console.error('Error evaluating condition:', condition, error);
     return false;
@@ -101,6 +216,7 @@ function evaluateCondition(condition: string, data: Record<string, any>): boolea
 
 /**
  * Interpolate template strings like {{variable}} with actual values from data
+ * Uses safe property access - NO new Function() or eval()
  */
 function interpolateValue(value: any, data: Record<string, any>): any {
   if (typeof value !== 'string') {
@@ -111,24 +227,53 @@ function interpolateValue(value: any, data: Record<string, any>): any {
   const templateMatch = value.match(/^\{\{(.+)\}\}$/);
   if (templateMatch && templateMatch[1]) {
     const expression = templateMatch[1].trim();
-    try {
-      const func = new Function(...Object.keys(data), `return ${expression}`);
-      return func(...Object.values(data));
-    } catch (error) {
-      console.error('Error evaluating expression:', expression, error);
-      return value;
+    
+    // Support Math operations for numeric expressions
+    if (/^Math\.[a-zA-Z]+\(/.test(expression)) {
+      // Allow safe Math operations
+      const mathOp = expression.match(/^Math\.([a-zA-Z]+)\((.+)\)$/);
+      if (mathOp) {
+        const [, operation, argsStr] = mathOp;
+        const safeOps = ['abs', 'ceil', 'floor', 'round', 'max', 'min'];
+        
+        if (safeOps.includes(operation)) {
+          try {
+            // Parse arguments safely
+            const args = argsStr.split(',').map(arg => {
+              const trimmed = arg.trim();
+              const propValue = safeGetProperty(data, trimmed);
+              return propValue !== undefined ? propValue : Number(trimmed);
+            });
+            
+            return (Math as any)[operation](...args);
+          } catch (error) {
+            console.error('Error evaluating Math operation:', expression, error);
+            return value;
+          }
+        }
+      }
     }
+    
+    // Ternary operator: condition ? valueIfTrue : valueIfFalse
+    const ternaryMatch = expression.match(/^(.+?)\s*\?\s*(.+?)\s*:\s*(.+)$/);
+    if (ternaryMatch) {
+      const [, condition, trueValue, falseValue] = ternaryMatch;
+      const conditionResult = evaluateCondition(condition.trim(), data);
+      const targetValue = conditionResult ? trueValue.trim() : falseValue.trim();
+      
+      // Recursively interpolate the result
+      return interpolateValue(`{{${targetValue}}}`, data);
+    }
+    
+    // Simple property access
+    return safeGetProperty(data, expression);
   }
 
   // Replace inline templates
   return value.replace(/\{\{(.+?)\}\}/g, (_, expression) => {
-    try {
-      const func = new Function(...Object.keys(data), `return ${expression.trim()}`);
-      return func(...Object.values(data));
-    } catch (error) {
-      console.error('Error evaluating inline expression:', expression, error);
-      return '';
-    }
+    const trimmed = expression.trim();
+    const result = safeGetProperty(data, trimmed);
+    return result !== undefined ? String(result) : '';
   });
 }
 

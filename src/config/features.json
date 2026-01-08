@@ -2895,6 +2895,292 @@
     { "value": "IS NULL", "label": "Is Null" },
     { "value": "IS NOT NULL", "label": "Is Not Null" }
   ],
+  "sqlTemplates": {
+    "parameterTypes": {
+      "tableName": {
+        "type": "identifier",
+        "description": "PostgreSQL table name",
+        "validation": "^[a-zA-Z_][a-zA-Z0-9_]{0,62}$",
+        "sanitize": "identifier"
+      },
+      "columnName": {
+        "type": "identifier",
+        "description": "PostgreSQL column name",
+        "validation": "^[a-zA-Z_][a-zA-Z0-9_]{0,62}$",
+        "sanitize": "identifier"
+      },
+      "indexName": {
+        "type": "identifier",
+        "description": "PostgreSQL index name",
+        "validation": "^[a-zA-Z_][a-zA-Z0-9_]{0,62}$",
+        "sanitize": "identifier"
+      },
+      "constraintName": {
+        "type": "identifier",
+        "description": "PostgreSQL constraint name",
+        "validation": "^[a-zA-Z_][a-zA-Z0-9_]{0,62}$",
+        "sanitize": "identifier"
+      },
+      "dataType": {
+        "type": "enum",
+        "description": "PostgreSQL data type",
+        "allowedValues": ["INTEGER", "BIGINT", "SERIAL", "VARCHAR", "TEXT", "BOOLEAN", "TIMESTAMP", "DATE", "JSON", "JSONB"],
+        "sanitize": "enum"
+      },
+      "indexType": {
+        "type": "enum",
+        "description": "PostgreSQL index type",
+        "allowedValues": ["BTREE", "HASH", "GIN", "GIST", "BRIN"],
+        "sanitize": "enum"
+      },
+      "schemaName": {
+        "type": "identifier",
+        "description": "PostgreSQL schema name",
+        "validation": "^[a-zA-Z_][a-zA-Z0-9_]{0,62}$",
+        "sanitize": "identifier",
+        "default": "public"
+      },
+      "limit": {
+        "type": "integer",
+        "description": "Query result limit",
+        "validation": "^[0-9]+$",
+        "min": 1,
+        "max": 10000,
+        "default": 100
+      }
+    },
+    "queries": {
+      "validation": {
+        "validateTable": {
+          "description": "Check if a table exists in the schema",
+          "method": "drizzle.execute",
+          "operation": "select",
+          "parameters": {
+            "tableName": "tableName",
+            "schemaName": "schemaName"
+          },
+          "drizzlePattern": {
+            "type": "raw",
+            "template": "SELECT table_name FROM information_schema.tables WHERE table_schema = $1 AND table_name = $2",
+            "paramOrder": ["schemaName", "tableName"]
+          },
+          "returns": "rows",
+          "securityNotes": "Uses parameterized query - safe from SQL injection"
+        },
+        "validateColumn": {
+          "description": "Check if a column exists in a table",
+          "method": "drizzle.execute",
+          "operation": "select",
+          "parameters": {
+            "tableName": "tableName",
+            "columnName": "columnName",
+            "schemaName": "schemaName"
+          },
+          "drizzlePattern": {
+            "type": "raw",
+            "template": "SELECT column_name FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2 AND column_name = $3",
+            "paramOrder": ["schemaName", "tableName", "columnName"]
+          },
+          "returns": "rows",
+          "securityNotes": "Uses parameterized query - safe from SQL injection"
+        }
+      },
+      "tables": {
+        "listTables": {
+          "description": "Get all tables in the schema",
+          "method": "drizzle.execute",
+          "operation": "select",
+          "parameters": {
+            "schemaName": "schemaName"
+          },
+          "drizzlePattern": {
+            "type": "raw",
+            "template": "SELECT table_name FROM information_schema.tables WHERE table_schema = $1 ORDER BY table_name",
+            "paramOrder": ["schemaName"]
+          },
+          "returns": "rows",
+          "securityNotes": "Uses parameterized query - safe from SQL injection"
+        },
+        "getTableSchema": {
+          "description": "Get detailed schema information for a table",
+          "method": "drizzle.execute",
+          "operation": "select",
+          "parameters": {
+            "tableName": "tableName",
+            "schemaName": "schemaName"
+          },
+          "drizzlePattern": {
+            "type": "raw",
+            "template": "SELECT column_name, data_type, is_nullable, column_default, character_maximum_length FROM information_schema.columns WHERE table_schema = $1 AND table_name = $2 ORDER BY ordinal_position",
+            "paramOrder": ["schemaName", "tableName"]
+          },
+          "returns": "rows",
+          "securityNotes": "Uses parameterized query - safe from SQL injection"
+        },
+        "createTable": {
+          "description": "Create a new table - use Drizzle schema builder",
+          "method": "drizzle.schema",
+          "operation": "create",
+          "parameters": {
+            "tableName": "tableName",
+            "columns": "array"
+          },
+          "drizzlePattern": {
+            "type": "builder",
+            "example": "pgTable(tableName, { id: serial('id').primaryKey() })"
+          },
+          "returns": "command",
+          "securityNotes": "Use Drizzle schema builder - identifiers are automatically escaped"
+        },
+        "dropTable": {
+          "description": "Drop a table using sql.identifier",
+          "method": "drizzle.execute",
+          "operation": "drop",
+          "parameters": {
+            "tableName": "tableName"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`DROP TABLE IF EXISTS ${sql.identifier([tableName])} CASCADE`"
+          },
+          "returns": "command",
+          "securityNotes": "Uses sql.identifier() for safe identifier escaping"
+        }
+      },
+      "columns": {
+        "addColumn": {
+          "description": "Add a new column to a table",
+          "method": "drizzle.execute",
+          "operation": "alter",
+          "parameters": {
+            "tableName": "tableName",
+            "columnName": "columnName",
+            "dataType": "dataType"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`ALTER TABLE ${sql.identifier([tableName])} ADD COLUMN ${sql.identifier([columnName])} ${sql.raw(dataType)}`"
+          },
+          "returns": "command",
+          "securityNotes": "Uses sql.identifier() for table/column names, dataType validated against enum"
+        },
+        "dropColumn": {
+          "description": "Drop a column from a table",
+          "method": "drizzle.execute",
+          "operation": "alter",
+          "parameters": {
+            "tableName": "tableName",
+            "columnName": "columnName"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`ALTER TABLE ${sql.identifier([tableName])} DROP COLUMN ${sql.identifier([columnName])}`"
+          },
+          "returns": "command",
+          "securityNotes": "Uses sql.identifier() for safe identifier escaping"
+        }
+      },
+      "indexes": {
+        "listIndexes": {
+          "description": "List all indexes for a table",
+          "method": "drizzle.execute",
+          "operation": "select",
+          "parameters": {
+            "tableName": "tableName",
+            "schemaName": "schemaName"
+          },
+          "drizzlePattern": {
+            "type": "raw",
+            "template": "SELECT i.relname as indexname, ix.indisprimary, ix.indisunique, am.amname, pg_get_indexdef(ix.indexrelid) as indexdef FROM pg_class t JOIN pg_index ix ON t.oid = ix.indrelid JOIN pg_class i ON i.oid = ix.indexrelid JOIN pg_am am ON i.relam = am.oid WHERE t.relkind = 'r' AND t.relname = $1 AND t.relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = $2) ORDER BY i.relname",
+            "paramOrder": ["tableName", "schemaName"]
+          },
+          "returns": "rows",
+          "securityNotes": "Uses parameterized query - safe from SQL injection"
+        },
+        "createIndex": {
+          "description": "Create an index on a table",
+          "method": "drizzle.execute",
+          "operation": "create",
+          "parameters": {
+            "indexName": "indexName",
+            "tableName": "tableName",
+            "columnName": "columnName",
+            "indexType": "indexType"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`CREATE INDEX ${sql.identifier([indexName])} ON ${sql.identifier([tableName])} USING ${sql.raw(indexType)} (${sql.identifier([columnName])})`"
+          },
+          "returns": "command",
+          "securityNotes": "Uses sql.identifier() for names, indexType validated against enum"
+        },
+        "dropIndex": {
+          "description": "Drop an index",
+          "method": "drizzle.execute",
+          "operation": "drop",
+          "parameters": {
+            "indexName": "indexName"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`DROP INDEX IF EXISTS ${sql.identifier([indexName])}`"
+          },
+          "returns": "command",
+          "securityNotes": "Uses sql.identifier() for safe identifier escaping"
+        }
+      },
+      "constraints": {
+        "listConstraints": {
+          "description": "List all constraints for a table",
+          "method": "drizzle.execute",
+          "operation": "select",
+          "parameters": {
+            "tableName": "tableName",
+            "schemaName": "schemaName"
+          },
+          "drizzlePattern": {
+            "type": "raw",
+            "template": "SELECT tc.constraint_name, tc.constraint_type, STRING_AGG(kcu.column_name, ', ') as columns, cc.check_clause FROM information_schema.table_constraints tc LEFT JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema LEFT JOIN information_schema.check_constraints cc ON tc.constraint_name = cc.constraint_name WHERE tc.table_schema = $1 AND tc.table_name = $2 GROUP BY tc.constraint_name, tc.constraint_type, cc.check_clause",
+            "paramOrder": ["schemaName", "tableName"]
+          },
+          "returns": "rows",
+          "securityNotes": "Uses parameterized query - safe from SQL injection"
+        },
+        "addConstraint": {
+          "description": "Add a constraint to a table",
+          "method": "drizzle.execute",
+          "operation": "alter",
+          "parameters": {
+            "tableName": "tableName",
+            "constraintName": "constraintName",
+            "constraintType": "string",
+            "definition": "string"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`ALTER TABLE ${sql.identifier([tableName])} ADD CONSTRAINT ${sql.identifier([constraintName])} ${sql.raw(definition)}`"
+          },
+          "returns": "command",
+          "securityNotes": "Uses sql.identifier() for names. Definition must be validated by caller."
+        },
+        "dropConstraint": {
+          "description": "Drop a constraint from a table",
+          "method": "drizzle.execute",
+          "operation": "alter",
+          "parameters": {
+            "tableName": "tableName",
+            "constraintName": "constraintName"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`ALTER TABLE ${sql.identifier([tableName])} DROP CONSTRAINT ${sql.identifier([constraintName])}`"
+          },
+          "returns": "command",
+          "securityNotes": "Uses sql.identifier() for safe identifier escaping"
+        }
+      }
+    }
+  },
   "playwrightPlaybooks": {
     "adminLogin": {
       "name": "Admin Login Flow",
