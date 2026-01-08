@@ -53,8 +53,8 @@ This project is a full-stack web application featuring:
 - 🗄️ **Database CRUD Operations** - Full Create, Read, Update, Delete functionality
 - 🛠️ **Admin Panel** - Manage tables, columns, and data through a beautiful UI
 - 📊 **Table Manager** - Create and drop tables with visual column definition
-- 🔧 **Column Manager** - Add, modify, and drop columns from existing tables
-- 🔒 **Constraint Manager** - Add and manage UNIQUE and CHECK constraints (fully implemented)
+- 🔧 **Column Manager** - Add, modify, and drop columns with DEFAULT values and NOT NULL support
+- 🔒 **Constraint Manager** - Add and manage UNIQUE, CHECK, and PRIMARY KEY constraints (fully implemented)
 - 📊 **SQL Query Interface** - Execute custom queries with safety validation
 - 🔒 **JWT Authentication** with secure session management
 - 📦 **DrizzleORM** - Support for PostgreSQL, MySQL, and SQLite
@@ -73,8 +73,8 @@ This is a **PostgreSQL database administration panel** that provides:
 - 🔒 **Secure authentication** with bcrypt password hashing and JWT sessions
 - 📊 **Database viewing** - Browse tables, view data, and explore schema
 - 🛠️ **Table management** - Create and drop tables through intuitive UI
-- 🔧 **Column management** - Add, modify, and drop columns with type selection
-- 🔐 **Constraint management** - Add UNIQUE and CHECK constraints for data validation
+- 🔧 **Column management** - Add, modify, and drop columns with DEFAULT values and NOT NULL support
+- 🔐 **Constraint management** - Add UNIQUE, CHECK, and PRIMARY KEY constraints for data validation
 - 🔍 **SQL query interface** - Execute SELECT queries safely with result display
 - 🐳 **All-in-one Docker image** - PostgreSQL 15 and admin UI in one container
 - ⚡ **Production-ready** - Deploy to Caprover, Docker, or any cloud platform

@@ -89,7 +89,7 @@
     {
       "id": "constraint-management",
       "name": "Constraint Management",
-      "description": "Add and manage table constraints (UNIQUE, CHECK)",
+      "description": "Add and manage table constraints (PRIMARY KEY, UNIQUE, CHECK)",
       "enabled": true,
       "priority": "high",
       "endpoints": [
@@ -107,6 +107,12 @@
     }
   ],
   "constraintTypes": [
+    {
+      "name": "PRIMARY KEY",
+      "description": "Unique identifier for table rows",
+      "requiresColumn": true,
+      "requiresExpression": false
+    },
     {
       "name": "UNIQUE",
       "description": "Ensure column values are unique",

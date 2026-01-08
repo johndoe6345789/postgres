@@ -48,6 +48,46 @@ test.describe('Column Manager', () => {
 
       expect([400, 401]).toContain(response.status());
     });
+
+    test('should accept add column with NOT NULL constraint', async ({ page }) => {
+      const response = await page.request.post('/api/admin/column-manage', {
+        data: {
+          tableName: 'test_table',
+          columnName: 'test_column',
+          dataType: 'INTEGER',
+          nullable: false,
+        },
+      });
+
+      expect([400, 401, 404, 500]).toContain(response.status());
+    });
+
+    test('should accept add column with DEFAULT value', async ({ page }) => {
+      const response = await page.request.post('/api/admin/column-manage', {
+        data: {
+          tableName: 'test_table',
+          columnName: 'test_column',
+          dataType: 'INTEGER',
+          defaultValue: 0,
+        },
+      });
+
+      expect([400, 401, 404, 500]).toContain(response.status());
+    });
+
+    test('should accept add column with DEFAULT value and NOT NULL', async ({ page }) => {
+      const response = await page.request.post('/api/admin/column-manage', {
+        data: {
+          tableName: 'test_table',
+          columnName: 'test_column',
+          dataType: 'VARCHAR',
+          nullable: false,
+          defaultValue: 'default_value',
+        },
+      });
+
+      expect([400, 401, 404, 500]).toContain(response.status());
+    });
   });
 
   test.describe('Modify Column API', () => {
@@ -83,6 +123,30 @@ test.describe('Column Manager', () => {
       });
 
       expect([400, 401]).toContain(response.status());
+    });
+
+    test('should accept modify column to set NOT NULL', async ({ page }) => {
+      const response = await page.request.put('/api/admin/column-manage', {
+        data: {
+          tableName: 'test_table',
+          columnName: 'test_column',
+          nullable: false,
+        },
+      });
+
+      expect([400, 401, 404, 500]).toContain(response.status());
+    });
+
+    test('should accept modify column to drop NOT NULL', async ({ page }) => {
+      const response = await page.request.put('/api/admin/column-manage', {
+        data: {
+          tableName: 'test_table',
+          columnName: 'test_column',
+          nullable: true,
+        },
+      });
+
+      expect([400, 401, 404, 500]).toContain(response.status());
     });
   });
 

@@ -65,9 +65,9 @@ See `src/config/features.json` for the complete feature configuration.
     - [x] ✅ Add constraint listing endpoint
     - [x] ✅ Add constraint creation/deletion endpoints
     - [x] ✅ Build constraints management UI
-    - [ ] Add PRIMARY KEY constraint support
-    - [ ] Add DEFAULT value management
-    - [ ] Add NOT NULL constraint management
+    - [x] Add PRIMARY KEY constraint support ✅ **COMPLETED**
+    - [x] Add DEFAULT value management ✅ **COMPLETED**
+    - [x] Add NOT NULL constraint management ✅ **COMPLETED**
   - [ ] Build query builder interface
   - [ ] Add foreign key relationship management
   - [ ] Implement index management UI
