@@ -5,7 +5,7 @@ import { useState, useCallback, useEffect } from 'react';
 import { useApiCall } from './useApiCall';
 
 export function useTableData(tableName?: string) {
-  const { data, loading, error, execute } = useApiCall();
+  const { loading, error, execute } = useApiCall();
   const [queryResult, setQueryResult] = useState<any>(null);
 
   const fetchTableData = useCallback(async (table: string) => {

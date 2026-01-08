@@ -115,7 +115,7 @@ function interpolateValue(value: any, context: RenderContext): any {
 
   // Check if it's a template string
   const templateMatch = value.match(/^{{(.+)}}$/);
-  if (templateMatch) {
+  if (templateMatch && templateMatch[1]) {
     const path = templateMatch[1].trim();
     return getNestedValue(context, path);
   }
@@ -134,8 +134,9 @@ function getNestedValue(obj: any, path: string): any {
   return path.split('.').reduce((current, key) => {
     // Handle array access like array[0]
     const arrayMatch = key.match(/(.+)\[(\d+)\]/);
-    if (arrayMatch) {
-      const [, arrayKey, index] = arrayMatch;
+    if (arrayMatch && arrayMatch[1] && arrayMatch[2]) {
+      const arrayKey = arrayMatch[1];
+      const index = arrayMatch[2];
       return current?.[arrayKey]?.[Number.parseInt(index, 10)];
     }
     return current?.[key];

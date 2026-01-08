@@ -33,7 +33,7 @@ describe('componentTreeRenderer', () => {
     const result = renderComponentNode(node, context);
 
     expect(result).toBeTruthy();
-    expect(result?.props.variant).toBe('h5');
+    expect((result as any)?.props?.variant).toBe('h5');
   });
 
   it('should interpolate template variables', () => {
@@ -110,6 +110,6 @@ describe('componentTreeRenderer', () => {
 
     const result = renderComponentNode(node, context);
     expect(result).toBeTruthy();
-    expect(result?.props.onClick).toBe(mockAction);
+    expect((result as any)?.props?.onClick).toBe(mockAction);
   });
 });
