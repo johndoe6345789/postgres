@@ -12,10 +12,7 @@ import {
   MenuItem,
   Select,
 } from '../atoms';
-import Button from '../atoms/Button';
-import TextField from '../atoms/TextField';
-import Typography from '../atoms/Typography';
-import IconButton from '../atoms/IconButton';
+import { Button, TextField, Typography, IconButton } from '../atoms';
 
 type Column = {
   name: string;

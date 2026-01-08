@@ -66,10 +66,20 @@ export async function executeStep(page: Page, step: PlaywrightStep, variables: R
       break;
 
     case 'screenshot':
+      // Generate unique filename with timestamp and random component
+      const timestamp = Date.now();
+      const random = Math.random().toString(36).substring(2, 8);
+      const uniqueId = `${timestamp}-${random}`;
+      
       if (selector) {
-        await page.locator(selector).screenshot({ path: `screenshots/${Date.now()}-${selector.replace(/[^a-z0-9]/gi, '_')}.png` });
+        const safeSelector = selector.replace(/[^a-z0-9]/gi, '_');
+        await page.locator(selector).screenshot({ 
+          path: `screenshots/${uniqueId}-${safeSelector}.png` 
+        });
       } else {
-        await page.screenshot({ path: `screenshots/${Date.now()}-page.png` });
+        await page.screenshot({ 
+          path: `screenshots/${uniqueId}-page.png` 
+        });
       }
       break;
 

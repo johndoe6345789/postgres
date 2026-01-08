@@ -9,8 +9,7 @@ import {
   MenuItem,
   Select,
 } from '../atoms';
-import Button from '../atoms/Button';
-import Typography from '../atoms/Typography';
+import { Button, Typography } from '../atoms';
 
 type DropTableDialogProps = {
   open: boolean;
