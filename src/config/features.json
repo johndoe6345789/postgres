@@ -104,6 +104,25 @@
         "icon": "Rule",
         "actions": ["list", "add", "delete"]
       }
+    },
+    {
+      "id": "query-builder",
+      "name": "Query Builder",
+      "description": "Visual query builder for creating SELECT queries",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/query-builder",
+          "methods": ["POST"],
+          "description": "Execute queries built with query builder"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "AccountTree",
+        "actions": ["build", "execute"]
+      }
     }
   ],
   "constraintTypes": [
@@ -194,6 +213,12 @@
       "featureId": "sql-query"
     },
     {
+      "id": "query-builder",
+      "label": "Query Builder",
+      "icon": "AccountTree",
+      "featureId": "query-builder"
+    },
+    {
       "id": "table-manager",
       "label": "Table Manager",
       "icon": "TableChart",
@@ -205,5 +230,17 @@
       "icon": "Rule",
       "featureId": "constraint-management"
     }
+  ],
+  "queryOperators": [
+    { "value": "=", "label": "Equals" },
+    { "value": "!=", "label": "Not Equals" },
+    { "value": ">", "label": "Greater Than" },
+    { "value": "<", "label": "Less Than" },
+    { "value": ">=", "label": "Greater or Equal" },
+    { "value": "<=", "label": "Less or Equal" },
+    { "value": "LIKE", "label": "Like (Pattern Match)" },
+    { "value": "IN", "label": "In List" },
+    { "value": "IS NULL", "label": "Is Null" },
+    { "value": "IS NOT NULL", "label": "Is Not Null" }
   ]
 }
