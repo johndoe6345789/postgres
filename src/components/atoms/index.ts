@@ -44,4 +44,5 @@ export {
   AccordionSummary,
   AccordionDetails,
   Chip,
+  Tooltip,
 } from '@mui/material';

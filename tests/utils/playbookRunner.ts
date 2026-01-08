@@ -1,0 +1,135 @@
+import { Page, expect } from '@playwright/test';
+import { getAllPlaywrightPlaybooks, PlaywrightPlaybook, PlaywrightStep } from '@/utils/featureConfig';
+
+/**
+ * Execute a single Playwright step from a playbook
+ */
+export async function executeStep(page: Page, step: PlaywrightStep, variables: Record<string, string> = {}) {
+  // Replace variables in step properties
+  const replaceVars = (str: string | undefined): string => {
+    if (!str) return '';
+    return str.replace(/\{\{(\w+)\}\}/g, (_, key) => variables[key] || '');
+  };
+
+  const selector = replaceVars(step.selector);
+  const value = replaceVars(step.value);
+  const url = replaceVars(step.url);
+  const text = replaceVars(step.text);
+
+  switch (step.action) {
+    case 'goto':
+      if (url) {
+        await page.goto(url);
+      }
+      break;
+
+    case 'click':
+      if (selector) {
+        await page.click(selector);
+      }
+      break;
+
+    case 'fill':
+      if (selector && value) {
+        await page.fill(selector, value);
+      }
+      break;
+
+    case 'select':
+      if (selector && value) {
+        await page.selectOption(selector, value);
+      }
+      break;
+
+    case 'wait':
+      if (step.timeout) {
+        await page.waitForTimeout(step.timeout);
+      }
+      break;
+
+    case 'expect':
+      if (url === 'redirected') {
+        await expect(page).toHaveURL(new RegExp(selector || ''));
+      } else if (text === 'visible' && selector) {
+        await expect(page.locator(selector)).toBeVisible();
+      } else if (text && selector) {
+        await expect(page.locator(selector)).toContainText(text);
+      } else if (text) {
+        // Check for status code in text
+        const statusCode = parseInt(text, 10);
+        if (!isNaN(statusCode)) {
+          // This is a status code check - would need API interception
+          // For now, we skip this as it requires special handling
+          console.warn(`Status code check (${statusCode}) not yet implemented in playbook runner`);
+        }
+      }
+      break;
+
+    case 'screenshot':
+      if (selector) {
+        await page.locator(selector).screenshot({ path: `screenshots/${Date.now()}-${selector.replace(/[^a-z0-9]/gi, '_')}.png` });
+      } else {
+        await page.screenshot({ path: `screenshots/${Date.now()}-page.png` });
+      }
+      break;
+
+    default:
+      console.warn(`Unknown step action: ${step.action}`);
+  }
+}
+
+/**
+ * Execute a full playbook from features.json
+ */
+export async function runPlaybook(
+  page: Page,
+  playbookName: string,
+  variables: Record<string, string> = {},
+  options: { runCleanup?: boolean } = {}
+) {
+  const playbooks = getAllPlaywrightPlaybooks();
+  const playbook = playbooks[playbookName];
+
+  if (!playbook) {
+    throw new Error(`Playbook not found: ${playbookName}`);
+  }
+
+  console.log(`Running playbook: ${playbook.name}`);
+  console.log(`Description: ${playbook.description}`);
+
+  // Execute main steps
+  for (const step of playbook.steps) {
+    await executeStep(page, step, variables);
+  }
+
+  // Execute cleanup steps if requested and they exist
+  if (options.runCleanup && playbook.cleanup) {
+    console.log('Running cleanup steps...');
+    for (const step of playbook.cleanup) {
+      await executeStep(page, step, variables);
+    }
+  }
+}
+
+/**
+ * Get all playbooks by tag
+ */
+export function getPlaybooksByTag(tag: string): Record<string, PlaywrightPlaybook> {
+  const allPlaybooks = getAllPlaywrightPlaybooks();
+  const filtered: Record<string, PlaywrightPlaybook> = {};
+
+  for (const [name, playbook] of Object.entries(allPlaybooks)) {
+    if (playbook.tags?.includes(tag)) {
+      filtered[name] = playbook;
+    }
+  }
+
+  return filtered;
+}
+
+/**
+ * List all available playbooks
+ */
+export function listPlaybooks(): string[] {
+  return Object.keys(getAllPlaywrightPlaybooks());
+}

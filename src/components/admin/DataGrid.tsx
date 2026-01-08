@@ -9,7 +9,7 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-} from '@mui/material';
+} from '../atoms';
 import IconButton from '../atoms/IconButton';
 
 type DataGridProps = {
