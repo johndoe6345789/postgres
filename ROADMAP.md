@@ -8,7 +8,7 @@ This document outlines the planned features, improvements, and technical debt it
 - Next.js 16 with App Router
 - PostgreSQL 15 integration
 - DrizzleORM for database operations
-- Clerk authentication system
+- Basic authentication system (Clerk integration available)
 - Docker containerization
 - Unit testing with Vitest
 - E2E testing with Playwright
@@ -34,6 +34,16 @@ This document outlines the planned features, improvements, and technical debt it
   - Implement index management UI
   - Add table migration history viewer
   - Create database backup/restore UI
+
+- [ ] **Simple Authentication UI**
+  - Build clean login screen with username/password
+  - Create user registration page
+  - Add password reset flow
+  - Implement "Remember me" functionality
+  - Add basic form validation
+  - Create user profile page
+  - Add password change functionality
+  - Session timeout handling
 
 - [ ] **Improve Docker Build**
   - ✅ Fixed PostgreSQL database initialization errors
@@ -216,12 +226,15 @@ This document outlines the planned features, improvements, and technical debt it
   - Billing and subscription management
   - Per-tenant database schemas
 
-- [ ] **Advanced Authentication**
-  - OAuth provider support (Google, GitHub, etc.)
-  - Passwordless authentication (Magic Links)
-  - Biometric authentication (WebAuthn)
-  - Two-factor authentication (2FA) enhancements
-  - Session management improvements
+- [ ] **Authentication Improvements**
+  - Simple username/password login screen
+  - User registration form
+  - Password reset functionality
+  - Remember me option
+  - Session timeout configuration
+  - Account lockout after failed attempts
+  - Password strength requirements
+  - Basic user profile management
 
 - [ ] **Real-Time Features**
   - WebSocket support
