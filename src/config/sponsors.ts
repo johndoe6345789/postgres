@@ -51,19 +51,6 @@ export const sponsors: PageSponsorsConfig = {
       },
       translationKey: 'error_reporting_powered_by',
     },
-    {
-      id: 'codecov',
-      name: 'Codecov',
-      description: 'Code Coverage',
-      url: 'https://about.codecov.io/codecov-free-trial/?utm_source=github&utm_medium=paid-community&utm_campaign=general-fy25q1-nextjs&utm_content=github-banner-nextjsboilerplate-logo',
-      logo: {
-        src: '',
-        alt: 'Codecov',
-        width: 0,
-        height: 0,
-      },
-      translationKey: 'coverage_powered_by',
-    },
   ],
   'portfolio-slug': [
     {

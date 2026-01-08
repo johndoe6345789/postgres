@@ -33,7 +33,7 @@ export function SponsorSection({ sponsors, namespace }: SponsorSectionProps) {
       </div>
 
       {sponsors
-        .filter(sponsor => sponsor.logo.src)
+        .filter(sponsor => sponsor.logo.src && sponsor.logo.width > 0 && sponsor.logo.height > 0)
         .map(sponsor => (
           <a
             key={sponsor.id}
