@@ -24,21 +24,13 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
-import { getFeatureById } from '@/utils/featureConfig';
+import { getFeatureById, getIndexTypes } from '@/utils/featureConfig';
 import ConfirmDialog from './ConfirmDialog';
 
 type IndexManagerTabProps = {
   tables: Array<{ table_name: string }>;
   onRefresh: () => void;
 };
-
-const INDEX_TYPES = [
-  { value: 'BTREE', label: 'B-Tree (Default)', description: 'General purpose, balanced tree index' },
-  { value: 'HASH', label: 'Hash', description: 'Fast equality searches' },
-  { value: 'GIN', label: 'GIN', description: 'Generalized Inverted Index for full-text search' },
-  { value: 'GIST', label: 'GiST', description: 'Generalized Search Tree for geometric data' },
-  { value: 'BRIN', label: 'BRIN', description: 'Block Range Index for very large tables' },
-];
 
 export default function IndexManagerTab({
   tables,
@@ -62,6 +54,7 @@ export default function IndexManagerTab({
   const [deleteIndex, setDeleteIndex] = useState<string | null>(null);
 
   const feature = getFeatureById('index-management');
+  const INDEX_TYPES = getIndexTypes();
 
   // Fetch indexes for selected table
   const fetchIndexes = async (tableName: string) => {

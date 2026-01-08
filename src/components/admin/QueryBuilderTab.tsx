@@ -17,6 +17,7 @@ import {
   Typography,
 } from '@mui/material';
 import { useState } from 'react';
+import { getQueryOperators } from '@/utils/featureConfig';
 import DataGrid from './DataGrid';
 
 type QueryBuilderTabProps = {
@@ -29,19 +30,6 @@ type WhereCondition = {
   operator: string;
   value: string;
 };
-
-const OPERATORS = [
-  { value: '=', label: 'Equals' },
-  { value: '!=', label: 'Not Equals' },
-  { value: '>', label: 'Greater Than' },
-  { value: '<', label: 'Less Than' },
-  { value: '>=', label: 'Greater or Equal' },
-  { value: '<=', label: 'Less or Equal' },
-  { value: 'LIKE', label: 'Like (Pattern Match)' },
-  { value: 'IN', label: 'In List' },
-  { value: 'IS NULL', label: 'Is Null' },
-  { value: 'IS NOT NULL', label: 'Is Not Null' },
-];
 
 export default function QueryBuilderTab({
   tables,
@@ -59,6 +47,9 @@ export default function QueryBuilderTab({
   const [generatedQuery, setGeneratedQuery] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Get operators from configuration
+  const OPERATORS = getQueryOperators();
 
   // Fetch columns when table is selected
   const handleTableChange = async (tableName: string) => {
