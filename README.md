@@ -38,6 +38,8 @@ This project is a full-stack web application featuring:
 - **PostgreSQL 15** included as default database in Docker container
 - **Multi-database support** - Connect to external PostgreSQL, MySQL, or SQLite servers
 - **Admin panel** with authentication, table management, and SQL query interface
+- **Query Builder** - Visual SELECT query builder with filters, sorting, and pagination
+- **Index Management** - Create and manage database indexes (BTREE, HASH, GIN, GIST, BRIN)
 - **Authentication** using JWT with secure session management
 - **TypeScript** for type safety across the entire stack
 - **Tailwind CSS 4** for modern, responsive styling
@@ -55,6 +57,8 @@ This project is a full-stack web application featuring:
 - 📊 **Table Manager** - Create and drop tables with visual column definition
 - 🔧 **Column Manager** - Add, modify, and drop columns with DEFAULT values and NOT NULL support
 - 🔒 **Constraint Manager** - Add and manage UNIQUE, CHECK, and PRIMARY KEY constraints (fully implemented)
+- 🔍 **Query Builder** - Visual SELECT query builder with WHERE conditions, ORDER BY, LIMIT/OFFSET
+- ⚡ **Index Manager** - Create and manage database indexes for performance optimization
 - 📊 **SQL Query Interface** - Execute custom queries with safety validation
 - 🔒 **JWT Authentication** with secure session management
 - 📦 **DrizzleORM** - Support for PostgreSQL, MySQL, and SQLite
@@ -286,6 +290,8 @@ Access the admin panel at http://localhost:3000/admin/login
 - 🛠️ **Table Manager**: Create new tables with columns, drop existing tables
 - 🔧 **Column Manager**: Add, modify, and delete columns from tables
 - 🔍 **SQL Query Interface**: Execute custom SELECT queries
+- 🎨 **Query Builder**: Visual query builder with filters and sorting
+- ⚡ **Index Manager**: Create and manage database indexes
 - 🛠️ **Schema Inspector**: View table structures, columns, and relationships
 - 🔐 **Secure Access**: JWT-based authentication with session management
 
