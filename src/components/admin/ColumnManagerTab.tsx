@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { getComponentTree, getDataTypes, getFeatureById } from '@/utils/featureConfig';
-import ComponentTreeRenderer from '@/utils/ComponentTreeRenderer';
+import ComponentTreeRenderer from '@/utils/componentTreeRenderer';
 import ColumnDialog from './ColumnDialog';
 
 type ColumnManagerTabProps = {

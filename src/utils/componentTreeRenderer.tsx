@@ -1,7 +1,10 @@
 /**
- * Component Tree Renderer
+ * Unified Component Tree Renderer
  * Dynamically renders React component trees from JSON configuration
+ * Merges both previous implementations for maximum compatibility
  */
+
+'use client';
 
 import React from 'react';
 import type { ComponentNode } from './featureConfig';
@@ -22,6 +25,7 @@ import {
   DialogTitle,
   Drawer,
   FormControl,
+  FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
@@ -43,6 +47,7 @@ import {
   Tabs,
   TextField,
   Toolbar,
+  Tooltip,
   Typography,
   Chip,
   Accordion,
@@ -70,6 +75,7 @@ const componentRegistry: Record<string, React.ComponentType<any>> = {
   DialogTitle,
   Drawer,
   FormControl,
+  FormControlLabel,
   Grid,
   IconButton,
   InputLabel,
@@ -91,6 +97,7 @@ const componentRegistry: Record<string, React.ComponentType<any>> = {
   Tabs,
   TextField,
   Toolbar,
+  Tooltip,
   Typography,
   Chip,
   Accordion,
@@ -102,6 +109,7 @@ const componentRegistry: Record<string, React.ComponentType<any>> = {
 type RenderContext = {
   data?: Record<string, any>;
   actions?: Record<string, (...args: any[]) => any>;
+  handlers?: Record<string, (...args: any[]) => any>; // Alias for backward compatibility
   state?: Record<string, any>;
 };
 
@@ -171,10 +179,10 @@ function processProps(props: Record<string, any> = {}, context: RenderContext): 
 
   for (const [key, value] of Object.entries(props)) {
     // Handle special props
-    if (key === 'onClick' || key === 'onChange' || key === 'onClose') {
-      // Map to action functions
+    if (key === 'onClick' || key === 'onChange' || key === 'onClose' || key === 'onBlur' || key === 'onFocus') {
+      // Map to action functions - check both actions and handlers for backward compatibility
       if (typeof value === 'string') {
-        processed[key] = context.actions?.[value];
+        processed[key] = context.actions?.[value] || context.handlers?.[value];
       } else {
         processed[key] = value;
       }
@@ -290,7 +298,7 @@ export function renderComponentNode(
 }
 
 /**
- * Main component tree renderer
+ * Main component tree renderer (named export)
  */
 export function ComponentTreeRenderer({
   tree,
@@ -299,6 +307,27 @@ export function ComponentTreeRenderer({
   tree: ComponentNode;
   context: RenderContext;
 }): React.ReactElement | null {
+  return renderComponentNode(tree, context, 'root');
+}
+
+/**
+ * Default export for backward compatibility with old imports
+ */
+export default function ComponentTreeRendererDefault({
+  tree,
+  data = {},
+  handlers = {},
+}: {
+  tree: ComponentNode;
+  data?: Record<string, any>;
+  handlers?: Record<string, (...args: any[]) => void>;
+}): React.ReactElement | null {
+  const context: RenderContext = {
+    data,
+    handlers,
+    actions: handlers, // Map handlers to actions for compatibility
+  };
+  
   return renderComponentNode(tree, context, 'root');
 }
 
