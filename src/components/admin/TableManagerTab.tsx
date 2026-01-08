@@ -1,20 +1,8 @@
 'use client';
 
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
-import TableChartIcon from '@mui/icons-material/TableChart';
-import {
-  Box,
-  Button,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
-  Paper,
-  Typography,
-} from '@mui/material';
 import { useState } from 'react';
-import { getDataTypes, getFeatureById } from '@/utils/featureConfig';
+import { getComponentTree, getDataTypes, getFeatureById } from '@/utils/featureConfig';
+import ComponentTreeRenderer from '@/utils/ComponentTreeRenderer';
 import CreateTableDialog from './CreateTableDialog';
 import DropTableDialog from './DropTableDialog';
 
@@ -40,63 +28,30 @@ export default function TableManagerTab({
   const canCreate = feature?.ui.actions.includes('create');
   const canDelete = feature?.ui.actions.includes('delete');
 
+  // Get component tree from features.json
+  const tree = getComponentTree('TableManagerTab');
+
+  // Prepare data for the component tree
+  const data = {
+    feature,
+    tables,
+    canCreate,
+    canDelete,
+  };
+
+  // Define handlers for the component tree
+  const handlers = {
+    openCreateDialog: () => setOpenCreateDialog(true),
+    openDropDialog: () => setOpenDropDialog(true),
+  };
+
   return (
     <>
-      <Typography variant="h5" gutterBottom>
-        {feature?.name || 'Table Manager'}
-      </Typography>
-
-      {feature?.description && (
-        <Typography variant="body2" color="text.secondary" gutterBottom>
-          {feature.description}
-        </Typography>
+      {tree ? (
+        <ComponentTreeRenderer tree={tree} data={data} handlers={handlers} />
+      ) : (
+        <div>Error: Component tree not found</div>
       )}
-
-      <Box sx={{ mt: 2, mb: 2 }}>
-        {canCreate && (
-          <Button
-            variant="contained"
-            startIcon={<AddIcon />}
-            onClick={() => setOpenCreateDialog(true)}
-            sx={{ mr: 2 }}
-          >
-            Create Table
-          </Button>
-        )}
-        {canDelete && (
-          <Button
-            variant="outlined"
-            color="error"
-            startIcon={<DeleteIcon />}
-            onClick={() => setOpenDropDialog(true)}
-          >
-            Drop Table
-          </Button>
-        )}
-      </Box>
-
-      <Paper sx={{ mt: 2 }}>
-        <Box sx={{ p: 2 }}>
-          <Typography variant="h6" gutterBottom>
-            Existing Tables
-          </Typography>
-          <List>
-            {tables.map(table => (
-              <ListItem key={table.table_name}>
-                <ListItemIcon>
-                  <TableChartIcon />
-                </ListItemIcon>
-                <ListItemText primary={table.table_name} />
-              </ListItem>
-            ))}
-            {tables.length === 0 && (
-              <ListItem>
-                <ListItemText primary="No tables found" />
-              </ListItem>
-            )}
-          </List>
-        </Box>
-      </Paper>
 
       <CreateTableDialog
         open={openCreateDialog}

@@ -1474,6 +1474,493 @@
           ]
         }
       ]
+    },
+    "ConstraintManagerTab": {
+      "component": "Box",
+      "children": [
+        {
+          "component": "Typography",
+          "props": {
+            "variant": "h5",
+            "gutterBottom": true,
+            "text": "{{feature.name}}"
+          }
+        },
+        {
+          "component": "Typography",
+          "condition": "feature.description",
+          "props": {
+            "variant": "body2",
+            "color": "text.secondary",
+            "gutterBottom": true,
+            "text": "{{feature.description}}"
+          }
+        },
+        {
+          "component": "Paper",
+          "props": {
+            "sx": { "p": 2, "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "FormControl",
+              "props": {
+                "fullWidth": true
+              },
+              "children": [
+                {
+                  "component": "InputLabel",
+                  "props": {
+                    "text": "Select Table"
+                  }
+                },
+                {
+                  "component": "Select",
+                  "props": {
+                    "value": "{{selectedTable}}",
+                    "label": "Select Table",
+                    "onChange": "handleTableChange"
+                  },
+                  "children": [
+                    {
+                      "component": "MenuItem",
+                      "forEach": "tables",
+                      "props": {
+                        "value": "{{table.table_name}}",
+                        "text": "{{table.table_name}}"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Box",
+          "condition": "selectedTable && canAdd",
+          "props": {
+            "sx": { "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "Button",
+              "condition": "canAdd",
+              "props": {
+                "variant": "contained",
+                "startIcon": "Add",
+                "onClick": "openAddDialog",
+                "text": "Add Constraint"
+              }
+            }
+          ]
+        },
+        {
+          "component": "Paper",
+          "condition": "constraints && constraints.length > 0",
+          "props": {
+            "sx": { "mt": 2 }
+          },
+          "children": [
+            {
+              "component": "TableContainer",
+              "children": [
+                {
+                  "component": "Table",
+                  "props": {
+                    "size": "small"
+                  },
+                  "children": [
+                    {
+                      "component": "TableHead",
+                      "children": [
+                        {
+                          "component": "TableRow",
+                          "children": [
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "Constraint Name"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "Type"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "Definition"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "condition": "canDelete",
+                              "props": {
+                                "text": "Actions"
+                              }
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "component": "TableBody",
+                      "children": [
+                        {
+                          "component": "TableRow",
+                          "forEach": "constraints",
+                          "children": [
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "{{constraint.constraint_name}}"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "{{constraint.constraint_type}}"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "props": {
+                                "text": "{{constraint.definition || '-'}}"
+                              }
+                            },
+                            {
+                              "component": "TableCell",
+                              "condition": "canDelete",
+                              "children": [
+                                {
+                                  "component": "IconButton",
+                                  "props": {
+                                    "size": "small",
+                                    "color": "error",
+                                    "onClick": "handleDeleteConstraint"
+                                  },
+                                  "children": [
+                                    {
+                                      "component": "Typography",
+                                      "props": {
+                                        "text": "🗑️"
+                                      }
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "IndexManagerTab": {
+      "component": "Box",
+      "children": [
+        {
+          "component": "Typography",
+          "props": {
+            "variant": "h5",
+            "gutterBottom": true,
+            "text": "{{feature.name}}"
+          }
+        },
+        {
+          "component": "Typography",
+          "condition": "feature.description",
+          "props": {
+            "variant": "body2",
+            "color": "text.secondary",
+            "gutterBottom": true,
+            "text": "{{feature.description}}"
+          }
+        },
+        {
+          "component": "Paper",
+          "props": {
+            "sx": { "p": 2, "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "FormControl",
+              "props": {
+                "fullWidth": true
+              },
+              "children": [
+                {
+                  "component": "InputLabel",
+                  "props": {
+                    "text": "Select Table"
+                  }
+                },
+                {
+                  "component": "Select",
+                  "props": {
+                    "value": "{{selectedTable}}",
+                    "label": "Select Table",
+                    "onChange": "handleTableChange"
+                  },
+                  "children": [
+                    {
+                      "component": "MenuItem",
+                      "forEach": "tables",
+                      "props": {
+                        "value": "{{table.table_name}}",
+                        "text": "{{table.table_name}}"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Box",
+          "condition": "selectedTable",
+          "props": {
+            "sx": { "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "Button",
+              "props": {
+                "variant": "contained",
+                "startIcon": "Add",
+                "onClick": "openCreateDialog",
+                "text": "Create Index"
+              }
+            }
+          ]
+        },
+        {
+          "component": "Paper",
+          "condition": "indexes && indexes.length > 0",
+          "props": {
+            "sx": { "mt": 2 }
+          },
+          "children": [
+            {
+              "component": "Box",
+              "props": {
+                "sx": { "p": 2 }
+              },
+              "children": [
+                {
+                  "component": "Typography",
+                  "props": {
+                    "variant": "h6",
+                    "gutterBottom": true,
+                    "text": "Existing Indexes"
+                  }
+                },
+                {
+                  "component": "List",
+                  "children": [
+                    {
+                      "component": "ListItem",
+                      "forEach": "indexes",
+                      "children": [
+                        {
+                          "component": "ListItemIcon",
+                          "children": [
+                            {
+                              "component": "Typography",
+                              "props": {
+                                "text": "⚡"
+                              }
+                            }
+                          ]
+                        },
+                        {
+                          "component": "ListItemText",
+                          "props": {
+                            "primary": "{{index.indexname}}",
+                            "secondary": "{{index.indexdef}}"
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    "QueryBuilderTab": {
+      "component": "Box",
+      "children": [
+        {
+          "component": "Typography",
+          "props": {
+            "variant": "h5",
+            "gutterBottom": true,
+            "text": "Query Builder"
+          }
+        },
+        {
+          "component": "Typography",
+          "props": {
+            "variant": "body2",
+            "color": "text.secondary",
+            "gutterBottom": true,
+            "text": "Build and execute SELECT queries visually"
+          }
+        },
+        {
+          "component": "Paper",
+          "props": {
+            "sx": { "p": 2, "mb": 2 }
+          },
+          "children": [
+            {
+              "component": "FormControl",
+              "props": {
+                "fullWidth": true,
+                "sx": { "mb": 2 }
+              },
+              "children": [
+                {
+                  "component": "InputLabel",
+                  "props": {
+                    "text": "Select Table"
+                  }
+                },
+                {
+                  "component": "Select",
+                  "props": {
+                    "value": "{{selectedTable}}",
+                    "label": "Select Table",
+                    "onChange": "handleTableChange"
+                  },
+                  "children": [
+                    {
+                      "component": "MenuItem",
+                      "forEach": "tables",
+                      "props": {
+                        "value": "{{table.table_name}}",
+                        "text": "{{table.table_name}}"
+                      }
+                    }
+                  ]
+                }
+              ]
+            },
+            {
+              "component": "Box",
+              "condition": "selectedTable",
+              "children": [
+                {
+                  "component": "Typography",
+                  "props": {
+                    "variant": "subtitle2",
+                    "gutterBottom": true,
+                    "text": "Select Columns"
+                  }
+                },
+                {
+                  "component": "Box",
+                  "props": {
+                    "sx": { "display": "flex", "flexWrap": "wrap", "gap": 1, "mb": 2 }
+                  },
+                  "children": [
+                    {
+                      "component": "Chip",
+                      "forEach": "availableColumns",
+                      "props": {
+                        "label": "{{column}}",
+                        "onClick": "handleColumnToggle",
+                        "color": "{{selectedColumns.includes(column) ? 'primary' : 'default'}}"
+                      }
+                    }
+                  ]
+                },
+                {
+                  "component": "Box",
+                  "props": {
+                    "sx": { "mt": 2, "display": "flex", "gap": 2 }
+                  },
+                  "children": [
+                    {
+                      "component": "Button",
+                      "props": {
+                        "variant": "contained",
+                        "startIcon": "PlayArrow",
+                        "onClick": "handleExecuteQuery",
+                        "disabled": "{{!selectedTable || selectedColumns.length === 0}}",
+                        "text": "Execute Query"
+                      }
+                    },
+                    {
+                      "component": "Button",
+                      "props": {
+                        "variant": "outlined",
+                        "onClick": "handleReset",
+                        "text": "Reset"
+                      }
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "component": "Paper",
+          "condition": "generatedQuery",
+          "props": {
+            "sx": { "p": 2, "mb": 2, "backgroundColor": "#f5f5f5" }
+          },
+          "children": [
+            {
+              "component": "Typography",
+              "props": {
+                "variant": "subtitle2",
+                "gutterBottom": true,
+                "text": "Generated SQL"
+              }
+            },
+            {
+              "component": "Typography",
+              "props": {
+                "variant": "body2",
+                "sx": { "fontFamily": "monospace", "whiteSpace": "pre-wrap" },
+                "text": "{{generatedQuery}}"
+              }
+            }
+          ]
+        },
+        {
+          "component": "Box",
+          "condition": "result",
+          "props": {
+            "sx": { "mt": 2 }
+          },
+          "children": [
+            {
+              "component": "Typography",
+              "props": {
+                "variant": "h6",
+                "gutterBottom": true,
+                "text": "Query Results ({{result.rows?.length || 0}} rows)"
+              }
+            }
+          ]
+        }
+      ]
     }
   },
   "componentProps": {
