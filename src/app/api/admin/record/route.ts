@@ -59,7 +59,7 @@ export async function POST(request: Request) {
     
     const query = `INSERT INTO "${tableName}" (${columnList}) VALUES (${placeholders}) RETURNING *`;
     
-    const result = await db.execute(sql.raw(query, values));
+    const result = await db.execute(sql.raw(query));
 
     return NextResponse.json({
       success: true,
@@ -120,9 +120,8 @@ export async function PUT(request: Request) {
       .join(' AND ');
     
     const query = `UPDATE "${tableName}" SET ${setClause} WHERE ${whereClause} RETURNING *`;
-    const allValues = [...values, ...Object.values(primaryKey)];
     
-    const result = await db.execute(sql.raw(query, allValues));
+    const result = await db.execute(sql.raw(query));
 
     if (result.rowCount === 0) {
       return NextResponse.json(
@@ -179,9 +178,8 @@ export async function DELETE(request: Request) {
       .join(' AND ');
     
     const query = `DELETE FROM "${tableName}" WHERE ${whereClause} RETURNING *`;
-    const values = Object.values(primaryKey);
     
-    const result = await db.execute(sql.raw(query, values));
+    const result = await db.execute(sql.raw(query));
 
     if (result.rowCount === 0) {
       return NextResponse.json(

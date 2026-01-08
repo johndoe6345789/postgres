@@ -68,7 +68,7 @@ export default function CreateTableDialog({
 
   const updateColumn = (index: number, field: string, value: any) => {
     const updated = [...columns];
-    updated[index] = { ...updated[index], [field]: value };
+    updated[index] = { ...updated[index], [field]: value } as Column;
     setColumns(updated);
   };
 

@@ -2894,5 +2894,615 @@
     { "value": "IN", "label": "In List" },
     { "value": "IS NULL", "label": "Is Null" },
     { "value": "IS NOT NULL", "label": "Is Not Null" }
-  ]
+  ],
+  "sqlTemplates": {
+    "validation": {
+      "validateTable": {
+        "description": "Check if a table exists in the public schema",
+        "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' AND table_name = {{tableName}}",
+        "returns": "rows"
+      },
+      "validateColumn": {
+        "description": "Check if a column exists in a table",
+        "query": "SELECT column_name FROM information_schema.columns WHERE table_schema = 'public' AND table_name = {{tableName}} AND column_name = {{columnName}}",
+        "returns": "rows"
+      }
+    },
+    "tables": {
+      "listTables": {
+        "description": "Get all tables in the public schema",
+        "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public' ORDER BY table_name",
+        "returns": "rows"
+      },
+      "getTableSchema": {
+        "description": "Get detailed schema information for a table",
+        "query": "SELECT column_name, data_type, is_nullable, column_default, character_maximum_length FROM information_schema.columns WHERE table_schema = 'public' AND table_name = {{tableName}} ORDER BY ordinal_position",
+        "returns": "rows"
+      },
+      "getTablePrimaryKeys": {
+        "description": "Get primary key columns for a table",
+        "query": "SELECT kcu.column_name FROM information_schema.table_constraints tc JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema WHERE tc.constraint_type = 'PRIMARY KEY' AND tc.table_schema = 'public' AND tc.table_name = {{tableName}}",
+        "returns": "rows"
+      },
+      "getTableData": {
+        "description": "Get all data from a table with limit",
+        "query": "SELECT * FROM \"{{tableName}}\" LIMIT {{limit}}",
+        "returns": "rows",
+        "defaultParams": {
+          "limit": 100
+        }
+      },
+      "createTable": {
+        "description": "Create a new table with columns",
+        "query": "CREATE TABLE \"{{tableName}}\" ({{columnDefinitions}})",
+        "returns": "command",
+        "example": "CREATE TABLE \"users\" (id SERIAL PRIMARY KEY, name VARCHAR(255) NOT NULL, email VARCHAR(255) UNIQUE)"
+      },
+      "dropTable": {
+        "description": "Drop a table",
+        "query": "DROP TABLE IF EXISTS \"{{tableName}}\" CASCADE",
+        "returns": "command"
+      }
+    },
+    "columns": {
+      "addColumn": {
+        "description": "Add a new column to a table",
+        "query": "ALTER TABLE \"{{tableName}}\" ADD COLUMN \"{{columnName}}\" {{dataType}}{{nullable}}{{defaultValue}}",
+        "returns": "command",
+        "example": "ALTER TABLE \"users\" ADD COLUMN \"age\" INTEGER NOT NULL DEFAULT 0"
+      },
+      "modifyColumn": {
+        "description": "Modify column data type",
+        "query": "ALTER TABLE \"{{tableName}}\" ALTER COLUMN \"{{columnName}}\" TYPE {{dataType}}",
+        "returns": "command"
+      },
+      "renameColumn": {
+        "description": "Rename a column",
+        "query": "ALTER TABLE \"{{tableName}}\" RENAME COLUMN \"{{oldName}}\" TO \"{{newName}}\"",
+        "returns": "command"
+      },
+      "dropColumn": {
+        "description": "Drop a column from a table",
+        "query": "ALTER TABLE \"{{tableName}}\" DROP COLUMN \"{{columnName}}\"",
+        "returns": "command"
+      },
+      "setColumnNull": {
+        "description": "Set a column to allow NULL values",
+        "query": "ALTER TABLE \"{{tableName}}\" ALTER COLUMN \"{{columnName}}\" DROP NOT NULL",
+        "returns": "command"
+      },
+      "setColumnNotNull": {
+        "description": "Set a column to NOT NULL",
+        "query": "ALTER TABLE \"{{tableName}}\" ALTER COLUMN \"{{columnName}}\" SET NOT NULL",
+        "returns": "command"
+      }
+    },
+    "records": {
+      "insert": {
+        "description": "Insert a new record into a table",
+        "query": "INSERT INTO \"{{tableName}}\" ({{columns}}) VALUES ({{values}}) RETURNING *",
+        "returns": "rows",
+        "example": "INSERT INTO \"users\" (name, email) VALUES ('John Doe', 'john@example.com') RETURNING *"
+      },
+      "update": {
+        "description": "Update a record in a table",
+        "query": "UPDATE \"{{tableName}}\" SET {{setClause}} WHERE {{whereClause}} RETURNING *",
+        "returns": "rows",
+        "example": "UPDATE \"users\" SET name = 'Jane Doe' WHERE id = 1 RETURNING *"
+      },
+      "delete": {
+        "description": "Delete a record from a table",
+        "query": "DELETE FROM \"{{tableName}}\" WHERE {{whereClause}} RETURNING *",
+        "returns": "rows",
+        "example": "DELETE FROM \"users\" WHERE id = 1 RETURNING *"
+      },
+      "select": {
+        "description": "Select records from a table with conditions",
+        "query": "SELECT {{columns}} FROM \"{{tableName}}\"{{whereClause}}{{orderBy}}{{limit}}",
+        "returns": "rows",
+        "example": "SELECT id, name, email FROM \"users\" WHERE active = true ORDER BY created_at DESC LIMIT 50"
+      }
+    },
+    "constraints": {
+      "listConstraints": {
+        "description": "List all constraints for a table",
+        "query": "SELECT tc.constraint_name, tc.constraint_type, STRING_AGG(kcu.column_name, ', ') as columns, cc.check_clause FROM information_schema.table_constraints tc LEFT JOIN information_schema.key_column_usage kcu ON tc.constraint_name = kcu.constraint_name AND tc.table_schema = kcu.table_schema LEFT JOIN information_schema.check_constraints cc ON tc.constraint_name = cc.constraint_name WHERE tc.table_schema = 'public' AND tc.table_name = {{tableName}} GROUP BY tc.constraint_name, tc.constraint_type, cc.check_clause",
+        "returns": "rows"
+      },
+      "addPrimaryKey": {
+        "description": "Add primary key constraint",
+        "query": "ALTER TABLE \"{{tableName}}\" ADD CONSTRAINT \"{{constraintName}}\" PRIMARY KEY ({{columns}})",
+        "returns": "command"
+      },
+      "addUnique": {
+        "description": "Add unique constraint",
+        "query": "ALTER TABLE \"{{tableName}}\" ADD CONSTRAINT \"{{constraintName}}\" UNIQUE ({{columns}})",
+        "returns": "command"
+      },
+      "addCheck": {
+        "description": "Add check constraint",
+        "query": "ALTER TABLE \"{{tableName}}\" ADD CONSTRAINT \"{{constraintName}}\" CHECK ({{expression}})",
+        "returns": "command",
+        "example": "ALTER TABLE \"users\" ADD CONSTRAINT \"age_positive\" CHECK (age >= 0)"
+      },
+      "addForeignKey": {
+        "description": "Add foreign key constraint",
+        "query": "ALTER TABLE \"{{tableName}}\" ADD CONSTRAINT \"{{constraintName}}\" FOREIGN KEY ({{columns}}) REFERENCES \"{{refTable}}\" ({{refColumns}})",
+        "returns": "command"
+      },
+      "dropConstraint": {
+        "description": "Drop a constraint",
+        "query": "ALTER TABLE \"{{tableName}}\" DROP CONSTRAINT \"{{constraintName}}\"",
+        "returns": "command"
+      }
+    },
+    "indexes": {
+      "listIndexes": {
+        "description": "List all indexes for a table",
+        "query": "SELECT i.relname as indexname, ix.indisprimary as is_primary, ix.indisunique as is_unique, am.amname as index_type, pg_get_indexdef(ix.indexrelid) as indexdef FROM pg_class t JOIN pg_index ix ON t.oid = ix.indrelid JOIN pg_class i ON i.oid = ix.indexrelid JOIN pg_am am ON i.relam = am.oid WHERE t.relkind = 'r' AND t.relname = {{tableName}} AND t.relnamespace = (SELECT oid FROM pg_namespace WHERE nspname = 'public') ORDER BY i.relname",
+        "returns": "rows"
+      },
+      "createIndex": {
+        "description": "Create an index on a table",
+        "query": "CREATE{{unique}} INDEX{{ifNotExists}} \"{{indexName}}\" ON \"{{tableName}}\" USING {{indexType}} ({{columns}})",
+        "returns": "command",
+        "example": "CREATE INDEX \"idx_users_email\" ON \"users\" USING BTREE (email)",
+        "defaultParams": {
+          "indexType": "BTREE",
+          "unique": "",
+          "ifNotExists": ""
+        }
+      },
+      "dropIndex": {
+        "description": "Drop an index",
+        "query": "DROP INDEX IF EXISTS \"{{indexName}}\"",
+        "returns": "command"
+      }
+    },
+    "queryBuilder": {
+      "buildSelect": {
+        "description": "Build a SELECT query with filters, sorting, and pagination",
+        "query": "SELECT {{columns}} FROM \"{{tableName}}\"{{where}}{{orderBy}}{{limit}}{{offset}}",
+        "returns": "rows",
+        "defaultParams": {
+          "columns": "*",
+          "where": "",
+          "orderBy": "",
+          "limit": "",
+          "offset": ""
+        }
+      }
+    }
+  },
+  "playwrightPlaybooks": {
+    "adminLogin": {
+      "name": "Admin Login Flow",
+      "description": "Complete admin login flow for testing",
+      "tags": ["admin", "auth", "login"],
+      "steps": [
+        {
+          "action": "goto",
+          "url": "/admin/login"
+        },
+        {
+          "action": "expect",
+          "selector": "input[name='username']",
+          "text": "visible"
+        },
+        {
+          "action": "fill",
+          "selector": "input[name='username']",
+          "value": "{{username}}"
+        },
+        {
+          "action": "fill",
+          "selector": "input[name='password']",
+          "value": "{{password}}"
+        },
+        {
+          "action": "click",
+          "selector": "button[type='submit']"
+        },
+        {
+          "action": "wait",
+          "timeout": 2000
+        },
+        {
+          "action": "expect",
+          "url": "/admin/dashboard",
+          "text": "redirected"
+        }
+      ]
+    },
+    "createTable": {
+      "name": "Create Table Workflow",
+      "description": "Test creating a new database table through UI",
+      "tags": ["admin", "table", "crud"],
+      "steps": [
+        {
+          "action": "goto",
+          "url": "/admin/dashboard"
+        },
+        {
+          "action": "click",
+          "selector": "text=Table Manager"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Create Table')"
+        },
+        {
+          "action": "expect",
+          "selector": "text=Create New Table",
+          "text": "visible"
+        },
+        {
+          "action": "fill",
+          "selector": "input[label='Table Name']",
+          "value": "{{tableName}}"
+        },
+        {
+          "action": "fill",
+          "selector": "input[label='Column Name']",
+          "value": "id"
+        },
+        {
+          "action": "select",
+          "selector": "select[label='Data Type']",
+          "value": "INTEGER"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Create Table')"
+        },
+        {
+          "action": "wait",
+          "timeout": 1000
+        },
+        {
+          "action": "expect",
+          "selector": "text={{tableName}}",
+          "text": "visible"
+        }
+      ],
+      "cleanup": [
+        {
+          "action": "click",
+          "selector": "button:has-text('Drop Table')"
+        },
+        {
+          "action": "select",
+          "selector": "select",
+          "value": "{{tableName}}"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Drop')"
+        }
+      ]
+    },
+    "addColumn": {
+      "name": "Add Column to Table",
+      "description": "Test adding a column to an existing table",
+      "tags": ["admin", "column", "crud"],
+      "steps": [
+        {
+          "action": "goto",
+          "url": "/admin/dashboard"
+        },
+        {
+          "action": "click",
+          "selector": "text=Column Manager"
+        },
+        {
+          "action": "select",
+          "selector": "select[label='Select Table']",
+          "value": "{{tableName}}"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Add Column')"
+        },
+        {
+          "action": "fill",
+          "selector": "input[label='Column Name']",
+          "value": "{{columnName}}"
+        },
+        {
+          "action": "select",
+          "selector": "select[label='Data Type']",
+          "value": "{{dataType}}"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Add')"
+        },
+        {
+          "action": "wait",
+          "timeout": 1000
+        },
+        {
+          "action": "expect",
+          "selector": "text={{columnName}}",
+          "text": "visible"
+        }
+      ]
+    },
+    "createIndex": {
+      "name": "Create Database Index",
+      "description": "Test creating an index on a table",
+      "tags": ["admin", "index", "performance"],
+      "steps": [
+        {
+          "action": "goto",
+          "url": "/admin/dashboard"
+        },
+        {
+          "action": "click",
+          "selector": "text=Indexes"
+        },
+        {
+          "action": "select",
+          "selector": "select[label='Select Table']",
+          "value": "{{tableName}}"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Create Index')"
+        },
+        {
+          "action": "fill",
+          "selector": "input[label='Index Name']",
+          "value": "{{indexName}}"
+        },
+        {
+          "action": "click",
+          "selector": "text={{columnName}}"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Create')"
+        },
+        {
+          "action": "wait",
+          "timeout": 1000
+        },
+        {
+          "action": "expect",
+          "selector": "text={{indexName}}",
+          "text": "visible"
+        }
+      ]
+    },
+    "queryBuilder": {
+      "name": "Query Builder Workflow",
+      "description": "Test building and executing a query",
+      "tags": ["admin", "query", "select"],
+      "steps": [
+        {
+          "action": "goto",
+          "url": "/admin/dashboard"
+        },
+        {
+          "action": "click",
+          "selector": "text=Query Builder"
+        },
+        {
+          "action": "select",
+          "selector": "select[label='Select Table']",
+          "value": "{{tableName}}"
+        },
+        {
+          "action": "click",
+          "selector": "text={{columnName}}"
+        },
+        {
+          "action": "click",
+          "selector": "button:has-text('Execute Query')"
+        },
+        {
+          "action": "wait",
+          "timeout": 2000
+        },
+        {
+          "action": "expect",
+          "selector": "text=Query Results",
+          "text": "visible"
+        },
+        {
+          "action": "screenshot",
+          "selector": ".query-results"
+        }
+      ]
+    },
+    "securityCheck": {
+      "name": "API Security Check",
+      "description": "Verify API endpoints require authentication",
+      "tags": ["security", "api", "auth"],
+      "steps": [
+        {
+          "action": "goto",
+          "url": "/api/admin/tables"
+        },
+        {
+          "action": "expect",
+          "text": "401"
+        }
+      ]
+    }
+  },
+  "storybookStories": {
+    "DataGrid": {
+      "default": {
+        "name": "Default",
+        "description": "Basic data grid with sample data",
+        "args": {
+          "columns": [
+            { "name": "id", "label": "ID" },
+            { "name": "name", "label": "Name" },
+            { "name": "email", "label": "Email" }
+          ],
+          "rows": [
+            { "id": 1, "name": "John Doe", "email": "john@example.com" },
+            { "id": 2, "name": "Jane Smith", "email": "jane@example.com" },
+            { "id": 3, "name": "Bob Johnson", "email": "bob@example.com" }
+          ],
+          "primaryKey": "id"
+        }
+      },
+      "withActions": {
+        "name": "With Edit/Delete Actions",
+        "description": "Data grid with action buttons",
+        "args": {
+          "columns": [
+            { "name": "id", "label": "ID" },
+            { "name": "name", "label": "Name" },
+            { "name": "status", "label": "Status" }
+          ],
+          "rows": [
+            { "id": 1, "name": "Active User", "status": "active" },
+            { "id": 2, "name": "Pending User", "status": "pending" }
+          ],
+          "onEdit": "handleEdit",
+          "onDelete": "handleDelete",
+          "primaryKey": "id"
+        },
+        "play": [
+          "await userEvent.click(screen.getAllByTitle('Edit')[0])",
+          "await expect(args.onEdit).toHaveBeenCalledWith({ id: 1, name: 'Active User', status: 'active' })"
+        ]
+      },
+      "empty": {
+        "name": "Empty State",
+        "description": "Data grid with no data",
+        "args": {
+          "columns": [
+            { "name": "id", "label": "ID" },
+            { "name": "name", "label": "Name" }
+          ],
+          "rows": []
+        }
+      }
+    },
+    "ConfirmDialog": {
+      "default": {
+        "name": "Default",
+        "description": "Basic confirmation dialog",
+        "args": {
+          "open": true,
+          "title": "Confirm Action",
+          "message": "Are you sure you want to proceed?",
+          "confirmLabel": "Confirm",
+          "cancelLabel": "Cancel"
+        }
+      },
+      "deleteWarning": {
+        "name": "Delete Warning",
+        "description": "Confirmation dialog for deletion",
+        "args": {
+          "open": true,
+          "title": "Delete Item",
+          "message": "This action cannot be undone. Are you sure you want to delete this item?",
+          "confirmLabel": "Delete",
+          "cancelLabel": "Cancel"
+        }
+      }
+    },
+    "FormDialog": {
+      "default": {
+        "name": "Default",
+        "description": "Basic form dialog",
+        "args": {
+          "open": true,
+          "title": "Add User",
+          "fields": [
+            { "name": "name", "label": "Name", "type": "text", "required": true },
+            { "name": "email", "label": "Email", "type": "email", "required": true }
+          ],
+          "submitLabel": "Save"
+        }
+      },
+      "withInitialData": {
+        "name": "Edit Mode",
+        "description": "Form dialog with initial data for editing",
+        "args": {
+          "open": true,
+          "title": "Edit User",
+          "fields": [
+            { "name": "name", "label": "Name", "type": "text", "required": true },
+            { "name": "email", "label": "Email", "type": "email", "required": true },
+            { "name": "role", "label": "Role", "type": "text" }
+          ],
+          "initialData": {
+            "name": "John Doe",
+            "email": "john@example.com",
+            "role": "admin"
+          },
+          "submitLabel": "Update"
+        }
+      }
+    },
+    "CreateTableDialog": {
+      "default": {
+        "name": "Default",
+        "description": "Dialog for creating a new table",
+        "args": {
+          "open": true,
+          "dataTypes": ["INTEGER", "VARCHAR", "TEXT", "BOOLEAN", "TIMESTAMP"]
+        }
+      },
+      "withColumns": {
+        "name": "With Predefined Columns",
+        "description": "Dialog with some columns already added",
+        "args": {
+          "open": true,
+          "dataTypes": ["INTEGER", "VARCHAR", "TEXT", "BOOLEAN", "TIMESTAMP"]
+        },
+        "play": [
+          "await userEvent.type(screen.getByLabelText('Table Name'), 'users')",
+          "await userEvent.type(screen.getByLabelText('Column Name'), 'id')",
+          "await userEvent.click(screen.getByText('Add Column'))",
+          "await userEvent.type(screen.getAllByLabelText('Column Name')[1], 'name')"
+        ]
+      }
+    },
+    "Button": {
+      "primary": {
+        "name": "Primary Button",
+        "description": "Primary action button",
+        "args": {
+          "variant": "contained",
+          "color": "primary",
+          "text": "Click Me"
+        }
+      },
+      "secondary": {
+        "name": "Secondary Button",
+        "description": "Secondary action button",
+        "args": {
+          "variant": "outlined",
+          "color": "secondary",
+          "text": "Cancel"
+        }
+      },
+      "withIcon": {
+        "name": "With Icon",
+        "description": "Button with start icon",
+        "args": {
+          "variant": "contained",
+          "startIcon": "Add",
+          "text": "Add Item"
+        }
+      },
+      "loading": {
+        "name": "Loading State",
+        "description": "Button in disabled/loading state",
+        "args": {
+          "variant": "contained",
+          "disabled": true,
+          "text": "Loading..."
+        }
+      }
+    }
+  }
 }
