@@ -108,7 +108,9 @@ export default function QueryBuilderTab({
     value: string,
   ) => {
     const updated = [...whereConditions];
-    updated[index][field] = value;
+    if (updated[index]) {
+      updated[index][field] = value;
+    }
     setWhereConditions(updated);
   };
 
