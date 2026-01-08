@@ -8,6 +8,7 @@ export const styles = {
     primary: 'text-blue-700 hover:border-b-2 hover:border-blue-700',
     primaryBold: 'font-bold text-blue-700 hover:border-b-2 hover:border-blue-700',
     hoverBlue: 'hover:text-blue-700',
+    nav: 'border-none text-gray-700 hover:text-gray-900',
   },
   text: {
     centerSmall: 'text-center text-sm',
@@ -26,5 +27,8 @@ export const styles = {
   },
   lists: {
     baseMarginTop: 'mt-3 text-base',
+  },
+  containers: {
+    contentPadding: 'py-5 text-xl [&_p]:my-6',
   },
 } as const;
