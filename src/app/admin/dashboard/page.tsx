@@ -32,14 +32,14 @@ import {
 import { ThemeProvider } from '@mui/material/styles';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
-import TablesTab from '@/components/admin/TablesTab';
-import SQLQueryTab from '@/components/admin/SQLQueryTab';
-import TableManagerTab from '@/components/admin/TableManagerTab';
 import ColumnManagerTab from '@/components/admin/ColumnManagerTab';
 import ConstraintManagerTab from '@/components/admin/ConstraintManagerTab';
-import QueryBuilderTab from '@/components/admin/QueryBuilderTab';
 import IndexManagerTab from '@/components/admin/IndexManagerTab';
-import { getNavItems, getFeatureById } from '@/utils/featureConfig';
+import QueryBuilderTab from '@/components/admin/QueryBuilderTab';
+import SQLQueryTab from '@/components/admin/SQLQueryTab';
+import TableManagerTab from '@/components/admin/TableManagerTab';
+import TablesTab from '@/components/admin/TablesTab';
+import { getFeatureById, getNavItems } from '@/utils/featureConfig';
 import { theme } from '@/utils/theme';
 import Button from '@mui/material/Button';
 
