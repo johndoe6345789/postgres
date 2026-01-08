@@ -9,8 +9,8 @@ import {
   TableHead,
   TableRow,
   Tooltip,
-} from '@mui/material';
-import IconButton from '../atoms/IconButton';
+  IconButton,
+} from '../atoms';
 
 type DataGridProps = {
   columns: Array<{ name: string; label?: string }>;

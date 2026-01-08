@@ -1,23 +1,21 @@
 'use client';
 
-import AddIcon from '@mui/icons-material/Add';
-import DeleteIcon from '@mui/icons-material/Delete';
+import { useState } from 'react';
 import {
   Box,
-  Button,
-  Checkbox,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   FormControlLabel,
-  IconButton,
+  Checkbox,
   MenuItem,
   Select,
+  Button,
   TextField,
   Typography,
-} from '@mui/material';
-import { useState } from 'react';
+  IconButton,
+} from '../atoms';
 
 type Column = {
   name: string;
@@ -141,21 +139,15 @@ export default function CreateTableDialog({
               sx={{ mr: 1 }}
             />
             {columns.length > 1 && (
-              <IconButton onClick={() => removeColumn(index)} color="error" size="small">
-                <DeleteIcon />
-              </IconButton>
+              <IconButton onClick={() => removeColumn(index)} color="error" size="small" icon="Delete" />
             )}
           </Box>
         ))}
-        <Button startIcon={<AddIcon />} onClick={addColumn} variant="outlined">
-          Add Column
-        </Button>
+        <Button startIcon="Add" onClick={addColumn} variant="outlined" text="Add Column" />
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button onClick={handleCreate} variant="contained" disabled={loading || !tableName.trim()}>
-          Create Table
-        </Button>
+        <Button onClick={handleClose} text="Cancel" />
+        <Button onClick={handleCreate} variant="contained" disabled={loading || !tableName.trim()} text="Create Table" />
       </DialogActions>
     </Dialog>
   );

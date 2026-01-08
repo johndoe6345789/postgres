@@ -1,16 +1,16 @@
 'use client';
 
+import { useState } from 'react';
 import {
-  Button,
   Dialog,
   DialogActions,
   DialogContent,
   DialogTitle,
   MenuItem,
   Select,
+  Button,
   Typography,
-} from '@mui/material';
-import { useState } from 'react';
+} from '../atoms';
 
 type DropTableDialogProps = {
   open: boolean;
@@ -70,15 +70,14 @@ export default function DropTableDialog({
         </Select>
       </DialogContent>
       <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
+        <Button onClick={handleClose} text="Cancel" />
         <Button
           onClick={handleDrop}
           color="error"
           variant="contained"
           disabled={loading || !selectedTable}
-        >
-          Drop Table
-        </Button>
+          text="Drop Table"
+        />
       </DialogActions>
     </Dialog>
   );
