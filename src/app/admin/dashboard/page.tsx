@@ -1,15 +1,24 @@
 'use client';
 
+import AddIcon from '@mui/icons-material/Add';
 import CodeIcon from '@mui/icons-material/Code';
+import DeleteIcon from '@mui/icons-material/Delete';
+import EditIcon from '@mui/icons-material/Edit';
 import LogoutIcon from '@mui/icons-material/Logout';
 import StorageIcon from '@mui/icons-material/Storage';
+import TableChartIcon from '@mui/icons-material/TableChart';
 import {
   Alert,
   AppBar,
   Box,
   Button,
   CircularProgress,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
   Drawer,
+  IconButton,
   List,
   ListItem,
   ListItemButton,
@@ -62,8 +71,18 @@ export default function AdminDashboard() {
   const [selectedTable, setSelectedTable] = useState<string>('');
   const [queryText, setQueryText] = useState('');
   const [queryResult, setQueryResult] = useState<any>(null);
+  const [tableSchema, setTableSchema] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [successMessage, setSuccessMessage] = useState('');
+  
+  // Dialog states
+  const [openCreateDialog, setOpenCreateDialog] = useState(false);
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+  const [editingRecord, setEditingRecord] = useState<any>(null);
+  const [deletingRecord, setDeletingRecord] = useState<any>(null);
+  const [formData, setFormData] = useState<any>({});
 
   const fetchTables = useCallback(async () => {
     try {
@@ -90,11 +109,12 @@ export default function AdminDashboard() {
     setSelectedTable(tableName);
     setLoading(true);
     setError('');
+    setSuccessMessage('');
     setQueryResult(null);
 
     try {
-      // Use dedicated API with table name validation
-      const response = await fetch('/api/admin/table-data', {
+      // Fetch table data
+      const dataResponse = await fetch('/api/admin/table-data', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -103,12 +123,26 @@ export default function AdminDashboard() {
       });
 
       if (!response.ok) {
-        const data = await response.json();
+        const data = await dataResponse.json();
         throw new Error(data.error || 'Query failed');
       }
 
-      const data = await response.json();
+      const data = await dataResponse.json();
       setQueryResult(data);
+      
+      // Fetch table schema
+      const schemaResponse = await fetch('/api/admin/table-schema', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tableName }),
+      });
+      
+      if (schemaResponse.ok) {
+        const schemaData = await schemaResponse.json();
+        setTableSchema(schemaData);
+      }
     } catch (err: any) {
       setError(err.message);
     } finally {
