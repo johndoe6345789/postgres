@@ -57,9 +57,9 @@ See `src/config/features.json` for the complete feature configuration.
   - [x] ✅ Create FormDialog component for create/edit operations
   - [x] ✅ Add ConfirmDialog component for delete confirmations
   - [x] ✅ Implement table schema inspection API
-  - [ ] Create schema management interface
-  - [ ] Implement table creation/editing UI (API ready, UI pending)
-  - [ ] Add column type management UI (API ready, UI pending)
+  - [x] ✅ Create schema management interface
+  - [x] ✅ Implement table creation/editing UI (API ready, UI implemented)
+  - [x] ✅ Add column type management UI (API ready, UI implemented)
   - [ ] Add data validation and constraints management
   - [ ] Build query builder interface
   - [ ] Add foreign key relationship management
