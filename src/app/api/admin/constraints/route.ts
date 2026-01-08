@@ -2,11 +2,7 @@ import { sql } from 'drizzle-orm';
 import { NextResponse } from 'next/server';
 import { db } from '@/utils/db';
 import { getSession } from '@/utils/session';
-
-// Validate identifier format (prevent SQL injection)
-function isValidIdentifier(name: string): boolean {
-  return /^[a-z_]\w*$/i.test(name);
-}
+import { isValidIdentifier } from '@/validations/DatabaseIdentifierValidation';
 
 // Validate table exists
 async function validateTable(tableName: string): Promise<boolean> {
@@ -152,10 +148,22 @@ export async function POST(request: Request) {
           { status: 400 },
         );
       }
-      // Basic validation for check expression - prevent obvious SQL injection attempts
-      if (checkExpression.includes(';') || checkExpression.toLowerCase().includes('drop ')) {
+      // Validate check expression - prevent SQL injection attempts
+      // We check for common dangerous patterns but allow valid SQL operators
+      const dangerousPatterns = [
+        /;\s*DROP/i,
+        /;\s*DELETE/i,
+        /;\s*UPDATE/i,
+        /;\s*INSERT/i,
+        /;\s*ALTER/i,
+        /;\s*CREATE/i,
+        /--/, // SQL comments
+        /\/\*/, // Block comments
+      ];
+
+      if (dangerousPatterns.some(pattern => pattern.test(checkExpression))) {
         return NextResponse.json(
-          { error: 'Invalid check expression' },
+          { error: 'Invalid check expression: contains potentially dangerous SQL' },
           { status: 400 },
         );
       }
