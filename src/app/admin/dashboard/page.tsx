@@ -82,15 +82,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [successMessage, setSuccessMessage] = useState('');
-  
-  // Dialog states
-  const [openCreateDialog, setOpenCreateDialog] = useState(false);
-  const [openEditDialog, setOpenEditDialog] = useState(false);
-  const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
-  const [editingRecord, setEditingRecord] = useState<any>(null);
-  const [deletingRecord, setDeletingRecord] = useState<any>(null);
-  const [formData, setFormData] = useState<any>({});
-  
+
   // Table Manager states
   const [openCreateTableDialog, setOpenCreateTableDialog] = useState(false);
   const [openDropTableDialog, setOpenDropTableDialog] = useState(false);

@@ -104,6 +104,44 @@
         "icon": "Rule",
         "actions": ["list", "add", "delete"]
       }
+    },
+    {
+      "id": "query-builder",
+      "name": "Query Builder",
+      "description": "Visual query builder for creating SELECT queries",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/query-builder",
+          "methods": ["POST"],
+          "description": "Execute queries built with query builder"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "AccountTree",
+        "actions": ["build", "execute"]
+      }
+    },
+    {
+      "id": "index-management",
+      "name": "Index Management",
+      "description": "Create and manage database indexes for performance optimization",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/indexes",
+          "methods": ["GET", "POST", "DELETE"],
+          "description": "Manage table indexes"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "Speed",
+        "actions": ["list", "create", "delete"]
+      }
     }
   ],
   "constraintTypes": [
@@ -194,6 +232,12 @@
       "featureId": "sql-query"
     },
     {
+      "id": "query-builder",
+      "label": "Query Builder",
+      "icon": "AccountTree",
+      "featureId": "query-builder"
+    },
+    {
       "id": "table-manager",
       "label": "Table Manager",
       "icon": "TableChart",
@@ -204,6 +248,31 @@
       "label": "Constraints",
       "icon": "Rule",
       "featureId": "constraint-management"
+    },
+    {
+      "id": "indexes",
+      "label": "Indexes",
+      "icon": "Speed",
+      "featureId": "index-management"
     }
+  ],
+  "indexTypes": [
+    { "value": "BTREE", "label": "B-Tree (Default)", "description": "General purpose, balanced tree index" },
+    { "value": "HASH", "label": "Hash", "description": "Fast equality searches" },
+    { "value": "GIN", "label": "GIN", "description": "Generalized Inverted Index for full-text search" },
+    { "value": "GIST", "label": "GiST", "description": "Generalized Search Tree for geometric data" },
+    { "value": "BRIN", "label": "BRIN", "description": "Block Range Index for very large tables" }
+  ],
+  "queryOperators": [
+    { "value": "=", "label": "Equals" },
+    { "value": "!=", "label": "Not Equals" },
+    { "value": ">", "label": "Greater Than" },
+    { "value": "<", "label": "Less Than" },
+    { "value": ">=", "label": "Greater or Equal" },
+    { "value": "<=", "label": "Less or Equal" },
+    { "value": "LIKE", "label": "Like (Pattern Match)" },
+    { "value": "IN", "label": "In List" },
+    { "value": "IS NULL", "label": "Is Null" },
+    { "value": "IS NOT NULL", "label": "Is Not Null" }
   ]
 }

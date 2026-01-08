@@ -68,9 +68,19 @@ See `src/config/features.json` for the complete feature configuration.
     - [x] Add PRIMARY KEY constraint support ✅ **COMPLETED**
     - [x] Add DEFAULT value management ✅ **COMPLETED**
     - [x] Add NOT NULL constraint management ✅ **COMPLETED**
-  - [ ] Build query builder interface
+  - [x] Build query builder interface ✅ **COMPLETED**
+    - [x] Visual SELECT query builder with table/column selection
+    - [x] WHERE clause builder with operators (=, !=, >, <, LIKE, IN, IS NULL, IS NOT NULL)
+    - [x] ORDER BY and LIMIT/OFFSET support
+    - [x] Display generated SQL query
+    - [x] Execute queries and show results
   - [ ] Add foreign key relationship management
-  - [ ] Implement index management UI
+  - [x] Implement index management UI ✅ **COMPLETED**
+    - [x] List all indexes on tables
+    - [x] Create indexes (single and multi-column)
+    - [x] Support for BTREE, HASH, GIN, GIST, BRIN index types
+    - [x] Unique index creation
+    - [x] Drop indexes with confirmation
   - [ ] Add table migration history viewer
   - [ ] Create database backup/restore UI
 

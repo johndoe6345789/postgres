@@ -236,9 +236,11 @@ All tests verify that:
 | Constraint Manager | 15 | 3 (3 skipped) | 4 | 5 | 27 |
 | Record CRUD | 9 | - | 3 | - | 12 |
 | Query Interface | 10 | - | 1 | - | 11 |
+| Query Builder | 20 | - | 4 | - | 24 |
+| Index Management | 27 | - | 4 | - | 31 |
 | Table Data/Schema | 7 | - | 3 | - | 10 |
 | Admin Dashboard | - | 3 | 3 | - | 6 |
-| **Total** | **60** | **10** | **20** | **45** | **135** |
+| **Total** | **107** | **10** | **28** | **45** | **190** |
 
 ## Feature: Constraint Management Tests
 
@@ -285,6 +287,112 @@ Tests for the Constraint Management API endpoints (`/api/admin/constraints`):
 
 **Security Tests:**
 - ✅ Blocks constraint API access without authentication
+
+**Note:** UI tests are skipped because they require an authenticated session. These can be enabled when a test authentication mechanism is implemented.
+
+## Feature: Query Builder Tests
+
+### Integration Tests (Playwright API Tests)
+
+#### `tests/integration/QueryBuilder.spec.ts`
+Tests for the Query Builder API endpoint (`/api/admin/query-builder`):
+
+**Authentication Tests:**
+- ✅ Rejects query builder without authentication
+
+**Input Validation Tests:**
+- ✅ Rejects query without table name
+- ✅ Rejects query with invalid table name
+- ✅ Rejects query with invalid column name
+- ✅ Rejects query with invalid operator
+- ✅ Rejects IN operator without array value
+- ✅ Rejects operator requiring value without value
+- ✅ Rejects invalid LIMIT value
+- ✅ Rejects invalid OFFSET value
+
+**Query Building Tests:**
+- ✅ Accepts valid table name
+- ✅ Accepts query with column selection
+- ✅ Accepts query with WHERE conditions
+- ✅ Accepts IS NULL operator without value
+- ✅ Accepts IS NOT NULL operator without value
+- ✅ Accepts IN operator with array value
+- ✅ Accepts query with ORDER BY
+- ✅ Accepts query with LIMIT
+- ✅ Accepts query with OFFSET
+- ✅ Accepts comprehensive query (all features combined)
+
+**SQL Injection Prevention Tests:**
+- ✅ Rejects SQL injection in table name
+- ✅ Rejects SQL injection in column name
+- ✅ Rejects SQL injection in WHERE column
+- ✅ Rejects SQL injection in ORDER BY column
+
+**Test Coverage:**
+- Visual query builder with table/column selection
+- WHERE clause conditions with multiple operators
+- ORDER BY with ASC/DESC direction
+- LIMIT and OFFSET for pagination
+- SQL injection prevention
+- Authentication/authorization
+- Comprehensive input validation
+
+## Feature: Index Management Tests
+
+### Integration Tests (Playwright API Tests)
+
+#### `tests/integration/IndexManagement.spec.ts`
+Tests for the Index Management API endpoint (`/api/admin/indexes`):
+
+**Authentication Tests:**
+- ✅ Rejects list indexes without authentication
+- ✅ Rejects create index without authentication
+- ✅ Rejects delete index without authentication
+
+**Input Validation - List Indexes:**
+- ✅ Rejects list without table name
+- ✅ Rejects list with invalid table name
+
+**Input Validation - Create Index:**
+- ✅ Rejects create without table name
+- ✅ Rejects create without index name
+- ✅ Rejects create without columns
+- ✅ Rejects create with empty columns array
+- ✅ Rejects create with invalid table name
+- ✅ Rejects create with invalid index name
+- ✅ Rejects create with invalid column name
+- ✅ Rejects create with invalid index type
+
+**Input Validation - Delete Index:**
+- ✅ Rejects delete without index name
+- ✅ Rejects delete with invalid index name
+
+**Valid Requests:**
+- ✅ Accepts valid list request
+- ✅ Accepts valid create request with single column
+- ✅ Accepts valid create request with multiple columns
+- ✅ Accepts create request with unique flag
+- ✅ Accepts create request with HASH index type
+- ✅ Accepts create request with GIN index type
+- ✅ Accepts create request with GIST index type
+- ✅ Accepts create request with BRIN index type
+- ✅ Accepts valid delete request
+
+**SQL Injection Prevention Tests:**
+- ✅ Rejects SQL injection in table name
+- ✅ Rejects SQL injection in index name (create)
+- ✅ Rejects SQL injection in column name
+- ✅ Rejects SQL injection in index name (delete)
+
+**Test Coverage:**
+- Index listing for tables
+- Index creation (single and multi-column)
+- Index type selection (BTREE, HASH, GIN, GIST, BRIN)
+- Unique index creation
+- Index deletion
+- SQL injection prevention
+- Authentication/authorization
+- Comprehensive input validation
 
 **Note:** UI tests are skipped because they require an authenticated session. These can be enabled when a test authentication mechanism is implemented.
 

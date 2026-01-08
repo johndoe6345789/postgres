@@ -90,8 +90,8 @@ describe('FeatureConfig', () => {
     it('should return undefined for disabled feature', () => {
       // This test assumes there might be disabled features in the config
       const features = getFeatures();
-      const enabledIds = features.map(f => f.id);
-      
+      const _enabledIds = features.map(f => f.id);
+
       // Try to get a feature that doesn't exist in enabled list
       const disabledFeature = getFeatureById('disabled-test-feature');
       expect(disabledFeature).toBeUndefined();

@@ -40,12 +40,25 @@ export type ConstraintType = {
   requiresExpression: boolean;
 };
 
+export type QueryOperator = {
+  value: string;
+  label: string;
+};
+
+export type IndexType = {
+  value: string;
+  label: string;
+  description: string;
+};
+
 // Type definition for the features config structure
 type FeaturesConfig = {
   features: Feature[];
   dataTypes: DataType[];
   constraintTypes?: ConstraintType[];
   navItems: NavItem[];
+  queryOperators?: QueryOperator[];
+  indexTypes?: IndexType[];
 };
 
 const config = featuresConfig as FeaturesConfig;
@@ -64,6 +77,14 @@ export function getDataTypes(): DataType[] {
 
 export function getConstraintTypes(): ConstraintType[] {
   return config.constraintTypes || [];
+}
+
+export function getQueryOperators(): QueryOperator[] {
+  return config.queryOperators || [];
+}
+
+export function getIndexTypes(): IndexType[] {
+  return config.indexTypes || [];
 }
 
 export function getNavItems(): NavItem[] {
