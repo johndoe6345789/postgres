@@ -628,6 +628,10 @@ npm run dev
 - `npm run test` - Run unit tests with Vitest
 - `npm run test:e2e` - Run E2E tests with Playwright
 - `npm run storybook` - Start Storybook for component development
+- `npm run build-storybook` - Build Storybook for production
+
+See [PLAYWRIGHT_PLAYBOOKS.md](./docs/PLAYWRIGHT_PLAYBOOKS.md) for Playwright playbook testing documentation.
+See [STORYBOOK.md](./docs/STORYBOOK.md) for Storybook configuration and usage.
 
 #### Code Quality
 - `npm run lint` - Run ESLint
