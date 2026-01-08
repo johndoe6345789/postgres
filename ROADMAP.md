@@ -193,12 +193,35 @@ This document outlines the planned features, improvements, and technical debt it
 
 ### Advanced Features
 
+- [ ] **Visual Database Designer** 🎨
+  - **Drag-and-Drop Table Builder**
+    - Intuitive canvas for designing tables
+    - Add/remove columns by dragging components
+    - Visual column type selector
+    - Constraint badges (PK, FK, UNIQUE, NOT NULL)
+    - Table resize and positioning
+    - Auto-arrange tables in clean layout
+  - **Visual Relationship Editor**
+    - Drag lines to connect tables and create foreign keys
+    - Visual representation of one-to-one, one-to-many, many-to-many relationships
+    - Relationship lines with cardinality indicators
+    - Hover to see relationship details
+    - Click to edit cascade rules and constraints
+    - Color-coded relationships by type
+  - **Interactive ERD Canvas**
+    - Zoom and pan for large schemas
+    - Minimap for navigation
+    - Grid snapping for alignment
+    - Export to PNG/SVG
+    - Dark/light theme support
+    - Collaboration mode (real-time updates)
+  - **Schema Templates & Generation**
+    - Pre-built schema templates (e-commerce, blog, SaaS, etc.)
+    - Generate SQL from visual design
+    - Import existing database to visual canvas
+    - Version control for schema designs
+
 - [ ] **Database Administration Tools**
-  - **Visual Database Builder**
-    - Drag-and-drop table designer
-    - Visual foreign key relationship editor
-    - Interactive ERD with zoom and pan
-    - Schema templates library
   - **Advanced CRUD Features**
     - Inline editing for table data
     - Spreadsheet-like data grid
