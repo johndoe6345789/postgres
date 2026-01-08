@@ -95,5 +95,44 @@ test.describe('Admin Dashboard', () => {
       
       expect(response.status()).toBe(401);
     });
+
+    test('should not allow constraint management without auth', async ({ page }) => {
+      const response = await page.request.get('/api/admin/constraints?tableName=test');
+      
+      expect(response.status()).toBe(401);
+    });
+  });
+
+  test.describe('Constraints Manager UI', () => {
+    test.skip('should display Constraints tab after login', async ({ page }) => {
+      // This test would require actual authentication
+      // Skipping for now as it needs a real admin user
+      
+      // await page.goto('/admin/dashboard');
+      // await expect(page.getByText('Constraints')).toBeVisible();
+    });
+
+    test.skip('should show table selector in Constraints Manager', async ({ page }) => {
+      // This test would require authentication
+      // Skipping for now
+      
+      // await page.goto('/admin/dashboard');
+      // await page.getByText('Constraints').click();
+      
+      // await expect(page.getByText(/select a table/i)).toBeVisible();
+    });
+
+    test.skip('should open add constraint dialog', async ({ page }) => {
+      // This test would require authentication
+      // Skipping for now
+      
+      // await page.goto('/admin/dashboard');
+      // await page.getByText('Constraints').click();
+      // Select a table first
+      // await page.getByRole('button', { name: /add constraint/i }).click();
+      
+      // await expect(page.getByText('Add Constraint')).toBeVisible();
+      // await expect(page.getByLabel(/constraint name/i)).toBeVisible();
+    });
   });
 });

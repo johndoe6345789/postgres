@@ -149,9 +149,9 @@ All tests verify that:
 | Feature Config | - | - | - | 40 | 40 |
 | Table Manager | 7 | 2 (2 skipped) | 3 | - | 12 |
 | Column Manager | 9 | 2 (2 skipped) | 3 | - | 14 |
-| Constraint Manager | 14 | 0 (UI pending) | 3 | 4 | 21 |
+| Constraint Manager | 14 | 3 (3 skipped) | 4 | 4 | 25 |
 | Admin Dashboard | - | 3 | 3 | - | 6 |
-| **Total** | **30** | **7** | **12** | **44** | **93** |
+| **Total** | **30** | **10** | **16** | **44** | **100** |
 
 ## Feature: Constraint Management Tests
 
@@ -185,6 +185,25 @@ Tests for the Constraint Management API endpoints (`/api/admin/constraints`):
 - Authentication/authorization
 - Error handling for all CRUD operations
 - Support for UNIQUE and CHECK constraints
+
+### End-to-End Tests (Playwright UI Tests)
+
+#### 2. `tests/e2e/AdminDashboard.e2e.ts` - Constraints Manager UI
+
+**UI Tests:**
+- 🔄 Display Constraints tab (requires auth - skipped)
+- 🔄 Show table selector in Constraints Manager (requires auth - skipped)
+- 🔄 Open add constraint dialog (requires auth - skipped)
+
+**Security Tests:**
+- ✅ Blocks constraint API access without authentication
+
+**Note:** UI tests are skipped because they require an authenticated session. These can be enabled when a test authentication mechanism is implemented.
+
+**Components Implemented:**
+- ✅ `ConstraintManagerTab.tsx` - Main UI component for managing constraints
+- ✅ `ConstraintDialog.tsx` - Reusable dialog for add/delete constraint operations
+- ✅ Integration with admin dashboard navigation and handlers
 
 ### Unit Tests
 
@@ -269,4 +288,4 @@ When adding new features:
 
 **Last Updated:** January 2026
 **Test Framework:** Playwright + Vitest
-**Coverage Status:** ✅ API Validation | 🔄 UI Tests (partial - needs auth)
+**Coverage Status:** ✅ API Validation | 🔄 UI Tests (partial - needs auth) | ✅ Constraint Manager UI Complete
