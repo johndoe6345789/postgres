@@ -52,6 +52,8 @@ This project is a full-stack web application featuring:
 - 💎 **Tailwind CSS 4** for styling
 - 🗄️ **Database CRUD Operations** - Full Create, Read, Update, Delete functionality
 - 🛠️ **Admin Panel** - Manage tables, columns, and data through a beautiful UI
+- 📊 **Table Manager** - Create and drop tables with visual column definition
+- 🔧 **Column Manager** - Add, modify, and drop columns from existing tables
 - 📊 **SQL Query Interface** - Execute custom queries with safety validation
 - 🔒 **JWT Authentication** with secure session management
 - 📦 **DrizzleORM** - Support for PostgreSQL, MySQL, and SQLite
@@ -69,6 +71,8 @@ This is a **PostgreSQL database administration panel** that provides:
 - 🎨 **Modern, beautiful UI** with Material UI components and dark mode support
 - 🔒 **Secure authentication** with bcrypt password hashing and JWT sessions
 - 📊 **Database viewing** - Browse tables, view data, and explore schema
+- 🛠️ **Table management** - Create and drop tables through intuitive UI
+- 🔧 **Column management** - Add, modify, and drop columns with type selection
 - 🔍 **SQL query interface** - Execute SELECT queries safely with result display
 - 🐳 **All-in-one Docker image** - PostgreSQL 15 and admin UI in one container
 - ⚡ **Production-ready** - Deploy to Caprover, Docker, or any cloud platform
@@ -89,9 +93,14 @@ This is a **PostgreSQL database administration panel** that provides:
 ### Database Management
 - 📊 **View database tables** - Browse all tables with metadata
 - 📋 **Table data viewer** - View table contents with pagination
+- 🛠️ **Table Manager** - Create new tables with custom columns and constraints
+- 🗑️ **Drop tables** - Delete tables with confirmation dialogs
+- 🔧 **Column Manager** - Add, modify, and drop columns from existing tables
+- 🎨 **Visual column builder** - Define column types, constraints, and defaults through UI
 - 🔍 **SQL query interface** - Execute SELECT queries safely
 - 🔒 **Query validation** - Only SELECT queries allowed for security
 - 📈 **Row count display** - See result counts instantly
+- 📐 **Schema inspector** - View table structures and column details
 
 ### Security & Authentication
 - 🔐 **User/password authentication** - Secure bcrypt password hashing
@@ -272,6 +281,8 @@ Access the admin panel at http://localhost:3000/admin/login
 **Features available in the admin panel**:
 - 📊 **Table Browser**: View all database tables and their data
 - ✏️ **CRUD Operations**: Create, edit, and delete records
+- 🛠️ **Table Manager**: Create new tables with columns, drop existing tables
+- 🔧 **Column Manager**: Add, modify, and delete columns from tables
 - 🔍 **SQL Query Interface**: Execute custom SELECT queries
 - 🛠️ **Schema Inspector**: View table structures, columns, and relationships
 - 🔐 **Secure Access**: JWT-based authentication with session management
@@ -750,13 +761,17 @@ Before deploying to production:
 
 See [ROADMAP.md](ROADMAP.md) for planned features and improvements.
 
+**Recently implemented:**
+- ✅ Table Manager - Create and drop tables with visual column builder
+- ✅ Column Manager - Add, modify, and drop columns from existing tables
+- ✅ Schema management interface for table and column operations
+
 **Upcoming features:**
-- Full CRUD operations (Create, Update, Delete)
 - Visual database designer
 - Multi-database server connections
 - Advanced query builder
 - Export data (CSV, JSON, SQL)
-- Table schema editor
+- Foreign key relationship management
 - User management with roles
 
 ## Contributing
