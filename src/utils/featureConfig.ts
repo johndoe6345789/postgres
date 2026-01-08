@@ -196,13 +196,39 @@ export type ComponentPropSchema = {
   props: Record<string, PropDefinition>;
 };
 
-export type SqlTemplate = {
+export type SqlParameterType = {
+  type: 'identifier' | 'enum' | 'integer' | 'string';
   description: string;
-  query: string;
-  returns: 'rows' | 'command';
-  example?: string;
-  defaultParams?: Record<string, any>;
+  validation?: string;
+  allowedValues?: string[];
+  sanitize: 'identifier' | 'enum' | 'integer' | 'string';
+  min?: number;
+  max?: number;
+  default?: string | number;
 };
+
+export type DrizzlePattern = {
+  type: 'raw' | 'identifier' | 'builder';
+  template?: string;
+  paramOrder?: string[];
+  example?: string;
+};
+
+export type SqlQueryTemplate = {
+  description: string;
+  method: string;
+  operation: 'select' | 'insert' | 'update' | 'delete' | 'create' | 'alter' | 'drop';
+  parameters: Record<string, string>;
+  drizzlePattern: DrizzlePattern;
+  returns: 'rows' | 'command';
+  securityNotes: string;
+};
+
+export type SqlTemplates = {
+  parameterTypes: Record<string, SqlParameterType>;
+  queries: Record<string, Record<string, SqlQueryTemplate>>;
+};
+
 
 export type PlaywrightStep = {
   action: 'goto' | 'click' | 'fill' | 'select' | 'wait' | 'expect' | 'screenshot';
@@ -248,7 +274,7 @@ type FeaturesConfig = {
   uiViews?: Record<string, Record<string, UiView>>;
   componentTrees?: Record<string, ComponentTree>;
   componentProps?: Record<string, ComponentPropSchema>;
-  sqlTemplates?: Record<string, Record<string, SqlTemplate>>;
+  sqlTemplates?: SqlTemplates;
   playwrightPlaybooks?: Record<string, PlaywrightPlaybook>;
   storybookStories?: Record<string, Record<string, StorybookStory>>;
   features: Feature[];
@@ -448,32 +474,148 @@ export function getComponentsByCategory(category: string): string[] {
     .map(([name, _]) => name);
 }
 
-// SQL Templates
-export function getSqlTemplate(category: string, templateName: string): SqlTemplate | undefined {
-  return config.sqlTemplates?.[category]?.[templateName];
+// SQL Templates - Secure Implementation
+export function getSqlParameterTypes(): Record<string, SqlParameterType> {
+  return config.sqlTemplates?.parameterTypes || {};
 }
 
-export function getAllSqlTemplates(): Record<string, Record<string, SqlTemplate>> {
-  return config.sqlTemplates || {};
+export function getSqlParameterType(paramName: string): SqlParameterType | undefined {
+  return config.sqlTemplates?.parameterTypes[paramName];
 }
 
-export function getSqlTemplatesByCategory(category: string): Record<string, SqlTemplate> {
-  return config.sqlTemplates?.[category] || {};
+export function getSqlQueryTemplate(category: string, templateName: string): SqlQueryTemplate | undefined {
+  return config.sqlTemplates?.queries[category]?.[templateName];
 }
 
-export function interpolateSqlTemplate(template: SqlTemplate, params: Record<string, any>): string {
-  let query = template.query;
+export function getAllSqlTemplates(): SqlTemplates | undefined {
+  return config.sqlTemplates;
+}
+
+export function getSqlTemplatesByCategory(category: string): Record<string, SqlQueryTemplate> {
+  return config.sqlTemplates?.queries[category] || {};
+}
+
+/**
+ * Validate a parameter value against its type definition
+ * Returns { valid: boolean, sanitized?: any, error?: string }
+ */
+export function validateSqlParameter(
+  paramName: string,
+  value: any
+): { valid: boolean; sanitized?: any; error?: string } {
+  const paramType = getSqlParameterType(paramName);
   
-  // Merge default params with provided params
-  const allParams = { ...template.defaultParams, ...params };
+  if (!paramType) {
+    return { valid: false, error: `Unknown parameter type: ${paramName}` };
+  }
   
-  // Replace template variables
-  Object.entries(allParams).forEach(([key, value]) => {
-    const regex = new RegExp(`\\{\\{${key}\\}\\}`, 'g');
-    query = query.replace(regex, String(value));
-  });
+  const strValue = String(value);
   
-  return query;
+  // Validate based on type
+  switch (paramType.type) {
+    case 'identifier':
+      // PostgreSQL identifier validation
+      if (!paramType.validation) {
+        return { valid: false, error: 'No validation pattern defined for identifier' };
+      }
+      const identifierRegex = new RegExp(paramType.validation);
+      if (!identifierRegex.test(strValue)) {
+        return {
+          valid: false,
+          error: `Invalid identifier format: ${strValue}. Must match ${paramType.validation}`,
+        };
+      }
+      return { valid: true, sanitized: strValue };
+      
+    case 'enum':
+      if (!paramType.allowedValues) {
+        return { valid: false, error: 'No allowed values defined for enum' };
+      }
+      if (!paramType.allowedValues.includes(strValue)) {
+        return {
+          valid: false,
+          error: `Invalid enum value: ${strValue}. Allowed: ${paramType.allowedValues.join(', ')}`,
+        };
+      }
+      return { valid: true, sanitized: strValue };
+      
+    case 'integer':
+      const num = Number(value);
+      if (!Number.isInteger(num)) {
+        return { valid: false, error: `Not an integer: ${value}` };
+      }
+      if (paramType.min !== undefined && num < paramType.min) {
+        return { valid: false, error: `Value ${num} is less than minimum ${paramType.min}` };
+      }
+      if (paramType.max !== undefined && num > paramType.max) {
+        return { valid: false, error: `Value ${num} exceeds maximum ${paramType.max}` };
+      }
+      return { valid: true, sanitized: num };
+      
+    case 'string':
+      // For string parameters, apply validation pattern if provided
+      if (paramType.validation) {
+        const stringRegex = new RegExp(paramType.validation);
+        if (!stringRegex.test(strValue)) {
+          return {
+            valid: false,
+            error: `Invalid string format: ${strValue}. Must match ${paramType.validation}`,
+          };
+        }
+      }
+      return { valid: true, sanitized: strValue };
+      
+    default:
+      return { valid: false, error: `Unknown parameter type: ${paramType.type}` };
+  }
+}
+
+/**
+ * Validate all parameters for a SQL query template
+ * Returns { valid: boolean, sanitized?: Record<string, any>, errors?: string[] }
+ */
+export function validateSqlTemplateParams(
+  category: string,
+  templateName: string,
+  params: Record<string, any>
+): { valid: boolean; sanitized?: Record<string, any>; errors?: string[] } {
+  const template = getSqlQueryTemplate(category, templateName);
+  
+  if (!template) {
+    return { valid: false, errors: [`Template not found: ${category}.${templateName}`] };
+  }
+  
+  const errors: string[] = [];
+  const sanitized: Record<string, any> = {};
+  
+  // Validate each required parameter
+  for (const [paramKey, paramTypeName] of Object.entries(template.parameters)) {
+    const value = params[paramKey];
+    
+    if (value === undefined || value === null) {
+      // Check if parameter has a default value
+      const paramType = getSqlParameterType(paramTypeName);
+      if (paramType?.default !== undefined) {
+        sanitized[paramKey] = paramType.default;
+        continue;
+      }
+      errors.push(`Missing required parameter: ${paramKey}`);
+      continue;
+    }
+    
+    const validation = validateSqlParameter(paramTypeName, value);
+    if (!validation.valid) {
+      errors.push(`Parameter ${paramKey}: ${validation.error}`);
+    } else {
+      sanitized[paramKey] = validation.sanitized;
+    }
+  }
+  
+  if (errors.length > 0) {
+    return { valid: false, errors };
+  }
+  
+  return { valid: true, sanitized };
 }
 
 // Playwright Playbooks
@@ -493,14 +635,14 @@ export function getPlaywrightPlaybooksByTag(tag: string): PlaywrightPlaybook[] {
 }
 
 // Storybook Stories
-export function getStorybookStory(componentName: string, storyName: string): any {
+export function getStorybookStory(componentName: string, storyName: string): StorybookStory | undefined {
   return config.storybookStories?.[componentName]?.[storyName];
 }
 
-export function getAllStorybookStories(): Record<string, any> {
+export function getAllStorybookStories(): Record<string, Record<string, StorybookStory>> {
   return config.storybookStories || {};
 }
 
-export function getStorybookStoriesForComponent(componentName: string): Record<string, any> {
+export function getStorybookStoriesForComponent(componentName: string): Record<string, StorybookStory> {
   return config.storybookStories?.[componentName] || {};
 }

@@ -4,7 +4,6 @@
 
 The `features.json` file is now a comprehensive configuration system that defines:
 - ✅ **UI Component Trees** - Declarative component hierarchies
-- ✅ **SQL Query Templates** - Parameterized database queries
 - ✅ **Playwright Playbooks** - E2E test scenarios
 - ✅ **Storybook Stories** - Component documentation
 - ✅ **Feature Flags** - Enable/disable features
@@ -12,6 +11,8 @@ The `features.json` file is now a comprehensive configuration system that define
 - ✅ **Form Schemas** - Dynamic form generation
 - ✅ **API Endpoints** - REST API definitions
 - ✅ **Permissions** - Role-based access control
+
+**Note:** SQL query templates have been removed for security reasons. Use Drizzle ORM for all database operations (see section 2).
 
 ## 1. Component Trees
 
@@ -104,55 +105,212 @@ function MyComponent() {
 }
 ```
 
-## 2. SQL Templates
+## 2. Secure SQL Templates with Drizzle ORM
 
-Parameterized SQL queries with template variables.
+SQL templates now use a **type-safe, injection-proof design** with parameter validation and Drizzle ORM patterns.
 
-### Example SQL Templates
+### Security Features
+
+1. **Parameter Type Validation** - All parameters have defined types and validation rules
+2. **SQL Identifier Escaping** - Uses `sql.identifier()` for table/column names
+3. **Parameterized Queries** - Uses `$1, $2` placeholders instead of string interpolation
+4. **Enum Validation** - Data types and index types validated against allowed values
+5. **No String Interpolation** - Templates provide Drizzle patterns, not raw SQL strings
+
+### Parameter Types
+
 ```json
 {
   "sqlTemplates": {
-    "tables": {
-      "createTable": {
-        "description": "Create a new table with columns",
-        "query": "CREATE TABLE \"{{tableName}}\" ({{columnDefinitions}})",
-        "returns": "command"
+    "parameterTypes": {
+      "tableName": {
+        "type": "identifier",
+        "validation": "^[a-zA-Z_][a-zA-Z0-9_]{0,62}$",
+        "sanitize": "identifier"
       },
-      "listTables": {
-        "description": "Get all tables",
-        "query": "SELECT table_name FROM information_schema.tables WHERE table_schema = 'public'",
-        "returns": "rows"
-      }
-    },
-    "records": {
-      "insert": {
-        "description": "Insert a new record",
-        "query": "INSERT INTO \"{{tableName}}\" ({{columns}}) VALUES ({{values}}) RETURNING *",
-        "returns": "rows"
+      "dataType": {
+        "type": "enum",
+        "allowedValues": ["INTEGER", "VARCHAR", "TEXT", "BOOLEAN"],
+        "sanitize": "enum"
+      },
+      "limit": {
+        "type": "integer",
+        "min": 1,
+        "max": 10000,
+        "default": 100
       }
     }
   }
 }
 ```
 
-### Using SQL Templates
-```typescript
-import { getSqlTemplate, interpolateSqlTemplate } from '@/utils/featureConfig';
+### Query Templates
 
-// Get template
-const template = getSqlTemplate('records', 'insert');
-
-// Interpolate parameters
-const query = interpolateSqlTemplate(template, {
-  tableName: 'users',
-  columns: 'name, email',
-  values: '$1, $2'
-});
-
-// Result: INSERT INTO "users" (name, email) VALUES ($1, $2) RETURNING *
+```json
+{
+  "sqlTemplates": {
+    "queries": {
+      "tables": {
+        "dropTable": {
+          "description": "Drop a table using sql.identifier",
+          "method": "drizzle.execute",
+          "parameters": {
+            "tableName": "tableName"
+          },
+          "drizzlePattern": {
+            "type": "identifier",
+            "example": "sql`DROP TABLE IF EXISTS ${sql.identifier([tableName])} CASCADE`"
+          },
+          "securityNotes": "Uses sql.identifier() for safe identifier escaping"
+        }
+      }
+    }
+  }
+}
 ```
 
-## 3. Playwright Playbooks
+### Using SQL Templates Securely
+
+```typescript
+import { db } from '@/utils/db';
+import { sql } from 'drizzle-orm';
+import { 
+  getSqlQueryTemplate, 
+  validateSqlTemplateParams 
+} from '@/utils/featureConfig';
+
+async function dropTable(tableName: string) {
+  // Get the template
+  const template = getSqlQueryTemplate('tables', 'dropTable');
+  
+  // Validate parameters - this prevents SQL injection
+  const validation = validateSqlTemplateParams('tables', 'dropTable', {
+    tableName: tableName
+  });
+  
+  if (!validation.valid) {
+    throw new Error(`Invalid parameters: ${validation.errors?.join(', ')}`);
+  }
+  
+  // Use the sanitized values with Drizzle's safe methods
+  const { tableName: safeTableName } = validation.sanitized!;
+  
+  // Execute using Drizzle's sql.identifier() - safe from SQL injection
+  const result = await db.execute(
+    sql`DROP TABLE IF EXISTS ${sql.identifier([safeTableName])} CASCADE`
+  );
+  
+  return result;
+}
+```
+
+### Security Comparison
+
+```typescript
+// ❌ OLD INSECURE WAY (REMOVED):
+// const query = `DROP TABLE "${tableName}"`;  // SQL injection risk!
+// await db.execute(sql.raw(query));
+
+// ✅ NEW SECURE WAY:
+// 1. Validate parameter against regex pattern
+const validation = validateSqlTemplateParams('tables', 'dropTable', { tableName });
+if (!validation.valid) throw new Error('Invalid table name');
+
+// 2. Use Drizzle's sql.identifier() for automatic escaping
+await db.execute(sql`DROP TABLE ${sql.identifier([validation.sanitized.tableName])}`);
+```
+
+### Why This is Secure
+
+1. **Regex Validation**: Table names must match `^[a-zA-Z_][a-zA-Z0-9_]{0,62}$`
+   - Prevents: `users; DROP TABLE users--`
+   - Allows: `users`, `user_accounts`, `_temp_table`
+
+2. **sql.identifier()**: Drizzle properly escapes identifiers
+   - Handles special characters safely
+   - Prevents SQL injection in table/column names
+
+3. **Parameterized Queries**: Uses `$1, $2` placeholders
+   - Database driver handles escaping
+   - No string concatenation
+
+4. **Type Validation**: Enums and integers validated before use
+   - Data types checked against whitelist
+   - Numeric values validated for range
+
+## 3. Secure Component Templates
+
+Component tree templates now use **safe property access** instead of `new Function()`.
+
+### Security Features
+
+1. **No Code Execution** - Replaced `new Function()` with safe property accessor
+2. **Whitelist Operations** - Only allowed operators: `===`, `!==`, `>`, `<`, `>=`, `<=`, `&&`, `||`
+3. **Property Path Validation** - Validates `^[a-zA-Z_$][a-zA-Z0-9_$.]*$`
+4. **Safe Math Operations** - Limited to: `abs`, `ceil`, `floor`, `round`, `max`, `min`
+
+### Template Expressions
+
+```json
+{
+  "component": "Typography",
+  "props": {
+    "text": "{{user.name}}"
+  }
+}
+```
+
+### Supported Patterns
+
+```typescript
+// ✅ SAFE - Simple property access
+"{{user.name}}"
+"{{user.profile.email}}"
+
+// ✅ SAFE - Comparisons with whitelisted operators
+"condition": "isAdmin === true"
+"condition": "count > 10"
+"condition": "status === 'active' && role === 'editor'"
+
+// ✅ SAFE - Ternary expressions
+"{{isActive ? 'Active' : 'Inactive'}}"
+
+// ✅ SAFE - Math operations (whitelisted)
+"{{Math.round(price)}}"
+"{{Math.max(a, b)}}"
+
+// ❌ BLOCKED - Arbitrary code execution
+"{{require('fs').readFileSync('/etc/passwd')}}"  // Validation fails
+"{{eval('malicious code')}}"                      // Validation fails
+"{{process.exit(1)}}"                             // Validation fails
+```
+
+### Security Comparison
+
+```typescript
+// ❌ OLD INSECURE WAY (REMOVED):
+// const func = new Function('user', `return ${expression}`);
+// return func(user);  // Can execute ANY JavaScript code!
+
+// ✅ NEW SECURE WAY:
+function safeGetProperty(obj: any, path: string): any {
+  // Only allows: letters, numbers, dots, underscores
+  if (!/^[a-zA-Z_$][a-zA-Z0-9_$.]*$/.test(path)) {
+    return undefined;  // Reject invalid paths
+  }
+  
+  // Safe property traversal
+  const parts = path.split('.');
+  let current = obj;
+  for (const part of parts) {
+    if (current == null) return undefined;
+    current = current[part];
+  }
+  return current;
+}
+```
+
+## 4. Playwright Playbooks
 
 Define E2E test scenarios in JSON.
 
@@ -275,19 +433,36 @@ const tree = getComponentTree('TableManagerTab');
 const allTrees = getAllComponentTrees();
 ```
 
-### SQL Templates
+### SQL Templates (Secure)
 ```typescript
 import {
-  getSqlTemplate,
+  getSqlQueryTemplate,
+  getSqlParameterType,
+  validateSqlTemplateParams,
+  validateSqlParameter,
   getAllSqlTemplates,
   getSqlTemplatesByCategory,
-  interpolateSqlTemplate,
 } from '@/utils/featureConfig';
 
-const template = getSqlTemplate('records', 'insert');
-const allTemplates = getAllSqlTemplates();
-const recordTemplates = getSqlTemplatesByCategory('records');
-const query = interpolateSqlTemplate(template, { tableName: 'users' });
+// Get a query template
+const template = getSqlQueryTemplate('tables', 'dropTable');
+
+// Get parameter type definition
+const paramType = getSqlParameterType('tableName');
+
+// Validate a single parameter
+const validation = validateSqlParameter('tableName', 'users');
+if (!validation.valid) {
+  console.error(validation.error);
+}
+
+// Validate all parameters for a template
+const result = validateSqlTemplateParams('tables', 'dropTable', {
+  tableName: 'users'
+});
+if (result.valid) {
+  const safeParams = result.sanitized; // Use these sanitized values
+}
 ```
 
 ### Playwright Playbooks
