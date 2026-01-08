@@ -85,6 +85,39 @@
         "icon": "Code",
         "actions": ["execute"]
       }
+    },
+    {
+      "id": "constraint-management",
+      "name": "Constraint Management",
+      "description": "Add and manage table constraints (UNIQUE, CHECK)",
+      "enabled": true,
+      "priority": "high",
+      "endpoints": [
+        {
+          "path": "/api/admin/constraints",
+          "methods": ["GET", "POST", "DELETE"],
+          "description": "Manage table constraints"
+        }
+      ],
+      "ui": {
+        "showInNav": true,
+        "icon": "Rule",
+        "actions": ["list", "add", "delete"]
+      }
+    }
+  ],
+  "constraintTypes": [
+    {
+      "name": "UNIQUE",
+      "description": "Ensure column values are unique",
+      "requiresColumn": true,
+      "requiresExpression": false
+    },
+    {
+      "name": "CHECK",
+      "description": "Validate data using a boolean expression",
+      "requiresColumn": false,
+      "requiresExpression": true
     }
   ],
   "dataTypes": [
@@ -159,6 +192,12 @@
       "label": "Table Manager",
       "icon": "TableChart",
       "featureId": "table-management"
+    },
+    {
+      "id": "constraints",
+      "label": "Constraints",
+      "icon": "Rule",
+      "featureId": "constraint-management"
     }
   ]
 }

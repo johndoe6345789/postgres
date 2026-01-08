@@ -33,6 +33,13 @@ export type NavItem = {
   featureId: string;
 };
 
+export type ConstraintType = {
+  name: string;
+  description: string;
+  requiresColumn: boolean;
+  requiresExpression: boolean;
+};
+
 export function getFeatures(): Feature[] {
   return featuresConfig.features.filter(f => f.enabled);
 }
@@ -43,6 +50,10 @@ export function getFeatureById(id: string): Feature | undefined {
 
 export function getDataTypes(): DataType[] {
   return featuresConfig.dataTypes;
+}
+
+export function getConstraintTypes(): ConstraintType[] {
+  return (featuresConfig as any).constraintTypes || [];
 }
 
 export function getNavItems(): NavItem[] {
