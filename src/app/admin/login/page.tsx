@@ -1,19 +1,19 @@
 'use client';
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
+import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import {
+  Alert,
   Box,
   Button,
+  CircularProgress,
   Container,
   Paper,
   TextField,
   Typography,
-  Alert,
-  CircularProgress,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
+import { useRouter } from 'next/navigation';
+import { useState } from 'react';
 import { theme } from '@/utils/theme';
 
 export default function AdminLoginPage() {
@@ -48,7 +48,7 @@ export default function AdminLoginPage() {
       // Redirect to admin dashboard
       router.push('/admin/dashboard');
       router.refresh();
-    } catch (err) {
+    } catch {
       setError('An error occurred. Please try again.');
       setLoading(false);
     }
@@ -117,7 +117,6 @@ export default function AdminLoginPage() {
                 label="Username"
                 name="username"
                 autoComplete="username"
-                autoFocus
                 value={username}
                 onChange={e => setUsername(e.target.value)}
                 disabled={loading}

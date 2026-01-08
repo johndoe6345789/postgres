@@ -1,6 +1,6 @@
+import * as bcrypt from 'bcryptjs';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import { Pool } from 'pg';
-import * as bcrypt from 'bcryptjs';
 import { adminUserSchema } from '../src/models/Schema';
 
 async function seedAdminUser() {

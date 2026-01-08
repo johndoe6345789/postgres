@@ -53,6 +53,14 @@ done
 # Set DATABASE_URL if not provided
 export DATABASE_URL=\${DATABASE_URL:-postgresql://docker:docker@localhost:5432/postgres}
 
+# Generate JWT_SECRET if not provided
+if [ -z "\$JWT_SECRET" ]; then
+  echo "WARNING: JWT_SECRET not provided. Generating a random secret..."
+  export JWT_SECRET=\$(openssl rand -base64 32)
+  echo "Generated JWT_SECRET: \$JWT_SECRET"
+  echo "IMPORTANT: Save this secret if you need to restart the container!"
+fi
+
 # Run migrations
 npm run db:migrate
 
@@ -76,7 +84,7 @@ ENV DATABASE_URL=postgresql://docker:docker@localhost:5432/postgres
 ENV CREATE_ADMIN_USER=true
 ENV ADMIN_USERNAME=admin
 ENV ADMIN_PASSWORD=admin123
-ENV JWT_SECRET=change-this-secret-in-production
+# Note: JWT_SECRET will be auto-generated if not provided
 
 # Set the default command
 CMD ["/start.sh"]

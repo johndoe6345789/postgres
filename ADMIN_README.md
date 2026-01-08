@@ -113,14 +113,14 @@ services:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
     ports:
-      - "5432:5432"
+      - '5432:5432'
     volumes:
       - postgres_data:/var/lib/postgresql/data
 
   admin:
     build: .
     ports:
-      - "3000:3000"
+      - '3000:3000'
     environment:
       DATABASE_URL: postgresql://postgres:postgres@postgres:5432/mydb
       JWT_SECRET: your-secret-key-here
@@ -175,7 +175,7 @@ docker run -p 3000:3000 \
 ## API Routes
 
 - `POST /api/admin/login` - User login
-- `POST /api/admin/logout` - User logout  
+- `POST /api/admin/logout` - User logout
 - `GET /api/admin/tables` - List all database tables
 - `POST /api/admin/query` - Execute SQL query (SELECT only)
 

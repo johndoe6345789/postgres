@@ -2,9 +2,23 @@ import { jwtVerify, SignJWT } from 'jose';
 import { cookies } from 'next/headers';
 
 const SESSION_COOKIE_NAME = 'admin-session';
-const JWT_SECRET = new TextEncoder().encode(
-  process.env.JWT_SECRET || 'your-secret-key-change-in-production',
-);
+
+// Get JWT secret and throw error if not provided in production
+function getJwtSecret(): Uint8Array {
+  const secret = process.env.JWT_SECRET;
+
+  if (!secret) {
+    if (process.env.NODE_ENV === 'production') {
+      throw new Error('JWT_SECRET environment variable is required in production');
+    }
+    console.warn('JWT_SECRET not set, using development default');
+    return new TextEncoder().encode('development-secret-change-in-production');
+  }
+
+  return new TextEncoder().encode(secret);
+}
+
+const JWT_SECRET = getJwtSecret();
 
 export type SessionData = {
   userId: number;

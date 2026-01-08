@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { db } from '@/utils/db';
 import { getSession } from '@/utils/session';
 
 export async function GET() {
@@ -13,18 +13,12 @@ export async function GET() {
       );
     }
 
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-    });
-
-    const result = await pool.query(`
+    const result = await db.execute(`
       SELECT table_name 
       FROM information_schema.tables 
       WHERE table_schema = 'public' 
       ORDER BY table_name
     `);
-
-    await pool.end();
 
     return NextResponse.json({ tables: result.rows });
   } catch (error) {

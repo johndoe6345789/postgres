@@ -4,8 +4,8 @@ services:
   postgres-admin:
     build: .
     ports:
-      - "3000:3000"
-      - "5432:5432"
+      - '3000:3000'
+      - '5432:5432'
     environment:
       - DATABASE_URL=postgresql://docker:docker@localhost:5432/postgres
       - JWT_SECRET=your-secret-key-change-in-production

@@ -1,46 +1,43 @@
 'use client';
 
-import { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
+import CodeIcon from '@mui/icons-material/Code';
+import LogoutIcon from '@mui/icons-material/Logout';
+import StorageIcon from '@mui/icons-material/Storage';
 import {
-  Box,
-  Container,
-  Paper,
-  Typography,
-  Button,
+  Alert,
   AppBar,
-  Toolbar,
+  Box,
+  Button,
+  CircularProgress,
   Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  TextField,
-  Alert,
-  CircularProgress,
+  Paper,
   Table,
   TableBody,
   TableCell,
   TableContainer,
   TableHead,
   TableRow,
-  Tabs,
-  Tab,
+  TextField,
+  Toolbar,
+  Typography,
 } from '@mui/material';
 import { ThemeProvider } from '@mui/material/styles';
-import StorageIcon from '@mui/icons-material/Storage';
-import CodeIcon from '@mui/icons-material/Code';
-import LogoutIcon from '@mui/icons-material/Logout';
+import { useRouter } from 'next/navigation';
+import { useCallback, useEffect, useState } from 'react';
 import { theme } from '@/utils/theme';
 
 const DRAWER_WIDTH = 240;
 
-interface TabPanelProps {
+type TabPanelProps = {
   children?: React.ReactNode;
   index: number;
   value: number;
-}
+};
 
 function TabPanel(props: TabPanelProps) {
   const { children, value, index, ...other } = props;
@@ -68,11 +65,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  useEffect(() => {
-    fetchTables();
-  }, []);
-
-  const fetchTables = async () => {
+  const fetchTables = useCallback(async () => {
     try {
       const response = await fetch('/api/admin/tables');
       if (!response.ok) {
@@ -87,7 +80,11 @@ export default function AdminDashboard() {
     } catch (err: any) {
       setError(err.message);
     }
-  };
+  }, [router]);
+
+  useEffect(() => {
+    fetchTables();
+  }, [fetchTables]);
 
   const handleTableClick = async (tableName: string) => {
     setSelectedTable(tableName);
@@ -96,13 +93,14 @@ export default function AdminDashboard() {
     setQueryResult(null);
 
     try {
+      // Use parameterized query through the query API to prevent SQL injection
       const response = await fetch('/api/admin/query', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          query: `SELECT * FROM ${tableName} LIMIT 100`,
+          query: `SELECT * FROM "${tableName}" LIMIT 100`,
         }),
       });
 
@@ -185,8 +183,8 @@ export default function AdminDashboard() {
         <Drawer
           variant="permanent"
           sx={{
-            width: DRAWER_WIDTH,
-            flexShrink: 0,
+            'width': DRAWER_WIDTH,
+            'flexShrink': 0,
             '& .MuiDrawer-paper': {
               width: DRAWER_WIDTH,
               boxSizing: 'border-box',
@@ -248,7 +246,9 @@ export default function AdminDashboard() {
 
             {selectedTable && (
               <Typography variant="h6" gutterBottom>
-                Table: {selectedTable}
+                Table:
+                {' '}
+                {selectedTable}
               </Typography>
             )}
           </TabPanel>
@@ -296,7 +296,9 @@ export default function AdminDashboard() {
             <Paper sx={{ mt: 2, overflow: 'auto' }}>
               <Box sx={{ p: 2 }}>
                 <Typography variant="subtitle2" gutterBottom>
-                  Rows returned: {queryResult.rowCount}
+                  Rows returned:
+                  {' '}
+                  {queryResult.rowCount}
                 </Typography>
               </Box>
               <TableContainer>

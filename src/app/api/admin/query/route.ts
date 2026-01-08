@@ -1,6 +1,27 @@
 import { NextResponse } from 'next/server';
-import { Pool } from 'pg';
+import { db } from '@/utils/db';
 import { getSession } from '@/utils/session';
+
+// Validate that query is a safe SELECT statement
+function validateSelectQuery(query: string): boolean {
+  const trimmed = query.trim();
+
+  // Remove leading comments and whitespace
+  const noComments = trimmed.replace(/^(?:--[^\n]*\n|\s)+/g, '');
+
+  // Check if it starts with SELECT (case insensitive)
+  if (!/^select\s/i.test(noComments)) {
+    return false;
+  }
+
+  // Check for dangerous keywords (case insensitive)
+  const dangerous = /;\s*(?:drop|delete|update|insert|alter|create|truncate|exec|execute)\s/i;
+  if (dangerous.test(trimmed)) {
+    return false;
+  }
+
+  return true;
+}
 
 export async function POST(request: Request) {
   try {
@@ -22,22 +43,15 @@ export async function POST(request: Request) {
       );
     }
 
-    // Security: Only allow SELECT queries
-    const trimmedQuery = query.trim().toLowerCase();
-    if (!trimmedQuery.startsWith('select')) {
+    // Validate query
+    if (!validateSelectQuery(query)) {
       return NextResponse.json(
-        { error: 'Only SELECT queries are allowed' },
+        { error: 'Only SELECT queries are allowed. No modification queries (INSERT, UPDATE, DELETE, DROP, etc.) permitted.' },
         { status: 400 },
       );
     }
 
-    const pool = new Pool({
-      connectionString: process.env.DATABASE_URL,
-    });
-
-    const result = await pool.query(query);
-
-    await pool.end();
+    const result = await db.execute(query);
 
     return NextResponse.json({
       rows: result.rows,
