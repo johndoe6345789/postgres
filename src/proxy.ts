@@ -20,6 +20,10 @@ const isAuthPage = createRouteMatcher([
   '/:locale/sign-up(.*)',
 ]);
 
+// Admin routes that should bypass i18n routing
+const ADMIN_ROUTE_PREFIX = '/admin';
+const ADMIN_API_PREFIX = '/api/admin';
+
 // Improve security with Arcjet
 const aj = arcjet.withRule(
   detectBot({
@@ -38,6 +42,12 @@ export default async function proxy(
   request: NextRequest,
   event: NextFetchEvent,
 ) {
+  // Skip i18n routing for admin and API routes
+  if (request.nextUrl.pathname.startsWith(ADMIN_ROUTE_PREFIX)
+    || request.nextUrl.pathname.startsWith(ADMIN_API_PREFIX)) {
+    return NextResponse.next();
+  }
+
   // Verify the request with Arcjet
   // Use `process.env` instead of Env to reduce bundle size in middleware
   if (process.env.ARCJET_KEY) {
