@@ -16,7 +16,7 @@ import {
   TableRow,
   Typography,
 } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getConstraintTypes, getFeatureById } from '@/utils/featureConfig';
 import ConstraintDialog from './ConstraintDialog';
 
@@ -48,15 +48,7 @@ export default function ConstraintManagerTab({
   const canDelete = feature?.ui.actions.includes('delete');
 
   // Fetch constraints when table is selected
-  useEffect(() => {
-    if (selectedTable) {
-      fetchConstraints();
-    } else {
-      setConstraints([]);
-    }
-  }, [selectedTable]);
-
-  const fetchConstraints = async () => {
+  const fetchConstraints = useCallback(async () => {
     try {
       const response = await fetch(
         `/api/admin/constraints?tableName=${selectedTable}`,
@@ -72,7 +64,15 @@ export default function ConstraintManagerTab({
     } catch (error) {
       console.error('Failed to fetch constraints:', error);
     }
-  };
+  }, [selectedTable]);
+
+  useEffect(() => {
+    if (selectedTable) {
+      fetchConstraints();
+    } else {
+      setConstraints([]);
+    }
+  }, [selectedTable, fetchConstraints]);
 
   const handleConstraintOperation = async (data: any) => {
     if (dialogState.mode === 'add') {
