@@ -30,6 +30,7 @@
     "db:migrate": "dotenv -c -- drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "db:seed-admin": "tsx scripts/seed-admin.ts",
+    "generate:password": "tsx scripts/generate-password.ts",
     "storybook": "storybook dev -p 6006",
     "storybook:test": "vitest run --config .storybook/vitest.config.mts",
     "build-storybook": "storybook build"

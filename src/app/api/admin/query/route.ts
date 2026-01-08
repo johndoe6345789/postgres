@@ -15,7 +15,8 @@ function validateSelectQuery(query: string): boolean {
   }
 
   // Check for dangerous keywords (case insensitive)
-  const dangerous = /;\s*(?:drop|delete|update|insert|alter|create|truncate|exec|execute)\s/i;
+  // Includes common SQL modification commands and advanced features
+  const dangerous = /;\s*(?:drop|delete|update|insert|alter|create|truncate|exec|execute|merge|call|with)\s/i;
   if (dangerous.test(trimmed)) {
     return false;
   }

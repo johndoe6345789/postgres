@@ -38,9 +38,10 @@ export async function POST(request: Request) {
       );
     }
 
-    // Table name is validated, sanitize and use
-    const safeTableName = String(tableName).replace(/\W/g, '');
-    const result = await db.execute(sql.raw(`SELECT * FROM "${safeTableName}" LIMIT 100`));
+    // Table name is validated against schema - safe to use the validated name
+    // The validation query above ensures the table exists in the public schema
+    const validatedTableName = (tablesResult.rows[0] as any).table_name;
+    const result = await db.execute(sql.raw(`SELECT * FROM "${validatedTableName}" LIMIT 100`));
 
     return NextResponse.json({
       rows: result.rows,
