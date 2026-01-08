@@ -31,14 +31,14 @@ type CreateTableDialogProps = {
   open: boolean;
   onClose: () => void;
   onCreate: (tableName: string, columns: Column[]) => Promise<void>;
-  dataTypes?: string[];
+  dataTypes: string[];
 };
 
 export default function CreateTableDialog({
   open,
   onClose,
   onCreate,
-  dataTypes = ['INTEGER', 'BIGINT', 'SERIAL', 'VARCHAR', 'TEXT', 'BOOLEAN', 'TIMESTAMP', 'DATE', 'JSON', 'JSONB'],
+  dataTypes,
 }: CreateTableDialogProps) {
   const [tableName, setTableName] = useState('');
   const [columns, setColumns] = useState<Column[]>([

@@ -22,7 +22,7 @@ type ColumnDialogProps = {
   columns?: Array<{ column_name: string }>;
   onClose: () => void;
   onSubmit: (data: any) => Promise<void>;
-  dataTypes?: string[];
+  dataTypes: string[];
 };
 
 export default function ColumnDialog({
@@ -32,7 +32,7 @@ export default function ColumnDialog({
   columns = [],
   onClose,
   onSubmit,
-  dataTypes = ['INTEGER', 'BIGINT', 'VARCHAR', 'TEXT', 'BOOLEAN', 'TIMESTAMP', 'DATE', 'JSON', 'JSONB'],
+  dataTypes,
 }: ColumnDialogProps) {
   const [columnName, setColumnName] = useState('');
   const [columnType, setColumnType] = useState('VARCHAR');
