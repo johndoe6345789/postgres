@@ -55,13 +55,10 @@ export async function executeStep(page: Page, step: PlaywrightStep, variables: R
       } else if (text && selector) {
         await expect(page.locator(selector)).toContainText(text);
       } else if (text) {
-        // Check for status code in text
-        const statusCode = parseInt(text, 10);
-        if (!isNaN(statusCode)) {
-          // This is a status code check - would need API interception
-          // For now, we skip this as it requires special handling
-          console.warn(`Status code check (${statusCode}) not yet implemented in playbook runner`);
-        }
+        // Note: Status code checks require special handling in Playwright
+        // They are not directly supported in playbooks and should be handled
+        // with API route interception in custom tests
+        console.warn('Status code checks should be implemented in custom test files, not playbooks');
       }
       break;
 
@@ -72,7 +69,11 @@ export async function executeStep(page: Page, step: PlaywrightStep, variables: R
       const uniqueId = `${timestamp}-${random}`;
       
       if (selector) {
-        const safeSelector = selector.replace(/[^a-z0-9]/gi, '_');
+        // Sanitize selector for use in filename
+        const safeSelector = selector
+          .replace(/[^a-z0-9]/gi, '_')  // Replace non-alphanumeric with underscore
+          .replace(/_+/g, '_')            // Replace multiple underscores with single
+          .replace(/^_|_$/g, '');         // Remove leading/trailing underscores
         await page.locator(selector).screenshot({ 
           path: `screenshots/${uniqueId}-${safeSelector}.png` 
         });

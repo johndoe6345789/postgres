@@ -8,8 +8,9 @@ import {
   DialogTitle,
   MenuItem,
   Select,
+  Button,
+  Typography,
 } from '../atoms';
-import { Button, Typography } from '../atoms';
 
 type DropTableDialogProps = {
   open: boolean;

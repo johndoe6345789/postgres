@@ -26,6 +26,21 @@ export function generateMeta<T>(
 
 /**
  * Generate a single story from features.json story definition
+ * 
+ * Note: Play functions cannot be stored directly in JSON due to serialization limitations.
+ * For interactive stories that need play functions:
+ * 1. Define the story structure in features.json (args, parameters)
+ * 2. Add play functions manually in the .stories.tsx file after generation
+ * 
+ * Example:
+ * ```typescript
+ * export const Interactive: Story = {
+ *   ...generateStory(storyConfig),
+ *   play: async ({ canvasElement }) => {
+ *     // Your play function here
+ *   }
+ * };
+ * ```
  */
 export function generateStory<T>(
   storyConfig: StorybookStory
@@ -34,8 +49,6 @@ export function generateStory<T>(
     name: storyConfig.name,
     args: storyConfig.args || {},
     parameters: storyConfig.parameters,
-    // Note: play functions would need to be converted from strings to actual functions
-    // This is a limitation of JSON - we can only store the play steps as strings
   };
 }
 

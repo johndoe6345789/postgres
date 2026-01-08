@@ -9,8 +9,8 @@ import {
   TableHead,
   TableRow,
   Tooltip,
+  IconButton,
 } from '../atoms';
-import { IconButton } from '../atoms';
 
 type DataGridProps = {
   columns: Array<{ name: string; label?: string }>;
