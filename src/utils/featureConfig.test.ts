@@ -28,6 +28,11 @@ import {
   getUiView,
   getComponentTree,
   getAllComponentTrees,
+  getComponentPropSchema,
+  getAllComponentPropSchemas,
+  getComponentPropDefinition,
+  validateComponentProps,
+  getComponentsByCategory,
 } from './featureConfig';
 
 describe('FeatureConfig', () => {
@@ -1040,6 +1045,214 @@ describe('FeatureConfig', () => {
       const trees = getAllComponentTrees();
       
       expect(trees.DashboardStatsCards).toBeDefined();
+    });
+  });
+
+  describe('getComponentPropSchema', () => {
+    it('should return prop schema for Button component', () => {
+      const schema = getComponentPropSchema('Button');
+      
+      expect(schema).toBeDefined();
+      expect(schema?.description).toContain('Button');
+      expect(schema?.category).toBe('inputs');
+      expect(schema?.props).toBeDefined();
+    });
+
+    it('should have variant prop in Button schema', () => {
+      const schema = getComponentPropSchema('Button');
+      
+      expect(schema?.props.variant).toBeDefined();
+      expect(schema?.props.variant.type).toBe('enum');
+      expect(schema?.props.variant.values).toContain('contained');
+    });
+
+    it('should return prop schema for TextField component', () => {
+      const schema = getComponentPropSchema('TextField');
+      
+      expect(schema).toBeDefined();
+      expect(schema?.category).toBe('inputs');
+      expect(schema?.props.label).toBeDefined();
+    });
+
+    it('should return prop schema for Typography component', () => {
+      const schema = getComponentPropSchema('Typography');
+      
+      expect(schema).toBeDefined();
+      expect(schema?.category).toBe('display');
+      expect(schema?.props.variant).toBeDefined();
+    });
+
+    it('should return undefined for non-existent component', () => {
+      const schema = getComponentPropSchema('NonExistentComponent');
+      
+      expect(schema).toBeUndefined();
+    });
+  });
+
+  describe('getAllComponentPropSchemas', () => {
+    it('should return all component prop schemas', () => {
+      const schemas = getAllComponentPropSchemas();
+      
+      expect(schemas).toBeDefined();
+      expect(typeof schemas).toBe('object');
+    });
+
+    it('should include Button schema', () => {
+      const schemas = getAllComponentPropSchemas();
+      
+      expect(schemas.Button).toBeDefined();
+    });
+
+    it('should include TextField schema', () => {
+      const schemas = getAllComponentPropSchemas();
+      
+      expect(schemas.TextField).toBeDefined();
+    });
+
+    it('should include DataGrid schema', () => {
+      const schemas = getAllComponentPropSchemas();
+      
+      expect(schemas.DataGrid).toBeDefined();
+    });
+  });
+
+  describe('getComponentPropDefinition', () => {
+    it('should return prop definition for Button variant', () => {
+      const propDef = getComponentPropDefinition('Button', 'variant');
+      
+      expect(propDef).toBeDefined();
+      expect(propDef?.type).toBe('enum');
+      expect(propDef?.default).toBe('text');
+    });
+
+    it('should return prop definition for TextField label', () => {
+      const propDef = getComponentPropDefinition('TextField', 'label');
+      
+      expect(propDef).toBeDefined();
+      expect(propDef?.type).toBe('string');
+    });
+
+    it('should return prop definition for DataGrid columns', () => {
+      const propDef = getComponentPropDefinition('DataGrid', 'columns');
+      
+      expect(propDef).toBeDefined();
+      expect(propDef?.type).toBe('array');
+      expect(propDef?.required).toBe(true);
+    });
+
+    it('should return undefined for non-existent prop', () => {
+      const propDef = getComponentPropDefinition('Button', 'nonExistentProp');
+      
+      expect(propDef).toBeUndefined();
+    });
+  });
+
+  describe('validateComponentProps', () => {
+    it('should validate Button props successfully', () => {
+      const result = validateComponentProps('Button', {
+        text: 'Click me',
+        variant: 'contained',
+        color: 'primary',
+      });
+      
+      expect(result.valid).toBe(true);
+      expect(result.errors.length).toBe(0);
+    });
+
+    it('should detect invalid enum value', () => {
+      const result = validateComponentProps('Button', {
+        variant: 'invalid',
+      });
+      
+      expect(result.valid).toBe(false);
+      expect(result.errors.length).toBeGreaterThan(0);
+      expect(result.errors[0]).toContain('Invalid value');
+    });
+
+    it('should detect missing required prop', () => {
+      const result = validateComponentProps('DataGrid', {
+        rows: [],
+      });
+      
+      expect(result.valid).toBe(false);
+      expect(result.errors.some(e => e.includes('columns'))).toBe(true);
+    });
+
+    it('should detect unknown prop', () => {
+      const result = validateComponentProps('Button', {
+        unknownProp: 'value',
+      });
+      
+      expect(result.valid).toBe(false);
+      expect(result.errors.some(e => e.includes('Unknown prop'))).toBe(true);
+    });
+
+    it('should validate TextField props', () => {
+      const result = validateComponentProps('TextField', {
+        label: 'Name',
+        type: 'text',
+        value: 'John',
+      });
+      
+      expect(result.valid).toBe(true);
+    });
+
+    it('should return valid for non-existent component', () => {
+      const result = validateComponentProps('NonExistent', {
+        anyProp: 'value',
+      });
+      
+      expect(result.valid).toBe(true);
+    });
+  });
+
+  describe('getComponentsByCategory', () => {
+    it('should return all input components', () => {
+      const components = getComponentsByCategory('inputs');
+      
+      expect(Array.isArray(components)).toBe(true);
+      expect(components).toContain('Button');
+      expect(components).toContain('TextField');
+    });
+
+    it('should return all layout components', () => {
+      const components = getComponentsByCategory('layout');
+      
+      expect(Array.isArray(components)).toBe(true);
+      expect(components).toContain('Box');
+      expect(components).toContain('Grid');
+      expect(components).toContain('Paper');
+    });
+
+    it('should return all display components', () => {
+      const components = getComponentsByCategory('display');
+      
+      expect(Array.isArray(components)).toBe(true);
+      expect(components).toContain('Typography');
+      expect(components).toContain('DataGrid');
+    });
+
+    it('should return all navigation components', () => {
+      const components = getComponentsByCategory('navigation');
+      
+      expect(Array.isArray(components)).toBe(true);
+      expect(components).toContain('Tabs');
+      expect(components).toContain('Drawer');
+    });
+
+    it('should return all feedback components', () => {
+      const components = getComponentsByCategory('feedback');
+      
+      expect(Array.isArray(components)).toBe(true);
+      expect(components).toContain('Dialog');
+      expect(components).toContain('Alert');
+    });
+
+    it('should return empty array for non-existent category', () => {
+      const components = getComponentsByCategory('nonexistent');
+      
+      expect(Array.isArray(components)).toBe(true);
+      expect(components.length).toBe(0);
     });
   });
 });

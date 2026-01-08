@@ -1135,6 +1135,662 @@
       ]
     }
   },
+  "componentProps": {
+    "Button": {
+      "description": "Material-UI Button component",
+      "category": "inputs",
+      "props": {
+        "text": {
+          "type": "string",
+          "description": "Button text content",
+          "required": false
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["text", "outlined", "contained"],
+          "default": "text",
+          "description": "Button variant style"
+        },
+        "color": {
+          "type": "enum",
+          "values": ["default", "primary", "secondary", "error", "warning", "info", "success"],
+          "default": "primary",
+          "description": "Button color theme"
+        },
+        "size": {
+          "type": "enum",
+          "values": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "Button size"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether button is disabled"
+        },
+        "fullWidth": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether button takes full width"
+        },
+        "startIcon": {
+          "type": "string",
+          "description": "Icon name to show at start"
+        },
+        "endIcon": {
+          "type": "string",
+          "description": "Icon name to show at end"
+        },
+        "onClick": {
+          "type": "function",
+          "description": "Click event handler function name"
+        }
+      }
+    },
+    "TextField": {
+      "description": "Material-UI TextField component",
+      "category": "inputs",
+      "props": {
+        "label": {
+          "type": "string",
+          "description": "Field label"
+        },
+        "placeholder": {
+          "type": "string",
+          "description": "Placeholder text"
+        },
+        "value": {
+          "type": "any",
+          "description": "Field value"
+        },
+        "type": {
+          "type": "enum",
+          "values": ["text", "email", "password", "number", "tel", "url"],
+          "default": "text",
+          "description": "Input type"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["standard", "outlined", "filled"],
+          "default": "outlined",
+          "description": "TextField variant"
+        },
+        "size": {
+          "type": "enum",
+          "values": ["small", "medium"],
+          "default": "medium",
+          "description": "Field size"
+        },
+        "required": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether field is required"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether field is disabled"
+        },
+        "fullWidth": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether field takes full width"
+        },
+        "multiline": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether field is multiline textarea"
+        },
+        "rows": {
+          "type": "number",
+          "description": "Number of rows for multiline"
+        },
+        "error": {
+          "type": "boolean",
+          "description": "Whether field has error"
+        },
+        "helperText": {
+          "type": "string",
+          "description": "Helper text below field"
+        },
+        "onChange": {
+          "type": "function",
+          "description": "Change event handler"
+        }
+      }
+    },
+    "Typography": {
+      "description": "Material-UI Typography component",
+      "category": "display",
+      "props": {
+        "text": {
+          "type": "string",
+          "description": "Text content"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["h1", "h2", "h3", "h4", "h5", "h6", "subtitle1", "subtitle2", "body1", "body2", "caption", "button", "overline"],
+          "default": "body1",
+          "description": "Typography variant"
+        },
+        "color": {
+          "type": "string",
+          "description": "Text color (theme color or CSS color)"
+        },
+        "align": {
+          "type": "enum",
+          "values": ["left", "center", "right", "justify"],
+          "default": "left",
+          "description": "Text alignment"
+        },
+        "gutterBottom": {
+          "type": "boolean",
+          "default": false,
+          "description": "Add bottom margin"
+        },
+        "noWrap": {
+          "type": "boolean",
+          "default": false,
+          "description": "Prevent text wrapping"
+        }
+      }
+    },
+    "Box": {
+      "description": "Material-UI Box component - generic container",
+      "category": "layout",
+      "props": {
+        "sx": {
+          "type": "object",
+          "description": "Material-UI system styles"
+        },
+        "component": {
+          "type": "string",
+          "default": "div",
+          "description": "HTML element or React component to render"
+        }
+      }
+    },
+    "Grid": {
+      "description": "Material-UI Grid component",
+      "category": "layout",
+      "props": {
+        "container": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this is a grid container"
+        },
+        "item": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether this is a grid item"
+        },
+        "spacing": {
+          "type": "number",
+          "description": "Spacing between grid items (0-10)"
+        },
+        "xs": {
+          "type": "number",
+          "description": "Grid columns on extra small screens (1-12)"
+        },
+        "sm": {
+          "type": "number",
+          "description": "Grid columns on small screens (1-12)"
+        },
+        "md": {
+          "type": "number",
+          "description": "Grid columns on medium screens (1-12)"
+        },
+        "lg": {
+          "type": "number",
+          "description": "Grid columns on large screens (1-12)"
+        },
+        "xl": {
+          "type": "number",
+          "description": "Grid columns on extra large screens (1-12)"
+        }
+      }
+    },
+    "Paper": {
+      "description": "Material-UI Paper component - surface with elevation",
+      "category": "layout",
+      "props": {
+        "elevation": {
+          "type": "number",
+          "default": 1,
+          "description": "Shadow depth (0-24)"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["elevation", "outlined"],
+          "default": "elevation",
+          "description": "Paper variant"
+        },
+        "square": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether corners are square (not rounded)"
+        }
+      }
+    },
+    "Card": {
+      "description": "Material-UI Card component",
+      "category": "layout",
+      "props": {
+        "raised": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether card has raised appearance"
+        }
+      }
+    },
+    "Dialog": {
+      "description": "Material-UI Dialog component",
+      "category": "feedback",
+      "props": {
+        "open": {
+          "type": "boolean",
+          "required": true,
+          "description": "Whether dialog is open"
+        },
+        "onClose": {
+          "type": "function",
+          "description": "Close handler function"
+        },
+        "maxWidth": {
+          "type": "enum",
+          "values": ["xs", "sm", "md", "lg", "xl", false],
+          "default": "sm",
+          "description": "Maximum width of dialog"
+        },
+        "fullWidth": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether dialog takes full available width"
+        },
+        "fullScreen": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether dialog is fullscreen"
+        }
+      }
+    },
+    "DataGrid": {
+      "description": "Custom DataGrid component for displaying tables",
+      "category": "display",
+      "props": {
+        "columns": {
+          "type": "array",
+          "required": true,
+          "description": "Column definitions"
+        },
+        "rows": {
+          "type": "array",
+          "required": true,
+          "description": "Data rows"
+        },
+        "loading": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether data is loading"
+        },
+        "primaryKey": {
+          "type": "string",
+          "default": "id",
+          "description": "Primary key field name"
+        },
+        "onEdit": {
+          "type": "function",
+          "description": "Edit row handler"
+        },
+        "onDelete": {
+          "type": "function",
+          "description": "Delete row handler"
+        },
+        "size": {
+          "type": "enum",
+          "values": ["small", "medium"],
+          "default": "medium",
+          "description": "Table size"
+        }
+      }
+    },
+    "Pagination": {
+      "description": "Material-UI Pagination component",
+      "category": "navigation",
+      "props": {
+        "count": {
+          "type": "number",
+          "required": true,
+          "description": "Total number of pages"
+        },
+        "page": {
+          "type": "number",
+          "required": true,
+          "description": "Current page number"
+        },
+        "onChange": {
+          "type": "function",
+          "description": "Page change handler"
+        },
+        "color": {
+          "type": "enum",
+          "values": ["primary", "secondary", "standard"],
+          "default": "standard",
+          "description": "Pagination color"
+        },
+        "size": {
+          "type": "enum",
+          "values": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "Pagination size"
+        },
+        "showFirstButton": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show first page button"
+        },
+        "showLastButton": {
+          "type": "boolean",
+          "default": false,
+          "description": "Show last page button"
+        }
+      }
+    },
+    "Tabs": {
+      "description": "Material-UI Tabs component",
+      "category": "navigation",
+      "props": {
+        "value": {
+          "type": "any",
+          "required": true,
+          "description": "Currently selected tab value"
+        },
+        "onChange": {
+          "type": "function",
+          "description": "Tab change handler"
+        },
+        "orientation": {
+          "type": "enum",
+          "values": ["horizontal", "vertical"],
+          "default": "horizontal",
+          "description": "Tab orientation"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["standard", "scrollable", "fullWidth"],
+          "default": "standard",
+          "description": "Tabs variant"
+        }
+      }
+    },
+    "Tab": {
+      "description": "Material-UI Tab component",
+      "category": "navigation",
+      "props": {
+        "label": {
+          "type": "string",
+          "required": true,
+          "description": "Tab label text"
+        },
+        "value": {
+          "type": "any",
+          "required": true,
+          "description": "Tab value"
+        },
+        "icon": {
+          "type": "string",
+          "description": "Icon name"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether tab is disabled"
+        }
+      }
+    },
+    "Icon": {
+      "description": "Material-UI Icon component",
+      "category": "display",
+      "props": {
+        "name": {
+          "type": "string",
+          "required": true,
+          "description": "Icon name from Material Icons"
+        },
+        "color": {
+          "type": "enum",
+          "values": ["inherit", "primary", "secondary", "action", "disabled", "error"],
+          "default": "inherit",
+          "description": "Icon color"
+        },
+        "fontSize": {
+          "type": "enum",
+          "values": ["small", "medium", "large", "inherit"],
+          "default": "medium",
+          "description": "Icon size"
+        }
+      }
+    },
+    "IconButton": {
+      "description": "Material-UI IconButton component",
+      "category": "inputs",
+      "props": {
+        "icon": {
+          "type": "string",
+          "required": true,
+          "description": "Icon name"
+        },
+        "color": {
+          "type": "enum",
+          "values": ["default", "primary", "secondary", "error", "warning", "info", "success"],
+          "default": "default",
+          "description": "Button color"
+        },
+        "size": {
+          "type": "enum",
+          "values": ["small", "medium", "large"],
+          "default": "medium",
+          "description": "Button size"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether button is disabled"
+        },
+        "onClick": {
+          "type": "function",
+          "description": "Click handler"
+        }
+      }
+    },
+    "Select": {
+      "description": "Material-UI Select component",
+      "category": "inputs",
+      "props": {
+        "label": {
+          "type": "string",
+          "description": "Select label"
+        },
+        "value": {
+          "type": "any",
+          "description": "Selected value"
+        },
+        "options": {
+          "type": "array",
+          "required": true,
+          "description": "Array of { value, label } options"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["standard", "outlined", "filled"],
+          "default": "outlined",
+          "description": "Select variant"
+        },
+        "fullWidth": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether select takes full width"
+        },
+        "multiple": {
+          "type": "boolean",
+          "default": false,
+          "description": "Allow multiple selections"
+        },
+        "onChange": {
+          "type": "function",
+          "description": "Change handler"
+        }
+      }
+    },
+    "Checkbox": {
+      "description": "Material-UI Checkbox component",
+      "category": "inputs",
+      "props": {
+        "checked": {
+          "type": "boolean",
+          "description": "Whether checkbox is checked"
+        },
+        "label": {
+          "type": "string",
+          "description": "Checkbox label"
+        },
+        "disabled": {
+          "type": "boolean",
+          "default": false,
+          "description": "Whether checkbox is disabled"
+        },
+        "onChange": {
+          "type": "function",
+          "description": "Change handler"
+        },
+        "color": {
+          "type": "enum",
+          "values": ["default", "primary", "secondary"],
+          "default": "primary",
+          "description": "Checkbox color"
+        }
+      }
+    },
+    "AppBar": {
+      "description": "Material-UI AppBar component",
+      "category": "layout",
+      "props": {
+        "position": {
+          "type": "enum",
+          "values": ["fixed", "absolute", "sticky", "static", "relative"],
+          "default": "fixed",
+          "description": "AppBar position"
+        },
+        "color": {
+          "type": "enum",
+          "values": ["default", "primary", "secondary", "transparent", "inherit"],
+          "default": "primary",
+          "description": "AppBar color"
+        },
+        "elevation": {
+          "type": "number",
+          "default": 4,
+          "description": "Shadow elevation"
+        }
+      }
+    },
+    "Toolbar": {
+      "description": "Material-UI Toolbar component",
+      "category": "layout",
+      "props": {
+        "variant": {
+          "type": "enum",
+          "values": ["regular", "dense"],
+          "default": "regular",
+          "description": "Toolbar variant"
+        },
+        "disableGutters": {
+          "type": "boolean",
+          "default": false,
+          "description": "Remove padding"
+        }
+      }
+    },
+    "Drawer": {
+      "description": "Material-UI Drawer component",
+      "category": "navigation",
+      "props": {
+        "open": {
+          "type": "boolean",
+          "description": "Whether drawer is open"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["permanent", "persistent", "temporary"],
+          "default": "temporary",
+          "description": "Drawer variant"
+        },
+        "anchor": {
+          "type": "enum",
+          "values": ["left", "right", "top", "bottom"],
+          "default": "left",
+          "description": "Drawer anchor position"
+        },
+        "onClose": {
+          "type": "function",
+          "description": "Close handler"
+        }
+      }
+    },
+    "Alert": {
+      "description": "Material-UI Alert component",
+      "category": "feedback",
+      "props": {
+        "severity": {
+          "type": "enum",
+          "values": ["error", "warning", "info", "success"],
+          "default": "info",
+          "description": "Alert severity"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["standard", "filled", "outlined"],
+          "default": "standard",
+          "description": "Alert variant"
+        },
+        "onClose": {
+          "type": "function",
+          "description": "Close button handler"
+        },
+        "text": {
+          "type": "string",
+          "description": "Alert message"
+        }
+      }
+    },
+    "CircularProgress": {
+      "description": "Material-UI CircularProgress component",
+      "category": "feedback",
+      "props": {
+        "size": {
+          "type": "number",
+          "default": 40,
+          "description": "Progress size in pixels"
+        },
+        "color": {
+          "type": "enum",
+          "values": ["primary", "secondary", "inherit"],
+          "default": "primary",
+          "description": "Progress color"
+        },
+        "variant": {
+          "type": "enum",
+          "values": ["determinate", "indeterminate"],
+          "default": "indeterminate",
+          "description": "Progress variant"
+        },
+        "value": {
+          "type": "number",
+          "description": "Progress value (0-100) for determinate"
+        }
+      }
+    }
+  },
   "features": [
     {
       "id": "database-crud",

@@ -182,6 +182,20 @@ export type ComponentNode = {
 
 export type ComponentTree = ComponentNode;
 
+export type PropDefinition = {
+  type: 'string' | 'number' | 'boolean' | 'array' | 'object' | 'function' | 'enum' | 'any';
+  description: string;
+  required?: boolean;
+  default?: any;
+  values?: any[];
+};
+
+export type ComponentPropSchema = {
+  description: string;
+  category: 'inputs' | 'display' | 'layout' | 'navigation' | 'feedback';
+  props: Record<string, PropDefinition>;
+};
+
 // Type definition for the features config structure
 type FeaturesConfig = {
   translations?: Translations;
@@ -198,6 +212,7 @@ type FeaturesConfig = {
   relationships?: Record<string, Relationships>;
   uiViews?: Record<string, Record<string, UiView>>;
   componentTrees?: Record<string, ComponentTree>;
+  componentProps?: Record<string, ComponentPropSchema>;
   features: Feature[];
   dataTypes: DataType[];
   constraintTypes?: ConstraintType[];
@@ -333,4 +348,64 @@ export function getComponentTree(treeName: string): ComponentTree | undefined {
 
 export function getAllComponentTrees(): Record<string, ComponentTree> {
   return config.componentTrees || {};
+}
+
+export function getComponentPropSchema(componentName: string): ComponentPropSchema | undefined {
+  return config.componentProps?.[componentName];
+}
+
+export function getAllComponentPropSchemas(): Record<string, ComponentPropSchema> {
+  return config.componentProps || {};
+}
+
+export function getComponentPropDefinition(componentName: string, propName: string): PropDefinition | undefined {
+  return config.componentProps?.[componentName]?.props[propName];
+}
+
+export function validateComponentProps(componentName: string, props: Record<string, any>): { valid: boolean; errors: string[] } {
+  const schema = getComponentPropSchema(componentName);
+  
+  if (!schema) {
+    return { valid: true, errors: [] };
+  }
+  
+  const errors: string[] = [];
+  
+  // Check required props
+  Object.entries(schema.props).forEach(([propName, propDef]) => {
+    if (propDef.required && !(propName in props)) {
+      errors.push(`Missing required prop: ${propName}`);
+    }
+  });
+  
+  // Check prop types
+  Object.entries(props).forEach(([propName, propValue]) => {
+    const propDef = schema.props[propName];
+    
+    if (!propDef) {
+      errors.push(`Unknown prop: ${propName}`);
+      return;
+    }
+    
+    // Type checking
+    if (propDef.type === 'enum' && propDef.values) {
+      if (!propDef.values.includes(propValue)) {
+        errors.push(`Invalid value for ${propName}: ${propValue}. Expected one of: ${propDef.values.join(', ')}`);
+      }
+    } else if (propDef.type !== 'any') {
+      const actualType = Array.isArray(propValue) ? 'array' : typeof propValue;
+      if (actualType !== propDef.type) {
+        errors.push(`Invalid type for ${propName}: expected ${propDef.type}, got ${actualType}`);
+      }
+    }
+  });
+  
+  return { valid: errors.length === 0, errors };
+}
+
+export function getComponentsByCategory(category: string): string[] {
+  const schemas = getAllComponentPropSchemas();
+  return Object.entries(schemas)
+    .filter(([_, schema]) => schema.category === category)
+    .map(([name, _]) => name);
 }
