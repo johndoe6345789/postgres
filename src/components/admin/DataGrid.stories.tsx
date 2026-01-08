@@ -1,5 +1,4 @@
 import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
 import DataGrid from './DataGrid';
 
 const meta = {
@@ -9,10 +8,6 @@ const meta = {
     layout: 'padded',
   },
   tags: ['autodocs'],
-  argTypes: {
-    onEdit: { action: 'edit' },
-    onDelete: { action: 'delete' },
-  },
 } satisfies Meta<typeof DataGrid>;
 
 export default meta;
@@ -48,8 +43,8 @@ export const WithActions: Story = {
       { id: 1, name: 'Active User', status: 'active' },
       { id: 2, name: 'Pending User', status: 'pending' },
     ],
-    onEdit: fn(),
-    onDelete: fn(),
+    onEdit: () => console.log('Edit clicked'),
+    onDelete: () => console.log('Delete clicked'),
     primaryKey: 'id',
   },
 };

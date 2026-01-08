@@ -1,7 +1,6 @@
 'use client';
 
 import {
-  IconButton as MuiIconButton,
   Paper,
   Table,
   TableBody,

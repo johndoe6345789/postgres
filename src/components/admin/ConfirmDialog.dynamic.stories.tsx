@@ -1,11 +1,17 @@
 import type { Meta, StoryObj } from '@storybook/react';
+import featuresConfig from '@/config/features.json';
 import ConfirmDialog from './ConfirmDialog';
 
 const meta = {
-  title: 'Admin/ConfirmDialog',
+  title: 'Admin/ConfirmDialog (From JSON)',
   component: ConfirmDialog,
   parameters: {
     layout: 'centered',
+    docs: {
+      description: {
+        component: 'ConfirmDialog component with stories dynamically loaded from features.json',
+      },
+    },
   },
   tags: ['autodocs'],
 } satisfies Meta<typeof ConfirmDialog>;
@@ -13,28 +19,24 @@ const meta = {
 export default meta;
 type Story = StoryObj<typeof meta>;
 
-// Stories based on features.json storybookStories.ConfirmDialog
+// Dynamically generate stories from features.json
+const confirmDialogStories = featuresConfig.storybookStories.ConfirmDialog;
+
+// Default Story
 export const Default: Story = {
-  name: 'Default',
+  name: confirmDialogStories.default.name,
   args: {
-    open: true,
-    title: 'Confirm Action',
-    message: 'Are you sure you want to proceed?',
-    confirmLabel: 'Confirm',
-    cancelLabel: 'Cancel',
+    ...confirmDialogStories.default.args,
     onConfirm: () => console.log('Confirmed'),
     onCancel: () => console.log('Cancelled'),
   },
 };
 
+// Delete Warning Story
 export const DeleteWarning: Story = {
-  name: 'Delete Warning',
+  name: confirmDialogStories.deleteWarning.name,
   args: {
-    open: true,
-    title: 'Delete Item',
-    message: 'This action cannot be undone. Are you sure you want to delete this item?',
-    confirmLabel: 'Delete',
-    cancelLabel: 'Cancel',
+    ...confirmDialogStories.deleteWarning.args,
     onConfirm: () => console.log('Confirmed delete'),
     onCancel: () => console.log('Cancelled delete'),
   },
