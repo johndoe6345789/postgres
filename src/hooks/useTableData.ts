@@ -2,7 +2,7 @@
  * Hook for fetching and managing table data
  */
 import { useState, useCallback, useEffect } from 'react';
-import { useApiCall } from './useApiCall';
+import { useApiCall } from '@metabuilder/hooks';
 
 export function useTableData(tableName?: string) {
   const { loading, error, execute } = useApiCall();

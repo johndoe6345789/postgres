@@ -3,18 +3,19 @@ import { cookies } from 'next/headers';
 
 const SESSION_COOKIE_NAME = 'admin-session';
 
-// Get JWT secret and throw error if not provided
+// Get JWT secret lazily to avoid build-time errors during static page generation
+let _jwtSecret: Uint8Array | null = null;
+
 function getJwtSecret(): Uint8Array {
-  const secret = process.env.JWT_SECRET;
-
-  if (!secret) {
-    throw new Error('JWT_SECRET environment variable is required');
+  if (!_jwtSecret) {
+    const secret = process.env.JWT_SECRET;
+    if (!secret) {
+      throw new Error('JWT_SECRET environment variable is required');
+    }
+    _jwtSecret = new TextEncoder().encode(secret);
   }
-
-  return new TextEncoder().encode(secret);
+  return _jwtSecret;
 }
-
-const JWT_SECRET = getJwtSecret();
 
 export type SessionData = {
   userId: number;
@@ -26,7 +27,7 @@ export async function createSession(data: SessionData): Promise<string> {
     .setProtectedHeader({ alg: 'HS256' })
     .setIssuedAt()
     .setExpirationTime('24h')
-    .sign(JWT_SECRET);
+    .sign(getJwtSecret());
 
   return token;
 }
@@ -42,21 +43,28 @@ export async function setSessionCookie(token: string): Promise<void> {
   });
 }
 
-export async function getSession(): Promise<SessionData | null> {
-  const cookieStore = await cookies();
-  const token = cookieStore.get(SESSION_COOKIE_NAME)?.value;
-
+/** Pure token verification, usable from both Server Components (via
+ * getSession below) and Edge Middleware (which can't use next/headers'
+ * cookies()) -- see proxy.ts. */
+export async function verifySessionToken(token: string | undefined): Promise<SessionData | null> {
   if (!token) {
     return null;
   }
 
   try {
-    const { payload } = await jwtVerify(token, JWT_SECRET);
+    const { payload } = await jwtVerify(token, getJwtSecret());
     return payload as SessionData;
   } catch {
     return null;
   }
 }
+
+export async function getSession(): Promise<SessionData | null> {
+  const cookieStore = await cookies();
+  return verifySessionToken(cookieStore.get(SESSION_COOKIE_NAME)?.value);
+}
+
+export { SESSION_COOKIE_NAME };
 
 export async function clearSession(): Promise<void> {
   const cookieStore = await cookies();

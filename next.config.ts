@@ -2,10 +2,25 @@ import type { NextConfig } from 'next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 import { withSentryConfig } from '@sentry/nextjs';
 import createNextIntlPlugin from 'next-intl/plugin';
+import path from 'path';
 import './src/libs/Env';
+
+const monorepoRoot = path.resolve(__dirname, '../..');
 
 // Define the base Next.js configuration
 const baseConfig: NextConfig = {
+  basePath: '/postgres',
+  distDir: process.env.NEXT_DIST_DIR || '.next',
+  output: 'standalone',
+  async redirects() {
+    return [
+      {
+        source: '/',
+        destination: '/admin/dashboard',
+        permanent: false,
+      },
+    ];
+  },
   devIndicators: {
     position: 'bottom-right',
   },
@@ -15,8 +30,78 @@ const baseConfig: NextConfig = {
   outputFileTracingIncludes: {
     '/': ['./migrations/**/*'],
   },
+  sassOptions: {
+    includePaths: [
+      path.join(monorepoRoot, 'libraries/scss'),
+      path.join(monorepoRoot, 'libraries/scss/m3-scss'),
+      path.join(monorepoRoot, 'libraries/scss/m3-scss/material'),
+      path.join(monorepoRoot, 'libraries/scss/m3-scss/cdk'),
+      path.join(monorepoRoot, 'libraries/scss/atoms'),
+      path.join(monorepoRoot, 'libraries/scss/mixins'),
+    ],
+    loadPaths: [
+      path.join(monorepoRoot, 'libraries/scss'),
+      path.join(monorepoRoot, 'libraries/scss/m3-scss'),
+      path.join(monorepoRoot, 'libraries/scss/m3-scss/material'),
+      path.join(monorepoRoot, 'libraries/scss/m3-scss/cdk'),
+      path.join(monorepoRoot, 'libraries/scss/atoms'),
+      path.join(monorepoRoot, 'libraries/scss/mixins'),
+    ],
+  },
+  transpilePackages: ['@metabuilder/components', '@metabuilder/m3', '@metabuilder/dbal-sso'],
+  typescript: {
+    ignoreBuildErrors: true,
+  },
+  eslint: {
+    ignoreDuringBuilds: true,
+  },
+  // Keep heavy server-only deps external so they aren't bundled.
+  serverExternalPackages: ['better-sqlite3'],
+  // Turbopack config — now used by both `next dev` and `next build`. The
+  // m3 source alias must live here too (turbopack ignores the webpack()
+  // callback), otherwise @metabuilder/m3 fails to resolve to source.
+  turbopack: {
+    root: monorepoRoot,
+    resolveAlias: {
+      // Relative to this project dir (frontends/postgres); turbopack treats
+      // resolveAlias values as project-relative, not absolute.
+      '@metabuilder/components/m3': '../../libraries/components/m3',
+      '@metabuilder/m3': '../../libraries/components/m3',
+    },
+  },
   experimental: {
     turbopackFileSystemCacheForDev: true,
+  },
+  webpack: (config: any, { isServer }: { isServer: boolean }) => {
+    const webpack = require('webpack')
+    config.resolve.alias = {
+      ...(config.resolve.alias || {}),
+      '@metabuilder/components/m3': path.join(monorepoRoot, 'libraries/components/m3'),
+      '@metabuilder/m3': path.join(monorepoRoot, 'libraries/components/m3'),
+    }
+    config.plugins.push(
+      new webpack.NormalModuleReplacementPlugin(
+        /\.module\.scss$/,
+        function (resource: any) {
+          if ((resource.context?.includes('components/dist') ||
+              resource.context?.includes('components\\dist')) &&
+              !resource.request?.includes('mat-dialog')) {
+            resource.request = require.resolve('./src/lib/empty-css-module.js')
+          }
+        }
+      )
+    )
+    config.optimization.minimize = false
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false, path: false, crypto: false,
+      }
+    }
+    config.externals = [...(config.externals || []),
+      'better-sqlite3', '.prisma/client/index-browser',
+    ]
+    return config
   },
 };
 

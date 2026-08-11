@@ -1,7 +1,7 @@
 import type { Metadata } from 'next';
-import { UserProfile } from '@clerk/nextjs';
 import { getTranslations, setRequestLocale } from 'next-intl/server';
-import { getI18nPath } from '@/utils/Helpers';
+import publicStyles from '@/styles/public.module.scss';
+import { getSession } from '@/utils/session';
 
 type IUserProfilePageProps = {
   params: Promise<{ locale: string }>;
@@ -22,12 +22,17 @@ export async function generateMetadata(props: IUserProfilePageProps): Promise<Me
 export default async function UserProfilePage(props: IUserProfilePageProps) {
   const { locale } = await props.params;
   setRequestLocale(locale);
+  const session = await getSession();
 
   return (
-    <div className="my-6 -ml-16">
-      <UserProfile
-        path={getI18nPath('/dashboard/user-profile', locale)}
-      />
+    <div className={publicStyles.userProfileShell}>
+      <p>
+        Signed in as
+        {' '}
+        <strong>{session?.username ?? 'unknown'}</strong>
+        {' '}
+        via MetaBuilder SSO.
+      </p>
     </div>
   );
 };
