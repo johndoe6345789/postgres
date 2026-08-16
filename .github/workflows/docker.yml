@@ -9,21 +9,19 @@ name: Build and Push Docker Image
 # fails outright with "no matching manifest for linux/arm64/v8", so the image
 # is simply unusable there.
 
-# NOTE: this workflow cannot currently produce an image, for reasons that
-# predate and are separate from the arch split below. Every run since January
-# has failed, because the Dockerfile:
-#   * starts FROM ${BASE_REGISTRY}/base-postgres-deps:latest, which is not
-#     published to GHCR under any name this account owns; and
-#   * documents "Context: monorepo root (..)" -- it COPYs libraries/redux/
-#     dbal-sso/ and a root package.json, neither of which exist in this repo --
-#     while the build step below passes `context: .`.
-# The image people actually run, ghcr.io/johndoe6345789/metabuilder-small/
-# postgres-dashboard, is built by metabuilder-small's gated-pipeline.yml, which
-# has that monorepo layout. Fixing the two points above (or pointing this at
-# the assembled workspace) is what makes this workflow live.
+# The build context is NOT a bare checkout of this repo.
 #
-# The branch triggers also said `main` while this repo's default branch is
-# `master`, so it stopped firing entirely; corrected below.
+# package.json declares its @metabuilder/* dependencies as relative file: paths
+# (file:../../libraries/components and friends), which resolve only in the old
+# monorepo layout. assemble_workspace.py rebuilds that layout in a scratch
+# directory -- this repo at frontends/postgres, its six sibling libraries under
+# libraries/ -- and docker build runs with that as the context.
+#
+# This replaces a workflow that had never once produced an image: it built from
+# `context: .`, where those paths do not exist, and started FROM
+# metabuilder/base-postgres-deps, which is itself unbuildable (its Dockerfile
+# wants package.json files from the eight frontends that left metabuilder, plus
+# a package-lock.json committed nowhere). The Dockerfile is now self-contained.
 
 on:
   push:
@@ -74,10 +72,20 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Assemble workspace
+        env:
+          # Sibling repos are public today; a PAT is only needed if one is made
+          # private, since the default token sees this repo alone.
+          WORKSPACE_TOKEN: ${{ secrets.WORKSPACE_TOKEN }}
+        run: |
+          python3 .github/scripts/assemble_workspace.py --dest "${RUNNER_TEMP}/ws"
+
       - name: Build and push (${{ matrix.arch }})
         uses: docker/build-push-action@v6
         with:
-          context: .
+          # The assembled workspace, not this checkout.
+          context: ${{ runner.temp }}/ws
+          file: ${{ github.workspace }}/Dockerfile
           platforms: linux/${{ matrix.arch }}
           push: ${{ github.event_name != 'pull_request' }}
           # Per-arch tag only. The human-facing tags are applied by the merge

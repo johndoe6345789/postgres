@@ -1,0 +1,114 @@
+{
+  "_comment": [
+    "Mount manifest for building the Postgres dashboard.",
+    "",
+    "package.json declares its @metabuilder/* dependencies as relative file:",
+    "paths (file:../../libraries/components and friends). Those resolve only",
+    "inside the old monorepo layout, where this repo sat at frontends/postgres",
+    "with its libraries beside it -- which is why a bare checkout cannot npm",
+    "install, and why CI here had never once gone green.",
+    "",
+    "assemble_workspace.py rebuilds that layout: this repo is placed at",
+    "frontends/postgres and each sibling below is cloned into libraries/.",
+    "The file: paths then resolve unchanged, so neither package.json nor the",
+    "app source needs to know it is being built outside a monorepo.",
+    "",
+    "icons is here despite not appearing in any package.json: components",
+    "imports it through a relative path ('../../icons/react/m3'), so grepping",
+    "for package names does not find it and omitting it fails the build with",
+    "an unresolved module.",
+    "",
+    "Pins are commit SHAs for reproducibility; pass --floating to take branch",
+    "heads instead."
+  ],
+  "owner": "johndoe6345789",
+  "repos": [
+    {
+      "repo": "components",
+      "branch": "main",
+      "ref": "40e3d95652c002e7e54c2aa621eb3a2243f72b5f",
+      "provides": [
+        "@metabuilder/components",
+        "@metabuilder/m3"
+      ],
+      "mounts": [
+        {
+          "from": ".",
+          "to": "libraries/components"
+        }
+      ]
+    },
+    {
+      "repo": "hooks",
+      "branch": "main",
+      "ref": "730cca1ed793267dba9156aa11a5671339aa6686",
+      "provides": [
+        "@metabuilder/hooks"
+      ],
+      "mounts": [
+        {
+          "from": ".",
+          "to": "libraries/hooks"
+        }
+      ]
+    },
+    {
+      "repo": "redux",
+      "branch": "main",
+      "ref": "30e85fe6ed90c2db91ee5fb526d2fd8b49e7373d",
+      "provides": [
+        "@metabuilder/dbal-sso",
+        "@metabuilder/redux-persist"
+      ],
+      "mounts": [
+        {
+          "from": ".",
+          "to": "libraries/redux"
+        }
+      ]
+    },
+    {
+      "repo": "scss",
+      "branch": "main",
+      "ref": "9966996aa7c7592f6eb61cc256a92522b7f67deb",
+      "provides": [
+        "shared SCSS imported by components and the app"
+      ],
+      "mounts": [
+        {
+          "from": ".",
+          "to": "libraries/scss"
+        }
+      ]
+    },
+    {
+      "repo": "icons",
+      "branch": "main",
+      "ref": "14dd3e7764a89b2220e7f47e9f0b62ee54c31663",
+      "provides": [
+        "resolved by components via a relative path, not a package name"
+      ],
+      "mounts": [
+        {
+          "from": ".",
+          "to": "libraries/icons"
+        }
+      ]
+    },
+    {
+      "repo": "types",
+      "branch": "main",
+      "ref": "f1fce969a6f14c9468ea35ac7621b6a571b1d86e",
+      "provides": [
+        "@metabuilder/types"
+      ],
+      "_note": "Not a dependency of the app, but of hooks and redux/{adapters,hooks-data}. Omitting it fails npm install with a 404 on @metabuilder/types@* -- the @metabuilder scope is not published to npm, so an unmounted package is not a version mismatch but a missing registry entry.",
+      "mounts": [
+        {
+          "from": ".",
+          "to": "libraries/types"
+        }
+      ]
+    }
+  ]
+}
