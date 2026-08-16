@@ -29,22 +29,23 @@ WORKDIR /app
 # optimisation) needs vips at build time on Alpine.
 RUN apk add --no-cache python3 make g++ vips-dev
 
-# Manifests first so the install layer is cached against source-only edits.
-# The library package.json files must be present before npm install, or the
-# file: links resolve to directories with nothing in them.
+# The whole library tree, before npm install.
+#
+# This deliberately does NOT enumerate individual package.json files, which is
+# what it did before and which was wrong four separate times: @metabuilder/types
+# went missing, then redux-slices. Every package that anything in the tree
+# depends on must be a workspace at install time, and the workspace globs
+# (libraries/redux/*) only match directories that already exist -- so a
+# selective COPY silently shrinks the workspace set. Because the @metabuilder
+# scope is unpublished, the result is a registry 404 naming a package rather
+# than anything pointing at the copy list.
+#
+# The cost is that editing library source invalidates the install layer. The
+# npm cache mount absorbs most of that, and it is a far better trade than a
+# hand-maintained list that has to stay in step with six repos' internals.
 COPY package.json ./
-COPY libraries/components/package.json     ./libraries/components/
-COPY libraries/components/m3/package.json  ./libraries/components/m3/
-COPY libraries/hooks/package.json          ./libraries/hooks/
-COPY libraries/redux/dbal-sso/package.json ./libraries/redux/dbal-sso/
-COPY libraries/redux/persist/package.json  ./libraries/redux/persist/
-COPY libraries/scss/package.json           ./libraries/scss/
-# Not a dependency of the app, but hooks and redux/{adapters,hooks-data}
-# require it. Omitting it makes @metabuilder/types a non-workspace, and
-# since the scope is unpublished npm reports a registry 404 rather than
-# anything pointing at the workspace list.
-COPY libraries/types/package.json          ./libraries/types/
-COPY frontends/postgres/package.json       ./frontends/postgres/
+COPY libraries/ ./libraries/
+COPY frontends/postgres/package.json ./frontends/postgres/
 
 # No package-lock.json is committed anywhere in this family, so `npm ci` is not
 # an option -- see the note in metabuilder's CI about the same constraint.
@@ -58,7 +59,6 @@ RUN --mount=type=cache,target=/root/.npm \
 
 # Sources after the install, so editing them does not invalidate it. The
 # workspace links are path-based and resolve once these land.
-COPY libraries/ ./libraries/
 COPY frontends/postgres/ ./frontends/postgres/
 
 ENV SKIP_ENV_VALIDATION=true
