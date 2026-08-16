@@ -90,7 +90,19 @@ def generate_root_package_json(dest: Path) -> None:
     workspaces before the file: links resolve, so one is generated rather than
     committed -- committing it would be a second copy of the layout to keep in
     step with workspace.json.
+
+    The root is also the only place npm honours `overrides`: those declared in
+    a workspace are ignored, so the peer-dependency pins below cannot live in
+    the app's own package.json.
     """
+    app_pkg = json.loads((dest / "frontends" / "postgres" / "package.json").read_text())
+    app_deps = {**app_pkg.get("dependencies", {}), **app_pkg.get("devDependencies", {})}
+
+    def declared(name: str, fallback: str) -> str:
+        """Take the app's own range so an upgrade there does not silently
+        leave a stale pin behind here."""
+        return app_deps.get(name, fallback)
+
     root = {
         "name": "postgres-dashboard-workspace",
         "private": True,
@@ -110,12 +122,33 @@ def generate_root_package_json(dest: Path) -> None:
             "libraries/scss",
             "libraries/types",
         ],
-        # react-redux 9 declares a peer of react ^18 while this tree is on
-        # React 19, and npm resolves that to ERESOLVE rather than a warning.
-        # metabuilder's m3 CI hit the same wall and solved it the same way.
+        # Targeted peer-dependency pins, in place of --legacy-peer-deps.
+        #
+        # The flag worked, but by switching peer resolution off for the whole
+        # tree -- it would equally have hidden a genuine incompatibility
+        # introduced later. These pin only the edges that are actually wrong,
+        # in nested form ("within package X, use version Y for Z"), so nothing
+        # else's view of eslint or react is touched.
         "overrides": {
-            "react": "$react",
-            "react-dom": "$react-dom",
+            # eslint 10 is newer than most plugins' declared peer ranges: they
+            # cap at ^9 or ^9.7 and work with 10 in practice. Pinning them one
+            # at a time did not work -- fixing jsx-a11y surfaced
+            # eslint-plugin-react, which would have surfaced the next -- so
+            # every eslint plugin and config the app declares gets the same
+            # treatment. Derived from package.json rather than listed here, so
+            # adding a plugin does not silently reintroduce the problem.
+            **{
+                name: {"eslint": declared("eslint", "^10.0.1")}
+                for name in app_deps
+                if name.startswith(("eslint-plugin-", "eslint-config-"))
+                or ("eslint" in name and name.startswith("@"))
+            },
+            # react-redux@9 peers react ^18 while this tree is on React 19 --
+            # the same pattern, a range that predates the major.
+            "react-redux": {
+                "react": declared("react", "^19.2.4"),
+                "react-dom": declared("react-dom", "^19.2.4"),
+            },
         },
     }
     (dest / "package.json").write_text(json.dumps(root, indent=2) + "\n")

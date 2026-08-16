@@ -49,13 +49,15 @@ COPY frontends/postgres/package.json ./frontends/postgres/
 
 # No package-lock.json is committed anywhere in this family, so `npm ci` is not
 # an option -- see the note in metabuilder's CI about the same constraint.
-# --legacy-peer-deps is not cosmetic: package.json declares eslint@^10 while
-# eslint-plugin-jsx-a11y@6.10.2 peers on eslint ^3..^9, so a plain install
-# fails with ERESOLVE. That conflict is dev-tooling only -- this image never
-# runs eslint -- but it is a real defect in the manifest and the flag hides it
-# rather than fixing it. Reconciling those two versions is the proper fix.
+#
+# No --legacy-peer-deps. Two peer ranges in this tree predate the majors they
+# are used with (eslint-plugin-jsx-a11y vs eslint 10, react-redux vs React 19),
+# and both are pinned individually by the `overrides` block that
+# assemble_workspace.py writes into the workspace root. The flag would have
+# worked too, by switching peer resolution off everywhere -- including for a
+# genuine incompatibility introduced later.
 RUN --mount=type=cache,target=/root/.npm \
-    npm install --ignore-scripts --prefer-offline --no-audit --no-fund --legacy-peer-deps
+    npm install --ignore-scripts --prefer-offline --no-audit --no-fund
 
 # Sources after the install, so editing them does not invalidate it. The
 # workspace links are path-based and resolve once these land.
