@@ -1,13 +1,40 @@
 name: Build and Push Docker Image
 
+# Publishes a dual-arch image. Each architecture is built natively on its own
+# runner and the two are joined into one manifest afterwards, rather than
+# cross-building both on amd64 under QEMU -- emulating a Next.js build costs
+# far more runner time than a second machine does.
+#
+# An amd64-only image is not a partial success: `docker pull` on Apple silicon
+# fails outright with "no matching manifest for linux/arm64/v8", so the image
+# is simply unusable there.
+
+# NOTE: this workflow cannot currently produce an image, for reasons that
+# predate and are separate from the arch split below. Every run since January
+# has failed, because the Dockerfile:
+#   * starts FROM ${BASE_REGISTRY}/base-postgres-deps:latest, which is not
+#     published to GHCR under any name this account owns; and
+#   * documents "Context: monorepo root (..)" -- it COPYs libraries/redux/
+#     dbal-sso/ and a root package.json, neither of which exist in this repo --
+#     while the build step below passes `context: .`.
+# The image people actually run, ghcr.io/johndoe6345789/metabuilder-small/
+# postgres-dashboard, is built by metabuilder-small's gated-pipeline.yml, which
+# has that monorepo layout. Fixing the two points above (or pointing this at
+# the assembled workspace) is what makes this workflow live.
+#
+# The branch triggers also said `main` while this repo's default branch is
+# `master`, so it stopped firing entirely; corrected below.
+
 on:
   push:
     branches:
+      - master
       - main
     tags:
       - 'v*'
   pull_request:
     branches:
+      - master
       - main
 
 env:
@@ -15,11 +42,23 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  build-and-push:
-    runs-on: ubuntu-latest
+  build:
+    name: Build ${{ matrix.arch }}
+    runs-on: ${{ matrix.runner }}
     permissions:
       contents: read
       packages: write
+
+    strategy:
+      # Let both archs report. The merge job needs each per-arch tag to exist,
+      # so a half-built manifest is never tagged :latest regardless.
+      fail-fast: false
+      matrix:
+        include:
+          - arch: amd64
+            runner: ubuntu-latest
+          - arch: arm64
+            runner: ubuntu-24.04-arm
 
     steps:
       - name: Checkout repository
@@ -35,25 +74,72 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Extract metadata (tags, labels) for Docker
-        id: meta
-        uses: docker/metadata-action@v5
-        with:
-          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
-          tags: |
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-
-      - name: Build and push Docker image
+      - name: Build and push (${{ matrix.arch }})
         uses: docker/build-push-action@v6
         with:
           context: .
+          platforms: linux/${{ matrix.arch }}
           push: ${{ github.event_name != 'pull_request' }}
-          tags: ${{ steps.meta.outputs.tags }}
-          labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          # Per-arch tag only. The human-facing tags are applied by the merge
+          # job, so :latest never points at a single-arch image, even briefly.
+          tags: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ github.sha }}-${{ matrix.arch }}
+          # Scoped per arch: one shared cache key would have the two runners
+          # continually evicting each other's layers.
+          cache-from: type=gha,scope=${{ matrix.arch }}
+          cache-to: type=gha,mode=max,scope=${{ matrix.arch }}
+
+  merge:
+    name: Merge manifests
+    needs: build
+    # Nothing was pushed on a pull_request, so there is nothing to join.
+    if: github.event_name != 'pull_request'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create and push manifest
+        env:
+          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          SHA: ${{ github.sha }}
+          REF_NAME: ${{ github.ref_name }}
+          IS_TAG: ${{ startsWith(github.ref, 'refs/tags/') }}
+        run: |
+          set -euo pipefail
+          # Branch pushes get :latest plus the branch name; tag pushes get the
+          # tag. Both always get the immutable :<sha>.
+          tags=(--tag "$IMAGE:$SHA")
+          if [ "$IS_TAG" = "true" ]; then
+            tags+=(--tag "$IMAGE:$REF_NAME")
+          else
+            tags+=(--tag "$IMAGE:latest" --tag "$IMAGE:$REF_NAME")
+          fi
+
+          docker buildx imagetools create \
+            "${tags[@]}" \
+            "$IMAGE:${SHA}-amd64" \
+            "$IMAGE:${SHA}-arm64"
+
+      - name: Verify both platforms are in the manifest
+        env:
+          IMAGE: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          SHA: ${{ github.sha }}
+        run: |
+          set -euo pipefail
+          docker buildx imagetools inspect "$IMAGE:$SHA"
+          raw=$(docker buildx imagetools inspect "$IMAGE:$SHA" --raw)
+          # The whole point of the job: a green build must not still be
+          # unpullable on one of the two architectures.
+          for want in amd64 arm64; do
+            echo "$raw" | grep -q "\"$want\"" \
+              || { echo "manifest is missing linux/$want"; exit 1; }
+          done
+          echo "manifest contains both linux/amd64 and linux/arm64"
